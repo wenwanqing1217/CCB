@@ -81,38 +81,41 @@ exports.main = async (event, context) => {
  * @returns {Object} - 发布结果
  */
 async function handlePublish(data) {
-  const { 
-    title, 
-    desc, 
-    type, 
-    mode, 
-    price, 
-    campus, 
-    building, 
-    images, 
-    openid 
+  const {
+    title,
+    desc,
+    type,
+    mode,
+    price,
+    campus,
+    building,
+    images,
+    openid
   } = data
-  
+
+  const validationError = validatePublishInput({ title, price, openid, images })
+  if (validationError) {
+    return { success: false, message: validationError }
+  }
+
   try {
-    // 构建盲盒数据对象（对应论文4.3.2盲盒集合结构）
     const newBox = {
-      title,                    // 盲盒标题
-      desc,                     // 商品描述
-      type,                     // 分类名称
-      mode,                     // 盲盒模式
-      price,                    // 盲盒价格
-      campus,                   // 校区位置
-      building,                 // 楼栋信息
-      images: images || [],     // 图片URL列表
-      openid,                   // 卖家ID（关联用户集合）
-      status: 'available',      // 状态：available（在售）
-      createdAt: new Date(),    // 创建时间
-      updatedAt: new Date()     // 更新时间
+      title: title.trim(),
+      desc: (desc || '').trim(),
+      type: type || 'other',
+      mode: mode || 'light',
+      price: Math.round(Number(price) * 100) / 100,
+      campus: (campus || '').trim(),
+      building: (building || '').trim(),
+      images: Array.isArray(images) ? images.slice(0, 9) : [],
+      openid,
+      status: 'available',
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
-    
-    // 插入盲盒集合
+
     const result = await boxesCollection.add(newBox)
-    
+
     return {
       success: true,
       box: {
@@ -124,6 +127,36 @@ async function handlePublish(data) {
     console.error('发布盲盒失败:', error)
     return { success: false, message: '发布失败: ' + error.message }
   }
+}
+
+/**
+ * 校验发布参数
+ * @param {Object} params - 待校验参数
+ * @returns {string|null} - 错误信息或null
+ */
+function validatePublishInput({ title, price, openid, images }) {
+  if (!title || typeof title !== 'string' || title.trim().length === 0) {
+    return '标题不能为空'
+  }
+  if (title.trim().length > 50) {
+    return '标题不能超过50个字符'
+  }
+  if (!price || isNaN(Number(price)) || Number(price) < 0) {
+    return '价格必须是大于等于0的数字'
+  }
+  if (Number(price) > 99999) {
+    return '价格不能超过99999'
+  }
+  if (!openid || typeof openid !== 'string') {
+    return '用户信息无效'
+  }
+  if (images && !Array.isArray(images)) {
+    return '图片格式无效'
+  }
+  if (images && images.length > 9) {
+    return '图片最多上传9张'
+  }
+  return null
 }
 
 /**

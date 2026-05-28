@@ -91,49 +91,54 @@ exports.main = async (event, context) => {
  * @returns {Object} - 创建结果
  */
 async function handleCreateOrder(data) {
-  const { 
-    boxId, 
-    buyerOpenid, 
-    sellerOpenid, 
-    price, 
-    paymentMethod, 
-    address, 
-    contact 
+  const {
+    boxId,
+    buyerOpenid,
+    sellerOpenid,
+    price,
+    paymentMethod,
+    address,
+    contact
   } = data
-  
+
+  const validationError = validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, contact })
+  if (validationError) {
+    return { success: false, message: validationError }
+  }
+
   try {
-    // 检查盲盒是否存在且可用（对应论文4.3.2盲盒集合状态校验）
     const box = await boxesCollection.doc(boxId).get()
     if (!box.data || box.data.status !== 'available') {
       return { success: false, message: '盲盒不存在或已被购买' }
     }
-    
-    // 构建订单数据对象（对应论文4.3.3订单集合结构）
-    const newOrder = {
-      boxId,                  // 盲盒ID（关联盲盒集合）
-      boxInfo: box.data,      // 盲盒详情信息
-      buyerOpenid,            // 买家ID（关联用户集合）
-      sellerOpenid,           // 卖家ID（关联用户集合）
-      price,                  // 盲盒价格
-      paymentMethod,          // 支付方式
-      address,                // 配送地址信息
-      contact,                // 联系方式
-      status: 'pending',      // 状态：pending（待抢单）
-      createdAt: new Date(),  // 创建时间
-      updatedAt: new Date()   // 更新时间
+
+    if (buyerOpenid === sellerOpenid) {
+      return { success: false, message: '不能购买自己的盲盒' }
     }
-    
-    // 插入订单集合
+
+    const newOrder = {
+      boxId,
+      boxInfo: box.data,
+      buyerOpenid,
+      sellerOpenid,
+      price: Math.round(Number(price) * 100) / 100,
+      paymentMethod: paymentMethod || 'wechat',
+      address,
+      contact,
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
     const result = await ordersCollection.add(newOrder)
-    
-    // 更新盲盒状态为已售出（保证数据一致性）
+
     await boxesCollection.doc(boxId).update({
       data: {
         status: 'sold',
         updatedAt: new Date()
       }
     })
-    
+
     return {
       success: true,
       order: {
@@ -143,8 +148,38 @@ async function handleCreateOrder(data) {
     }
   } catch (error) {
     console.error('创建订单失败:', error)
-    return { success: false, message: '创建订单失败: ' + error.message }
+    return { success: false, message: '创建订单失败' }
   }
+}
+
+/**
+ * 校验订单参数
+ * @param {Object} params - 待校验参数
+ * @returns {string|null} - 错误信息或null
+ */
+function validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, contact }) {
+  if (!boxId || typeof boxId !== 'string') {
+    return '盲盒信息无效'
+  }
+  if (!buyerOpenid || typeof buyerOpenid !== 'string') {
+    return '买家信息无效'
+  }
+  if (!sellerOpenid || typeof sellerOpenid !== 'string') {
+    return '卖家信息无效'
+  }
+  if (!price || isNaN(Number(price)) || Number(price) < 0) {
+    return '价格无效'
+  }
+  if (!address || typeof address !== 'object') {
+    return '配送地址无效'
+  }
+  if (!contact || typeof contact !== 'object') {
+    return '联系方式无效'
+  }
+  if (!contact.phone && !contact.name) {
+    return '联系方式不完整'
+  }
+  return null
 }
 
 /**
