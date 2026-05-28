@@ -2,7 +2,7 @@ const {
   calculateDistance,
   calculateManhattanDistance,
   calculateMatchScore
-} = require('../../deliveryService/algorithms')
+} = require('../cloudfunctions/deliveryService/algorithms')
 
 describe('配送匹配算法测试', () => {
   describe('calculateDistance - Haversine距离计算', () => {

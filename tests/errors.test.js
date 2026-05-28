@@ -4,7 +4,7 @@ const {
   bizError,
   getErrorByKey,
   Validators
-} = require('../../cloudfunctions/common/errors')
+} = require('../cloudfunctions/common/errors')
 
 describe('错误码模块测试', () => {
   describe('ErrorCodes - 错误码定义', () => {
@@ -13,7 +13,7 @@ describe('错误码模块测试', () => {
       expect(typeof ErrorCodes.SYSTEM.INTERNAL_ERROR.message).toBe('string')
     })
 
-    test('所有错误码都是6位数字', () => {
+    test('所有错误码都是7位数字', () => {
       const allCodes = [
         ...Object.values(ErrorCodes.SYSTEM),
         ...Object.values(ErrorCodes.AUTH),
@@ -26,15 +26,20 @@ describe('错误码模块测试', () => {
       ]
 
       allCodes.forEach(error => {
-        expect(error.code).toMatch(/^\d{7}$/)
+        expect(error.code).toBeGreaterThanOrEqual(1000000)
+        expect(error.code).toBeLessThanOrEqual(9999999)
       })
     })
 
     test('模块错误码前缀正确', () => {
-      expect(ErrorCodes.BOX.NOT_FOUND.code).toMatch(/^3\d{6}$/)
-      expect(ErrorCodes.ORDER.NOT_FOUND.code).toMatch(/^4\d{6}$/)
-      expect(ErrorCodes.DELIVERY.NOT_FOUND.code).toMatch(/^5\d{6}$/)
-      expect(ErrorCodes.USER.NOT_FOUND.code).toMatch(/^6\d{6}$/)
+      expect(ErrorCodes.BOX.NOT_FOUND.code).toBeGreaterThanOrEqual(3000000)
+      expect(ErrorCodes.BOX.NOT_FOUND.code).toBeLessThanOrEqual(3999999)
+      expect(ErrorCodes.ORDER.NOT_FOUND.code).toBeGreaterThanOrEqual(4000000)
+      expect(ErrorCodes.ORDER.NOT_FOUND.code).toBeLessThanOrEqual(4999999)
+      expect(ErrorCodes.DELIVERY.NOT_FOUND.code).toBeGreaterThanOrEqual(5000000)
+      expect(ErrorCodes.DELIVERY.NOT_FOUND.code).toBeLessThanOrEqual(5999999)
+      expect(ErrorCodes.USER.NOT_FOUND.code).toBeGreaterThanOrEqual(6000000)
+      expect(ErrorCodes.USER.NOT_FOUND.code).toBeLessThanOrEqual(6999999)
     })
   })
 

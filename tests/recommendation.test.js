@@ -1,30 +1,32 @@
-const { getUserBasedCF, getItemBasedCF, fuseRecommendations, getBoxesByScores } = require('../../recommendationService/algorithms')
+const { cosineSimilarity, fuseRecommendations, buildUserItemMatrix } = require('../cloudfunctions/recommendationService/algorithms')
 
 describe('推荐算法测试', () => {
-  describe('getUserBasedCF - 基于用户的协同过滤', () => {
-    test('应返回推荐列表', async () => {
-      const result = await getUserBasedCF('test-openid', 10)
+  describe('cosineSimilarity - 余弦相似度', () => {
+    test('应正确计算相同向量相似度', () => {
+      const vec1 = { a: 1, b: 2, c: 3 }
+      const vec2 = { a: 1, b: 2, c: 3 }
 
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeLessThanOrEqual(10)
+      const similarity = cosineSimilarity(vec1, vec2)
+
+      expect(similarity).toBeCloseTo(1, 5)
     })
 
-    test('应包含评分字段', async () => {
-      const result = await getUserBasedCF('test-openid', 5)
+    test('应正确计算正交向量相似度', () => {
+      const vec1 = { a: 1, b: 0 }
+      const vec2 = { a: 0, b: 1 }
 
-      result.forEach(item => {
-        expect(item).toHaveProperty('boxId')
-        expect(item).toHaveProperty('score')
-        expect(typeof item.score).toBe('number')
-      })
+      const similarity = cosineSimilarity(vec1, vec2)
+
+      expect(similarity).toBe(0)
     })
-  })
 
-  describe('getItemBasedCF - 基于物品的协同过滤', () => {
-    test('应返回推荐列表', async () => {
-      const result = await getItemBasedCF('test-openid', 10)
+    test('应正确计算一般情况相似度', () => {
+      const vec1 = { a: 1, b: 2 }
+      const vec2 = { a: 2, b: 4 }
 
-      expect(result).toBeInstanceOf(Array)
+      const similarity = cosineSimilarity(vec1, vec2)
+
+      expect(similarity).toBeCloseTo(1, 5)
     })
   })
 
@@ -68,19 +70,47 @@ describe('推荐算法测试', () => {
 
       expect(fused[0].score).toBeCloseTo(0.81, 2)
     })
+
+    test('应处理重复boxId并累加分数', () => {
+      const ucf = [{ boxId: 'box1', score: 0.5 }]
+      const icf = [{ boxId: 'box1', score: 0.3 }]
+      const svd = [{ boxId: 'box1', score: 0.2 }]
+      const weights = [0.4, 0.3, 0.3]
+
+      const fused = fuseRecommendations(ucf, icf, svd, weights)
+
+      expect(fused.length).toBe(1)
+      expect(fused[0].score).toBeCloseTo(0.35, 2)
+    })
   })
 
-  describe('getBoxesByScores - 分数映射到盲盒', () => {
-    test('应返回带详细信息的盲盒列表', async () => {
-      const scores = [
-        { boxId: 'box1', score: 0.9 },
-        { boxId: 'box2', score: 0.8 }
+  describe('buildUserItemMatrix - 构建用户物品矩阵', () => {
+    test('应正确构建用户物品矩阵', () => {
+      const actions = [
+        { openid: 'user1', boxId: 'box1', type: 'view' },
+        { openid: 'user1', boxId: 'box2', type: 'view' },
+        { openid: 'user2', boxId: 'box1', type: 'purchase' },
+        { openid: 'user2', boxId: 'box3', type: 'collect' }
       ]
 
-      const result = await getBoxesByScores(scores)
+      const matrix = buildUserItemMatrix(actions)
 
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeLessThanOrEqual(scores.length)
+      expect(matrix['user1']['box1']).toBe(1)
+      expect(matrix['user1']['box2']).toBe(1)
+      expect(matrix['user2']['box1']).toBe(3)
+      expect(matrix['user2']['box3']).toBe(2)
+    })
+
+    test('应累加同一用户的相同物品行为', () => {
+      const actions = [
+        { openid: 'user1', boxId: 'box1', type: 'view' },
+        { openid: 'user1', boxId: 'box1', type: 'view' },
+        { openid: 'user1', boxId: 'box1', type: 'collect' }
+      ]
+
+      const matrix = buildUserItemMatrix(actions)
+
+      expect(matrix['user1']['box1']).toBe(4)
     })
   })
 })

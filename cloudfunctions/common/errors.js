@@ -194,7 +194,7 @@ const Validators = {
   },
 
   isPositiveNumber(value, fieldName) {
-    if (!value || isNaN(Number(value)) || Number(value) < 0) {
+    if (value === null || value === undefined || isNaN(Number(value)) || Number(value) < 0) {
       throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须是大于等于0的数字` }]);
     }
   },
