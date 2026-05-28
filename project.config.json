@@ -1,37 +1,101 @@
 {
+  "miniprogramRoot": "./",
+  "projectname": "campus-blindbox",
+  "description": "校园盲盒即时配送平台",
+  "appid": "YOUR_APPID",
   "setting": {
+    "urlCheck": false,
     "es6": true,
-    "postcss": true,
-    "minified": true,
-    "uglifyFileName": false,
     "enhance": true,
-    "packNpmRelationList": [],
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": true,
+    "coverView": true,
+    "nodeModules": true,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": false,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
     },
-    "useCompilerPlugins": false,
-    "minifyWXML": true,
-    "compileWorklet": false,
-    "uploadWithSourceMap": true,
+    "bundle": false,
+    "useIsolateContext": true,
+    "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
+    "packNpmRelationList": [],
     "minifyWXSS": true,
-    "localPlugins": false,
     "disableUseStrict": false,
-    "condition": false,
-    "swc": false,
-    "disableSWC": true
+    "minifyWXML": true,
+    "showES6CompileOption": false,
+    "useCompilerPlugins": false
   },
   "compileType": "miniprogram",
-  "simulatorPluginLibVersion": {},
-  "packOptions": {
-    "ignore": [],
-    "include": []
+  "libVersion": "3.3.5",
+  "srcMiniprogramRoot": "miniprogram/",
+  "condition": {
+    "search": {
+      "list": []
+    },
+    "conversation": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "plugin": {
+      "list": []
+    },
+    "gamePlugin": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": "1011"
+        },
+        {
+          "name": "pages/market/market",
+          "pathName": "pages/market/market",
+          "query": "",
+          "scene": "1012"
+        },
+        {
+          "name": "pages/order-list/order-list",
+          "pathName": "pages/order-list/order-list",
+          "query": "",
+          "scene": "1013"
+        },
+        {
+          "name": "pages/profile/profile",
+          "pathName": "pages/profile/profile",
+          "query": "",
+          "scene": "1014"
+        }
+      ]
+    }
   },
-  "appid": "wx4846e890eee295a4",
-  "editorSetting": {},
-  "libVersion": "3.14.3",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2,
+    "viewIndent": 2,
+    "viewTabSize": 2,
+    "formatOnPaste": true,
+    "formatOnSave": true
+  },
   "cloudfunctionRoot": "cloudfunctions/",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

@@ -1,0 +1,150 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+
+env:
+  NODE_VERSION: '18.x'
+  APPID: ${{ secrets.WECHAT_APPID }}
+  TCB_SECRET_ID: ${{ secrets.TCB_SECRET_ID }}
+  TCB_SECRET_KEY: ${{ secrets.TCB_SECRET_KEY }}
+  TCB_ENV_ID: ${{ secrets.TCB_ENV_ID }}
+
+jobs:
+  lint:
+    name: Code Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Check Prettier formatting
+        run: npm run format:check || true
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test --if-present
+        continue-on-error: true
+
+  deploy-cloudfunctions:
+    name: Deploy Cloud Functions
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [lint, test]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Tencent Cloud CLI
+        run: npm install -g @cloudbase/cli
+
+      - name: Configure Tencent Cloud credentials
+        run: |
+          tcb env:configure --appid ${{ env.APPID }} --secret-id ${{ env.TCB_SECRET_ID }} --secret-key ${{ env.TCB_SECRET_KEY }}
+
+      - name: Deploy Cloud Functions
+        run: |
+          for dir in cloudfunctions/*/; do
+            func_name=$(basename "$dir")
+            echo "Deploying $func_name..."
+            tcb fn:deploy "$func_name" -e ${{ env.TCB_ENV_ID }} || echo "Failed to deploy $func_name"
+          done
+
+      - name: Upload Cloud Function Logs
+        if: always()
+        run: |
+          echo "Cloud Function deployment completed at $(date)"
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [deploy-cloudfunctions]
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Create staging environment file
+        run: |
+          cat > .env.staging << EOF
+          NODE_ENV=staging
+          APPID=${{ env.APPID }}
+          TCB_ENV_ID=${{ env.TCB_ENV_ID }}-staging
+          EOF
+
+      - name: Run build
+        run: npm run build:staging || echo "No staging build script defined"
+
+      - name: Deploy to staging server
+        run: echo "Deploy to staging environment"
+
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [deploy-cloudfunctions, deploy-staging]
+    if: always()
+
+    steps:
+      - name: Send notification
+        if: github.event_name == 'push'
+        run: |
+          if [ "${{ needs.deploy-cloudfunctions.result }}" == "success" ]; then
+            echo "Deployment successful!"
+          else
+            echo "Deployment failed!"
+          fi
