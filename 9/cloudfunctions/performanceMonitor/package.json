@@ -1,0 +1,20 @@
+{
+  "name": "performanceMonitor",
+  "version": "1.0.0",
+  "description": "性能监控云函数",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "performance",
+    "monitoring",
+    "cloudfunction",
+    "wechat"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

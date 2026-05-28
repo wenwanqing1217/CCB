@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "订单消息",
+  "usingComponents": {},
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#020208"
+}

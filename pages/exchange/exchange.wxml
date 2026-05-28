@@ -1,0 +1,120 @@
+<view class="container">
+  <!-- 顶部搜索和标签 -->
+  <view class="top-section">
+    <view class="search-bar">
+      <view class="search-input">
+        <input placeholder="搜索物品..." bindinput="onSearchInput" bindconfirm="onSearchConfirm" />
+        <view class="search-btn" bindtap="onSearchConfirm">
+          <text class="search-btn-text">搜索</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="tab-bar">
+      <view class="tab-item {{activeTab === 'all' ? 'active' : ''}}" bindtap="setTab" data-tab="all">全部</view>
+      <view class="tab-item {{activeTab === 'want' ? 'active' : ''}}" bindtap="setTab" data-tab="want">求换</view>
+      <view class="tab-item {{activeTab === 'have' ? 'active' : ''}}" bindtap="setTab" data-tab="have">可换</view>
+    </view>
+
+    <view class="hint-section">
+      <view class="hint-item">
+        <view class="hint-icon left">👈</view>
+        <text class="hint-text">左滑不换</text>
+      </view>
+      <view class="hint-divider"></view>
+      <view class="hint-item">
+        <view class="hint-icon right">👉</view>
+        <text class="hint-text">右滑交换</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 卡片区域 -->
+  <view class="card-section" wx:if="{{currentIndex < filteredItems.length}}">
+    <view class="swipe-container">
+      <view
+        class="card-wrapper"
+        wx:for="{{filteredItems}}"
+        wx:key="_id"
+        wx:if="{{index >= currentIndex && index < currentIndex + 2}}"
+        style="z-index: {{2 - (index - currentIndex)}}; transform: translate({{index === currentIndex ? cardTranslateX : 0}}rpx, {{(index - currentIndex) * 16}}rpx) rotate({{index === currentIndex ? cardRotate : 0}}deg) scale({{1 - (index - currentIndex) * 0.04}});"
+        catchtouchstart="onTouchStart"
+        catchtouchmove="onTouchMove"
+        catchtouchend="onTouchEnd"
+        data-index="{{index}}"
+      >
+        <!-- 滑动指示器 -->
+        <view class="like-indicator" wx:if="{{index === currentIndex && showLikeIndicator}}">交换</view>
+        <view class="nope-indicator" wx:if="{{index === currentIndex && showNopeIndicator}}">不换</view>
+        <view class="swipe-card">
+          <view class="card-top">
+            <view class="user-info">
+              <image class="user-avatar" src="{{item.userAvatar}}" mode="aspectFill" />
+              <view class="user-detail">
+                <text class="user-name">{{item.userName}}</text>
+                <text class="user-school">{{item.school}}</text>
+              </view>
+            </view>
+            <text class="card-time">{{item.createTime}}</text>
+          </view>
+
+          <view class="exchange-row">
+            <view class="item-box want">
+              <view class="box-tag">求</view>
+              <text class="item-text">{{item.wantItem}}</text>
+            </view>
+            <view class="exchange-icon">⇄</view>
+            <view class="item-box have">
+              <view class="box-tag">换</view>
+              <text class="item-text">{{item.haveItem}}</text>
+            </view>
+          </view>
+
+          <view class="card-desc" wx:if="{{item.description}}">{{item.description}}</view>
+
+          <view class="card-imgs" wx:if="{{item.images && item.images.length > 0}}">
+            <image class="card-img" wx:for="{{item.images}}" wx:for-item="img" wx:key="index" wx:if="{{index < 3}}" src="{{img}}" mode="aspectFill" />
+          </view>
+
+          <view class="card-bottom">
+            <view class="action-btn skip" catchtap="onSkip" data-index="{{index}}">
+              <view class="btn-icon">✕</view>
+              <text class="btn-text">不换</text>
+            </view>
+            <view class="action-btn chat" catchtap="onChat" data-user="{{item.userId}}">
+              <view class="btn-icon">💬</view>
+              <text class="btn-text">私信</text>
+            </view>
+            <view class="action-btn like" catchtap="onLike" data-index="{{index}}">
+              <view class="btn-icon">❤</view>
+              <text class="btn-text">交换</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 发布按钮 -->
+    <view class="action-section">
+      <view class="publish-button" bindtap="navigateToPublish">
+        <text class="button-text">发布求换</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{currentIndex >= filteredItems.length && filteredItems.length > 0}}">
+    <text class="empty-text">暂时没有更多了</text>
+    <view class="refresh-btn" bindtap="onRefresh">换一批</view>
+    <view class="publish-button" bindtap="navigateToPublish">
+      <text class="button-text">发布求换</text>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{filteredItems.length === 0}}">
+    <text class="empty-text">没有找到相关物品</text>
+    <view class="publish-button" bindtap="navigateToPublish">
+      <text class="button-text">发布求换</text>
+    </view>
+  </view>
+</view>

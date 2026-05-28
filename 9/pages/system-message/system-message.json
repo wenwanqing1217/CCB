@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "系统通知",
+  "navigationBarBackgroundColor": "#020208",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#020208",
+  "enablePullDownRefresh": true
+}

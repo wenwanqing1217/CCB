@@ -1,0 +1,58 @@
+@startuml 01-architecture
+!theme plain
+title 校园盲盒即时配送平台系统架构图
+
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+
+package "客户端层" {
+  [微信小程序\n(CampusBlindBox)] as App
+}
+
+package "云开发层" {
+  package "云函数" {
+    [userService] as US
+    [boxService] as BS
+    [orderService] as OS
+    [deliveryService] as DS
+    [recommendationService] as RS
+    [coinService] as CS
+  }
+  
+  package "云数据库" {
+    database "users\n用户集合" as DB1
+    database "boxes\n盲盒集合" as DB2
+    database "orders\n订单集合" as DB3
+    database "deliveries\n配送集合" as DB4
+    database "riders\n骑手集合" as DB5
+    database "coinLogs\n积分日志集合" as DB6
+  }
+  
+  package "云存储" {
+    [商品图片存储] as Storage
+  }
+}
+
+package "算法层" {
+  [顺路匹配算法\n(曼哈顿距离)] as Algo1
+  [协同过滤推荐\n(Collaborative Filtering)] as Algo2
+}
+
+App --> US : 登录注册
+App --> BS : 盲盒操作
+App --> OS : 订单操作
+App --> DS : 配送操作
+App --> RS : 推荐请求
+App --> CS : 积分操作
+
+US --> DB1
+BS --> DB2
+OS --> DB3
+DS --> DB4
+DS --> DB5
+DS --> Algo1
+RS --> Algo2
+CS --> DB6
+BS --> Storage
+
+@enduml

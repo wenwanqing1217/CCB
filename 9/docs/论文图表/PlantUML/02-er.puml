@@ -1,0 +1,92 @@
+@startuml 02-er
+!theme plain
+title 校园盲盒即时配送平台ER图
+
+skinparam backgroundColor #FFFFFF
+
+entity "users\n用户" as users {
+  * openid : string <<PK>>
+  --
+  nickName : string
+  avatarUrl : string
+  phone : string
+  campusInfo : object
+  blindBoxCoins : number
+  vipStatus : boolean
+  createTime : datetime
+}
+
+entity "boxes\n盲盒" as boxes {
+  * _id : string <<PK>>
+  --
+  sellerOpenid : string <<FK>>
+  title : string
+  type : string
+  mode : string
+  price : number
+  originalPrice : number
+  images : array
+  description : string
+  category : string
+  status : string
+  location : object
+  createTime : datetime
+}
+
+entity "orders\n订单" as orders {
+  * _id : string <<PK>>
+  --
+  boxId : string <<FK>>
+  buyerOpenid : string <<FK>>
+  sellerOpenid : string <<FK>>
+  status : string
+  price : number
+  deliveryAddress : string
+  deliveryLocation : object
+  createTime : datetime
+  updateTime : datetime
+}
+
+entity "deliveries\n配送" as deliveries {
+  * _id : string <<PK>>
+  --
+  orderId : string <<FK>>
+  riderOpenid : string <<FK>>
+  status : string
+  pickupTime : datetime
+  deliveryTime : datetime
+  routeInfo : object
+  createTime : datetime
+}
+
+entity "riders\n骑手" as riders {
+  * openid : string <<PK>>
+  --
+  nickName : string
+  avatarUrl : string
+  phone : string
+  location : object
+  status : string
+  currentOrders : array
+  rating : number
+  createTime : datetime
+}
+
+entity "coinLogs\n积分日志" as coinLogs {
+  * _id : string <<PK>>
+  --
+  openid : string <<FK>>
+  type : string
+  amount : number
+  balance : number
+  description : string
+  createTime : datetime
+}
+
+users "1" -- "0..*" boxes : 发布
+users "1" -- "0..*" orders : 购买
+orders "1" -- "1" boxes : 包含
+orders "1" -- "0..1" deliveries : 配送
+users "1" -- "0..*" coinLogs : 积分记录
+
+@enduml

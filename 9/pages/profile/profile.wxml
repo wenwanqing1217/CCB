@@ -1,0 +1,256 @@
+<view class="container">
+  <view class="profile-header">
+    <view class="header-bg"></view>
+    <view class="user-info" wx:if="{{isLoggedIn}}">
+      <view class="avatar-wrap">
+        <image class="user-avatar" src="{{userInfo.avatar}}" />
+        <view class="vip-badge {{vipLevel}}" wx:if="{{vipLevel > 0}}">
+          <text>VIP{{vipLevel}}</text>
+        </view>
+      </view>
+      <view class="user-detail">
+        <view class="name-row">
+          <text class="user-name">{{userInfo.name}}</text>
+        </view>
+        <view class="tags-row">
+          <view class="user-tag" wx:if="{{isCertified}}">
+            <text class="tag-icon">√</text>
+            <text>已认证</text>
+          </view>
+          <view class="user-tag rider" wx:if="{{isRider}}">
+            <text>骑手</text>
+          </view>
+          <view class="user-tag merchant" wx:if="{{isMerchant}}">
+            <text class="tag-icon">商</text>
+            <text>商家</text>
+          </view>
+          <view class="user-tag admin" wx:if="{{isAdmin}}">
+            <text class="tag-icon">管</text>
+            <text>管理员</text>
+          </view>
+        </view>
+        <view class="id-row">
+          <text class="user-id">ID: {{userInfo.id}}</text>
+        </view>
+        <view class="campus-info" wx:if="{{campusInfo.college && campusInfo.dorm}}">
+          <text class="campus-text">{{campusInfo.college}} · {{campusInfo.dorm}}</text>
+        </view>
+      </view>
+      <view class="edit-btn" bindtap="editProfile">
+        <text>编辑资料</text>
+      </view>
+    </view>
+    <view class="login-section" wx:else>
+      <view class="login-content">
+        <view class="login-avatar">
+          <text>?</text>
+        </view>
+        <view class="login-info">
+          <text class="login-title">欢迎使用CBB</text>
+          <text class="login-desc">登录后享受更多功能</text>
+        </view>
+      </view>
+      <view class="login-btn" bindtap="doLogin">
+        <text>立即登录</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="vip-card" wx:if="{{isLoggedIn && vipLevel > 0}}">
+    <view class="vip-info">
+      <view class="vip-title">
+        <text class="vip-badge-text">VIP{{vipLevel}}</text>
+        <text>{{vipName}}</text>
+      </view>
+      <text class="vip-desc">{{vipDesc}}</text>
+    </view>
+    <view class="vip-progress">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{vipProgress}}%"></view>
+      </view>
+      <text class="progress-text">距下一等级还需{{vipNeedScore}}活跃度</text>
+    </view>
+  </view>
+
+  <view class="stats-card">
+    <view class="stats-item">
+      <text class="stats-num">{{stats.publish}}</text>
+      <text class="stats-label">发布</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-num">{{stats.sold}}</text>
+      <text class="stats-label">售出</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-num">{{stats.bought}}</text>
+      <text class="stats-label">购买</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-num">{{stats.score}}</text>
+      <text class="stats-label">活跃度</text>
+    </view>
+  </view>
+
+  <view class="coins-card" wx:if="{{isLoggedIn}}">
+    <view class="coins-info" bindtap="navigateToCoinLog">
+      <view class="coins-icon">
+        <text>🎁</text>
+      </view>
+      <view class="coins-detail">
+        <text class="coins-title">盲盒积分</text>
+        <text class="coins-num">{{blindBoxCoins}}</text>
+      </view>
+      <view class="coins-arrow">
+        <text>›</text>
+      </view>
+    </view>
+    <view class="coins-actions">
+      <view class="sign-btn" bindtap="doSignIn" wx:if="{{!hasSignedIn}}">
+        <text>签到领积分</text>
+      </view>
+      <view class="sign-btn signed" wx:else>
+        <text>今日已签到</text>
+      </view>
+      <view class="goto-btn" bindtap="navigateToBlindBox">
+        <text>去摇一摇</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="rider-card" wx:if="{{isRider}}">
+    <view class="rider-info">
+      <view class="rider-badge">
+        <text>🛵</text>
+      </view>
+      <view class="rider-detail">
+        <text class="rider-title">校园骑手</text>
+        <text class="rider-level">Lv.{{riderLevel}} · 今日{{todayEarnings}}元</text>
+      </view>
+    </view>
+    <view class="rider-action" bindtap="navigateToRider">
+      <text>接单</text>
+    </view>
+  </view>
+
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToMyPublish">
+        <view class="menu-icon">
+          <text>发</text>
+        </view>
+        <text class="menu-text">我的发布</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToOrder">
+        <view class="menu-icon">
+          <text>单</text>
+        </view>
+        <text class="menu-text">我的订单</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToFavorite">
+        <view class="menu-icon">
+          <text>藏</text>
+        </view>
+        <text class="menu-text">我的收藏</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToAddress">
+        <view class="menu-icon">
+          <text>址</text>
+        </view>
+        <text class="menu-text">收货地址</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToWallet">
+        <view class="menu-icon">
+          <text>钱</text>
+        </view>
+        <text class="menu-text">我的钱包</text>
+        <text class="menu-arrow">›</text>
+        <text class="menu-badge" wx:if="{{walletBalance > 0}}">¥{{walletBalance}}</text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToCertification">
+        <view class="menu-icon">
+          <text>证</text>
+        </view>
+        <text class="menu-text">学生认证</text>
+        <text class="menu-arrow">›</text>
+        <text class="menu-status {{certStatus}}">{{certStatusText}}</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToRider" wx:if="{{!isRider}}">
+        <view class="menu-icon rider">
+          <text>🛵</text>
+        </view>
+        <text class="menu-text">成为骑手</text>
+        <text class="menu-arrow">›</text>
+        <text class="menu-tag">赚钱</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToMerchantApply" wx:if="{{!isMerchant}}">
+        <view class="menu-icon merchant">
+          <text>商</text>
+        </view>
+        <text class="menu-text">商家入驻</text>
+        <text class="menu-arrow">›</text>
+        <text class="menu-tag">开店</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToMerchant" wx:if="{{isMerchant}}">
+        <view class="menu-icon merchant">
+          <text>商</text>
+        </view>
+        <text class="menu-text">商家中心</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="menu-group" wx:if="{{isAdmin}}">
+      <view class="menu-item" bindtap="navigateToAdmin">
+        <view class="menu-icon admin">
+          <text>管</text>
+        </view>
+        <text class="menu-text">管理后台</text>
+        <text class="menu-arrow">›</text>
+        <text class="menu-tag admin">权限</text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToAI">
+        <view class="menu-icon ai">
+          <text>AI</text>
+        </view>
+        <text class="menu-text">AI助手</text>
+        <text class="menu-arrow">›</text>
+        <text class="menu-tag new">智能</text>
+      </view>
+      <view class="menu-item" bindtap="navigateToMessage">
+        <view class="menu-icon">
+          <text>信</text>
+        </view>
+        <text class="menu-text">消息通知</text>
+        <text class="menu-arrow">›</text>
+        <view class="menu-dot" wx:if="{{unreadCount > 0}}"></view>
+      </view>
+      <view class="menu-item" bindtap="showAbout">
+        <view class="menu-icon">
+          <text>关</text>
+        </view>
+        <text class="menu-text">关于CBB</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="version">
+    <text>CBB校园盲盒 v1.0.0</text>
+  </view>
+</view>

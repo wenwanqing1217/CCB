@@ -1,0 +1,51 @@
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">积分记录</text>
+    <view class="header-right"></view>
+  </view>
+
+  <!-- 积分统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-content">
+      <text class="stats-icon">🎁</text>
+      <view class="stats-info">
+        <text class="stats-label">我的积分</text>
+        <text class="stats-value">{{totalCoins || '---'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
+  <view class="log-list">
+    <view class="list-header">
+      <text class="list-title">积分明细</text>
+    </view>
+
+    <view class="log-card" wx:for="{{coinLogs}}" wx:key="_id">
+      <view class="log-icon" style="background: {{getTypeColor(item.type)}}20">
+        <text>{{getTypeIcon(item.type)}}</text>
+      </view>
+      <view class="log-info">
+        <text class="log-desc">{{item.description}}</text>
+        <text class="log-time">{{formatTime(item.createdAt)}}</text>
+      </view>
+      <view class="log-amount" style="color: {{item.amount > 0 ? '#22c55e' : '#ef4444'}}">
+        {{item.amount > 0 ? '+' : ''}}{{item.amount}}
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{!isLoading && coinLogs.length === 0}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无积分记录</text>
+      <text class="empty-hint">签到、分享、交易可获得积分</text>
+    </view>
+
+    <view class="loading-more" wx:if="{{isLoading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>

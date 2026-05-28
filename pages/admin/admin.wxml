@@ -1,0 +1,132 @@
+<view class="container">
+  <view class="page-header">
+    <text class="title">管理后台</text>
+  </view>
+
+  <scroll-view class="nav" scroll-x="true" show-scrollbar="{{false}}">
+    <view class="nav-item {{activeTab === 'users' ? 'active' : ''}}" bindtap="setTab" data-tab="users">用户</view>
+    <view class="nav-item {{activeTab === 'boxes' ? 'active' : ''}}" bindtap="setTab" data-tab="boxes">盲盒</view>
+    <view class="nav-item {{activeTab === 'merchants' ? 'active' : ''}}" bindtap="setTab" data-tab="merchants">商家审核</view>
+    <view class="nav-item {{activeTab === 'donations' ? 'active' : ''}}" bindtap="setTab" data-tab="donations">捐赠</view>
+    <view class="nav-item {{activeTab === 'stats' ? 'active' : ''}}" bindtap="setTab" data-tab="stats">统计</view>
+  </scroll-view>
+
+  <view wx:if="{{activeTab === 'users'}}">
+    <view class="user-list">
+      <view class="user-card" wx:for="{{users}}" wx:key="_id" bindtap="navigateToUserDetail" data-id="{{item._id}}">
+        <view class="user-avatar">{{item.nickName[0]}}</view>
+        <view class="user-info">
+          <text class="user-nickname">{{item.nickName}}</text>
+          <text class="user-role">{{item.role === 'merchant' ? '商家' : '学生'}}</text>
+          <text class="user-dorm">{{item.dorm}}</text>
+        </view>
+        <view class="user-actions" wx:if="{{item.status === 'active'}}">
+          <button class="action-btn danger" catchtap="banUser" data-id="{{item._id}}">封禁</button>
+        </view>
+        <view class="user-actions" wx:else>
+          <button class="action-btn primary" catchtap="unbanUser" data-id="{{item._id}}">解封</button>
+        </view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{users.length === 0}}">
+      <text>暂无用户</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'boxes'}}">
+    <view class="box-list">
+      <view class="box-card" wx:for="{{boxes}}" wx:key="_id" bindtap="navigateToBoxDetail" data-id="{{item._id}}">
+        <text class="box-title">{{item.title}}</text>
+        <text class="box-price">¥{{item.price}}</text>
+        <text class="box-status">{{item.status === 'active' ? '在售' : '已售'}}</text>
+        <view class="box-actions">
+          <button class="action-btn primary" catchtap="approveBox" data-id="{{item._id}}">通过</button>
+          <button class="action-btn secondary" catchtap="removeBox" data-id="{{item._id}}">删除</button>
+        </view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{boxes.length === 0}}">
+      <text>暂无盲盒</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'merchants'}}">
+    <view class="merchant-list">
+      <view class="merchant-card" wx:for="{{merchantApplies}}" wx:key="_id">
+        <view class="merchant-header">
+          <view class="merchant-info">
+            <text class="merchant-name">{{item.shopName}}</text>
+            <text class="merchant-category">{{item.category}}</text>
+          </view>
+          <view class="merchant-status {{item.status}}">
+            <text>{{item.status === 'pending' ? '待审核' : item.status === 'approved' ? '已通过' : '已拒绝'}}</text>
+          </view>
+        </view>
+        <view class="merchant-detail">
+          <text class="detail-item">联系人: {{item.contactName}}</text>
+          <text class="detail-item">电话: {{item.contactPhone}}</text>
+          <text class="detail-item">申请时间: {{item.applyTime}}</text>
+        </view>
+        <view class="merchant-actions" wx:if="{{item.status === 'pending'}}">
+          <button class="action-btn info" catchtap="viewApplyDetail" data-id="{{item._id}}">详情</button>
+          <button class="action-btn primary" catchtap="approveMerchant" data-id="{{item._id}}">通过</button>
+          <button class="action-btn danger" catchtap="showRejectInput" data-id="{{item._id}}">拒绝</button>
+        </view>
+        <view class="merchant-actions" wx:elif="{{item.status === 'rejected'}}">
+          <text class="reject-reason">拒绝原因: {{item.rejectReason}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{merchantApplies.length === 0}}">
+      <text>暂无商家申请</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'donations'}}">
+    <view class="donation-list">
+      <view class="donation-card" wx:for="{{donations}}" wx:key="_id">
+        <text class="donation-box">{{item.title}}</text>
+        <text class="donation-time">{{item.time}}</text>
+        <text class="donation-status">{{item.status === 'completed' ? '已完成' : '待处理'}}</text>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{donations.length === 0}}">
+      <text>暂无捐赠记录</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'stats'}}">
+    <view class="stats-grid">
+      <view class="stats-item">
+        <text class="stats-label">总用户数</text>
+        <text class="stats-value">{{dashboardStats.totalUsers}}</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-label">总盲盒数</text>
+        <text class="stats-value">{{dashboardStats.totalBoxes}}</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-label">总订单数</text>
+        <text class="stats-value">{{dashboardStats.totalOrders}}</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-label">捐赠数</text>
+        <text class="stats-value">{{dashboardStats.totalDonations}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showRejectModal}}" bindtap="hideRejectModal"></view>
+  <view class="modal-content" wx:if="{{showRejectModal}}">
+    <view class="modal-header">
+      <text class="modal-title">拒绝原因</text>
+    </view>
+    <view class="modal-body">
+      <textarea class="reject-input" placeholder="请输入拒绝原因" value="{{rejectReason}}" bindinput="onRejectReasonInput" maxlength="100" />
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn cancel" bindtap="hideRejectModal">取消</button>
+      <button class="modal-btn confirm" bindtap="submitReject">确认</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,46 @@
+<view class="container">
+  <view class="header">
+    <text class="title">我的捐赠</text>
+  </view>
+
+  <view class="stats-row">
+    <view class="stat-item">
+      <text class="stat-num">{{stats.total}}</text>
+      <text class="stat-label">总计</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.completed}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.pending}}</text>
+      <text class="stat-label">进行中</text>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'sent' ? 'active' : ''}}" bindtap="setTab" data-tab="sent">我捐出的</view>
+    <view class="tab-item {{activeTab === 'received' ? 'active' : ''}}" bindtap="setTab" data-tab="received">我收到的</view>
+  </view>
+
+  <view wx:if="{{donations.length > 0}}">
+    <view class="donation-card" wx:for="{{donations}}" wx:key="_id" bindtap="navigateToDetail" data-id="{{item._id}}">
+      <view class="card-header">
+        <text class="card-title">{{item.title}}</text>
+        <text class="card-status">{{item.statusText}}</text>
+      </view>
+      <view class="card-content">
+        <image class="card-img" src="{{item.images[0]}}" mode="aspectFill" />
+        <view class="card-info">
+          <text class="card-text">{{item.description}}</text>
+          <text class="card-text">来自: {{item.from_dorm}}</text>
+          <text class="card-time">{{item.createTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <text>暂无捐赠记录</text>
+  </view>
+</view>

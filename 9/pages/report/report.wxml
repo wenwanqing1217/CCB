@@ -1,0 +1,47 @@
+<view class="container">
+  <view class="header">
+    <text class="title">举报</text>
+    <text class="subtitle">维护平台秩序，共建良好环境</text>
+  </view>
+
+  <view class="report-target">
+    <text class="target-label">举报对象</text>
+    <view class="target-info">
+      <image class="target-img" src="{{targetImage}}" mode="aspectFill" />
+      <text class="target-title">{{targetTitle}}</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="section-title">举报类型</text>
+    <view class="type-list">
+      <view class="type-item {{activeType === item.value ? 'active' : ''}}" wx:for="{{reportTypes}}" wx:key="value" bindtap="setType" data-type="{{item.value}}">
+        <text class="type-icon">{{item.icon}}</text>
+        <text class="type-text">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="section-title">详细描述</text>
+    <textarea class="desc-input" placeholder="请详细描述举报原因..." value="{{description}}" bindinput="onDescInput" maxlength="500" />
+    <text class="desc-count">{{description.length}}/500</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">上传证据</text>
+    <view class="images-grid">
+      <view class="image-item" wx:for="{{images}}" wx:key="index">
+        <image class="preview-img" src="{{item}}" mode="aspectFill" />
+        <view class="remove-btn" catchtap="removeImage" data-index="{{index}}">×</view>
+      </view>
+      <view class="add-image" wx:if="{{images.length < 9}}" bindtap="addImage">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+    <text class="hint">请上传相关截图作为证据</text>
+  </view>
+
+  <view class="submit-btn {{canSubmit ? 'active' : ''}}" bindtap="submitReport">提交举报</view>
+</view>

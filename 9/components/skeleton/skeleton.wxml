@@ -1,0 +1,141 @@
+<view class="skeleton-overlay" wx:if="{{visible}}">
+  <view class="skeleton-container skeleton-theme-{{theme}}">
+    <!-- 默认首页骨架 -->
+    <template wx:if="{{type === 'default'}}">
+      <view class="skeleton-header">
+        <view class="skeleton-avatar {{animated ? 'skeleton-animate' : ''}}"></view>
+        <view class="skeleton-info">
+          <view class="skeleton-name {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-desc {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+        <view class="skeleton-coins {{animated ? 'skeleton-animate' : ''}}"></view>
+      </view>
+
+      <view class="skeleton-stats">
+        <view class="skeleton-stat-item" wx:for="{{3}}" wx:key="index">
+          <view class="skeleton-stat-value {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-stat-label {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+      </view>
+
+      <view class="skeleton-grab">
+        <view class="skeleton-grab-icon"></view>
+        <view class="skeleton-grab-content">
+          <view class="skeleton-grab-title {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-grab-desc {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+        <view class="skeleton-grab-btn"></view>
+      </view>
+
+      <view class="skeleton-section">
+        <view class="skeleton-section-header">
+          <view class="skeleton-section-title {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-section-more {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+        <scroll-view scroll-x class="skeleton-scroll">
+          <view class="skeleton-box-list">
+            <view class="skeleton-box-card" wx:for="{{4}}" wx:key="index">
+              <view class="skeleton-box-image {{animated ? 'skeleton-animate' : ''}}"></view>
+              <view class="skeleton-box-info">
+                <view class="skeleton-box-title {{animated ? 'skeleton-animate' : ''}}"></view>
+                <view class="skeleton-box-price {{animated ? 'skeleton-animate' : ''}}"></view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="skeleton-section">
+        <view class="skeleton-section-header">
+          <view class="skeleton-section-title {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-section-more {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+        <view class="skeleton-feed-list">
+          <view class="skeleton-feed-item" wx:for="{{3}}" wx:key="index">
+            <view class="skeleton-feed-avatar {{animated ? 'skeleton-animate' : ''}}"></view>
+            <view class="skeleton-feed-content">
+              <view class="skeleton-feed-header">
+                <view class="skeleton-feed-name {{animated ? 'skeleton-animate' : ''}}"></view>
+                <view class="skeleton-feed-time {{animated ? 'skeleton-animate' : ''}}"></view>
+              </view>
+              <view class="skeleton-feed-text {{animated ? 'skeleton-animate' : ''}}"></view>
+              <view class="skeleton-feed-image {{animated ? 'skeleton-animate' : ''}}"></view>
+              <view class="skeleton-feed-actions">
+                <view class="skeleton-feed-action {{animated ? 'skeleton-animate' : ''}}" wx:for="{{3}}" wx:key="index"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </template>
+
+    <!-- 列表页骨架 -->
+    <template wx:elif="{{type === 'list'}}">
+      <view class="skeleton-list-header">
+        <view class="skeleton-list-title {{animated ? 'skeleton-animate' : ''}}"></view>
+        <view class="skeleton-list-sub {{animated ? 'skeleton-animate' : ''}}"></view>
+      </view>
+      <view class="skeleton-search {{animated ? 'skeleton-animate' : ''}}"></view>
+      <view class="skeleton-filters">
+        <view class="skeleton-filter {{animated ? 'skeleton-animate' : ''}}" wx:for="{{2}}" wx:key="index"></view>
+      </view>
+      <view class="skeleton-list-items">
+        <view class="skeleton-list-item" wx:for="{{5}}" wx:key="index">
+          <view class="skeleton-list-image {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-list-content">
+            <view class="skeleton-list-item-title {{animated ? 'skeleton-animate' : ''}}"></view>
+            <view class="skeleton-list-item-desc {{animated ? 'skeleton-animate' : ''}}"></view>
+            <view class="skeleton-list-item-tags">
+              <view class="skeleton-list-item-tag {{animated ? 'skeleton-animate' : ''}}" wx:for="{{2}}" wx:key="index"></view>
+            </view>
+            <view class="skeleton-list-item-footer">
+              <view class="skeleton-list-item-stats">
+                <view class="skeleton-list-item-stat {{animated ? 'skeleton-animate' : ''}}" wx:for="{{3}}" wx:key="index"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </template>
+
+    <!-- 详情页骨架 -->
+    <template wx:elif="{{type === 'detail'}}">
+      <view class="skeleton-detail-image {{animated ? 'skeleton-animate' : ''}}"></view>
+      <view class="skeleton-detail-info">
+        <view class="skeleton-detail-title {{animated ? 'skeleton-animate' : ''}}"></view>
+        <view class="skeleton-detail-price {{animated ? 'skeleton-animate' : ''}}"></view>
+        <view class="skeleton-detail-desc {{animated ? 'skeleton-animate' : ''}}"></view>
+        <view class="skeleton-detail-tags">
+          <view class="skeleton-detail-tag {{animated ? 'skeleton-animate' : ''}}" wx:for="{{3}}" wx:key="index"></view>
+        </view>
+        <view class="skeleton-detail-section">
+          <view class="skeleton-detail-section-title {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-detail-section-content {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+      </view>
+    </template>
+
+    <!-- 个人中心骨架 -->
+    <template wx:elif="{{type === 'profile'}}">
+      <view class="skeleton-profile-header">
+        <view class="skeleton-profile-avatar {{animated ? 'skeleton-animate' : ''}}"></view>
+        <view class="skeleton-profile-info">
+          <view class="skeleton-profile-name {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-profile-desc {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+      </view>
+      <view class="skeleton-profile-stats">
+        <view class="skeleton-profile-stat" wx:for="{{4}}" wx:key="index">
+          <view class="skeleton-profile-stat-value {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-profile-stat-label {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+      </view>
+      <view class="skeleton-profile-menu">
+        <view class="skeleton-profile-menu-item" wx:for="{{6}}" wx:key="index">
+          <view class="skeleton-profile-menu-icon {{animated ? 'skeleton-animate' : ''}}"></view>
+          <view class="skeleton-profile-menu-text {{animated ? 'skeleton-animate' : ''}}"></view>
+        </view>
+      </view>
+    </template>
+  </view>
+</view>

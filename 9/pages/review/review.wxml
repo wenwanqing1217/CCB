@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="header">
+    <text class="title">评价订单</text>
+  </view>
+
+  <view class="order-card">
+    <image class="order-img" src="{{order.images[0]}}" mode="aspectFill" />
+    <view class="order-info">
+      <text class="order-title">{{order.title}}</text>
+      <text class="order-price">¥{{order.price}}</text>
+    </view>
+  </view>
+
+  <view class="rating-section">
+    <text class="section-title">商品评分</text>
+    <view class="rating-stars">
+      <view class="star-item {{index < rating ? 'active' : ''}}" wx:for="{{[1,2,3,4,5]}}" wx:key="index" bindtap="setRating" data-rating="{{index + 1}}">
+        <text>{{index < rating ? '★' : '☆'}}</text>
+      </view>
+    </view>
+    <text class="rating-text">{{ratingText}}</text>
+  </view>
+
+  <view class="tags-section">
+    <text class="section-title">标签评价</text>
+    <view class="tags-list">
+      <view class="tag-item {{item.selected ? 'active' : ''}}" wx:for="{{tags}}" wx:key="index" bindtap="toggleTag" data-index="{{index}}">
+        {{item.text}}
+      </view>
+    </view>
+  </view>
+
+  <view class="content-section">
+    <text class="section-title">评价内容</text>
+    <textarea class="content-input" placeholder="分享你的购买体验..." value="{{content}}" bindinput="onContentInput" maxlength="500" />
+    <text class="content-count">{{content.length}}/500</text>
+  </view>
+
+  <view class="images-section">
+    <text class="section-title">上传图片</text>
+    <view class="images-grid">
+      <view class="image-item" wx:for="{{images}}" wx:key="index">
+        <image class="preview-img" src="{{item}}" mode="aspectFill" />
+        <view class="remove-btn" catchtap="removeImage" data-index="{{index}}">×</view>
+      </view>
+      <view class="add-image" wx:if="{{images.length < 9}}" bindtap="addImage">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-btn {{canSubmit ? 'active' : ''}}" bindtap="submitReview">提交评价</view>
+</view>

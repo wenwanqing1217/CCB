@@ -1,0 +1,203 @@
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input">
+      <input placeholder="搜索商品、盲盒" bindinput="onSearchInput" bindconfirm="onSearchConfirm" />
+      <view class="search-btn" bindtap="onSearchConfirm">
+        <text class="search-btn-text">搜索</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类标签区域 -->
+  <view class="tabs-section">
+    <view class="tabs">
+      <view class="tab-item {{activeTab === 'all' ? 'active' : ''}}" bindtap="setTab" data-tab="all">全部盲盒</view>
+      <view class="tab-item {{activeTab === 'secondhand' ? 'active' : ''}}" bindtap="setTab" data-tab="secondhand">二手盲盒</view>
+      <view class="tab-item {{activeTab === 'creative' ? 'active' : ''}}" bindtap="setTab" data-tab="creative">校园文创</view>
+      <view class="tab-item {{activeTab === 'demand' ? 'active' : ''}}" bindtap="setTab" data-tab="demand">需求发布</view>
+      <view class="tab-item {{activeTab === 'supply' ? 'active' : ''}}" bindtap="setTab" data-tab="supply">供给发布</view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content-section">
+    <view class="lucky-section">
+    <view class="lucky-card">
+      <view class="lucky-info">
+        <text class="lucky-title">今日幸运盲盒</text>
+        <text class="lucky-desc">限时特价，限量抢购</text>
+      </view>
+      <view class="lucky-box" bindtap="openLuckyBox">
+        <view class="box-wrap {{isOpening ? 'shaking' : ''}}">
+          <text class="box-icon">?</text>
+        </view>
+        <text class="lucky-price">{{luckyBox.price}}积分</text>
+        <text class="lucky-original">原价{{luckyBox.originalPrice}}积分</text>
+      </view>
+      <view class="lucky-count">
+        <text>剩余 {{luckyBox.remaining}} 个</text>
+      </view>
+      <view class="lucky-coins">
+        <text class="coins-label">您的积分:</text>
+        <text class="coins-value">{{userCoins}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="filter-bar" wx:if="{{activeTab !== 'demand' && activeTab !== 'supply'}}">
+    <view class="filter-item {{sortType === 'default' ? 'active' : ''}}" bindtap="setSort" data-sort="default">默认在售</view>
+    <view class="filter-item {{sortType === 'sales' ? 'active' : ''}}" bindtap="setSort" data-sort="sales">销量</view>
+    <view class="filter-item {{sortType === 'price_asc' ? 'active' : ''}}" bindtap="setSort" data-sort="price_asc">价格升</view>
+    <view class="filter-item {{sortType === 'price_desc' ? 'active' : ''}}" bindtap="setSort" data-sort="price_desc">价格降</view>
+    <view class="filter-item {{sortType === 'newest' ? 'active' : ''}}" bindtap="setSort" data-sort="newest">按时间发布</view>
+  </view>
+
+  <view class="demand-section" wx:if="{{activeTab === 'demand'}}">
+    <view class="section-tip">
+      <text class="tip-icon">💡</text>
+      <text class="tip-text">发布你的需求，让校园里的同学帮你实现</text>
+    </view>
+    <view class="demand-list">
+      <view class="demand-card" wx:for="{{demandList}}" wx:key="_id" bindtap="navigateToDemandDetail" data-id="{{item._id}}">
+        <view class="demand-header">
+          <image class="demand-avatar" src="{{item.userAvatar}}" />
+          <view class="demand-user">
+            <text class="demand-name">{{item.userName}}</text>
+            <text class="demand-time">{{item.createTime}}</text>
+          </view>
+          <view class="demand-reward">
+            <text class="reward-label">悬赏</text>
+            <text class="reward-price">¥{{item.reward}}</text>
+          </view>
+        </view>
+        <view class="demand-content">
+          <text class="demand-title">{{item.title}}</text>
+          <text class="demand-desc">{{item.description}}</text>
+        </view>
+        <view class="demand-tags">
+          <text class="demand-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+        </view>
+        <view class="demand-footer">
+          <view class="demand-stat">
+            <text class="stat-num">{{item.views}}</text>
+            <text class="stat-label">浏览</text>
+          </view>
+          <view class="demand-stat">
+            <text class="stat-num">{{item.responses}}</text>
+            <text class="stat-label">响应</text>
+          </view>
+          <view class="demand-action" catchtap="respondDemand" data-id="{{item._id}}">我来帮</view>
+        </view>
+      </view>
+    </view>
+    <view class="publish-demand-btn" bindtap="navigateToPublishDemand">
+      <text class="publish-icon">+</text>
+      <text class="publish-text">发布需求</text>
+    </view>
+  </view>
+
+  <view class="supply-section" wx:if="{{activeTab === 'supply'}}">
+    <view class="section-tip">
+      <text class="tip-icon">🎁</text>
+      <text class="tip-text">展示你能提供的服务或物品，帮助有需要的同学</text>
+    </view>
+    <view class="supply-list">
+      <view class="supply-card" wx:for="{{supplyList}}" wx:key="_id" bindtap="navigateToSupplyDetail" data-id="{{item._id}}">
+        <view class="supply-header">
+          <image class="supply-avatar" src="{{item.userAvatar}}" />
+          <view class="supply-user">
+            <text class="supply-name">{{item.userName}}</text>
+            <view class="supply-badge" wx:if="{{item.verified}}">已认证</view>
+          </view>
+        </view>
+        <view class="supply-content">
+          <text class="supply-title">{{item.title}}</text>
+          <text class="supply-desc">{{item.description}}</text>
+        </view>
+        <view class="supply-tags">
+          <text class="supply-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+        </view>
+        <view class="supply-footer">
+          <view class="supply-price-wrap">
+            <text class="supply-price">¥{{item.price}}</text>
+            <text class="supply-unit">/{{item.unit}}</text>
+          </view>
+          <view class="supply-action" catchtap="contactSupply" data-id="{{item._id}}">联系TA</view>
+        </view>
+      </view>
+    </view>
+    <view class="publish-supply-btn" bindtap="navigateToPublishSupply">
+      <text class="publish-icon">+</text>
+      <text class="publish-text">发布供给</text>
+    </view>
+  </view>
+
+  <view class="blind-box-grid" wx:if="{{activeTab !== 'demand' && activeTab !== 'supply'}}">
+    <view class="blind-box-card" wx:for="{{boxes}}" wx:key="_id" bindtap="navigateToDetail" data-id="{{item._id}}">
+      <view class="card-image-wrapper">
+        <image class="card-image" src="{{item.images[0]}}" mode="aspectFill" lazy-load="true" binderror="imageError" data-index="{{index}}"/>
+        <view class="card-type {{item.type}}">{{item.typeName}}</view>
+        <view class="card-tag hot" wx:if="{{item.isHot}}">HOT</view>
+        <view class="card-tag new" wx:if="{{item.isNew}}">NEW</view>
+        <view class="card-timeout" wx:if="{{item.timeoutDays > 0}}">
+          <text>{{item.timeoutDays}}天后转赠</text>
+        </view>
+      </view>
+      <view class="card-info">
+        <text class="card-title">{{item.title}}</text>
+        <view class="card-meta">
+          <text class="card-school">{{item.school}}</text>
+          <text class="card-dorm">{{item.fromDorm}}</text>
+        </view>
+        <view class="card-bottom">
+          <view class="price-wrap">
+            <text class="card-price">¥{{item.price}}</text>
+            <text class="card-score" wx:if="{{item.score}}">+{{item.score}}活跃</text>
+          </view>
+          <text class="card-sales">{{item.sales || 0}}人开过</text>
+        </view>
+        <view class="card-probability" wx:if="{{item.hasHidden}}">
+          <text class="hidden-tag">含隐藏款</text>
+          <text class="hidden-rate">概率{{item.hiddenRate || 5}}%</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-more" wx:if="{{loadingMore}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="no-more" wx:if="{{!hasMore && boxes.length > 0 && !loading && activeTab !== 'demand' && activeTab !== 'supply'}}">
+    <text>没有更多了</text>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && boxes.length === 0 && activeTab !== 'demand' && activeTab !== 'supply'}}">
+    <text class="empty-icon">📦</text>
+    <text class="empty-text">暂无盲盒</text>
+    <view class="empty-btn" bindtap="navigateToPublish">发布盲盒</view>
+  </view>
+  </view>
+
+  <view class="open-result-modal" wx:if="{{showResult}}" bindtap="closeResult">
+    <view class="result-content" catchtap="">
+      <view class="result-header">
+        <text class="result-title">{{resultData.isLucky ? '恭喜获得隐藏款!' : '恭喜开盒成功!'}}</text>
+      </view>
+      <view class="result-box">
+        <image class="result-image" src="{{resultData.image}}" mode="aspectFill" />
+      </view>
+      <text class="result-name">{{resultData.name}}</text>
+      <text class="result-desc">{{resultData.description}}</text>
+      <view class="result-score">
+        <text class="score-icon">⭐</text>
+        <text class="score-text">+{{resultData.score}} 活跃度</text>
+      </view>
+      <view class="result-actions">
+        <view class="result-btn share" bindtap="shareResult">炫耀一下</view>
+        <view class="result-btn confirm" bindtap="closeResult">确认收货</view>
+      </view>
+    </view>
+  </view>
+</view>

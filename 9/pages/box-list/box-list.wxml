@@ -1,0 +1,96 @@
+<view class="page">
+  <view class="card">
+    <view class="header">
+      <view class="title">全部盲盒</view>
+      <view class="sub">默认展示在售盲盒，按发布时间倒序</view>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input">
+      <input placeholder="搜索商品、盲盒" value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" />
+      <view class="search-btn" bindtap="onSearchConfirm">
+        <text class="search-btn-text">搜索</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 过滤选项 -->
+  <view class="card filters">
+    <view class="filter-row">
+      <view class="filter-item">
+        <view class="filter-label">类型</view>
+        <picker bindchange="bindTypeChange" value="{{typeIndex}}" range="{{typeLabels}}">
+          <view class="filter-picker">
+            {{typeLabels[typeIndex]}}
+          </view>
+        </picker>
+      </view>
+      <view class="filter-item">
+        <view class="filter-label">楼栋</view>
+        <picker bindchange="bindCampusChange" value="{{campusIndex}}" range="{{campusLabels}}">
+          <view class="filter-picker">
+            {{campusLabels[campusIndex]}}
+          </view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <block wx:if="{{list.length === 0 && !loading}}">
+    <view class="card empty">
+      <view class="sub">还没有盲盒，去发布一个吧～</view>
+      <button class="btn-primary" style="margin-top:24rpx;width:60%;" bindtap="goPublish">去发布盲盒</button>
+    </view>
+  </block>
+
+  <!-- 盲盒列表 - 卡片式布局 -->
+  <block wx:for="{{list}}" wx:key="_id">
+    <view class="item" bindtap="goDetail" data-id="{{item._id}}">
+      <!-- 图片区域 -->
+      <view class="item-image-wrap">
+        <image class="item-image" src="{{item.images[0]}}" mode="aspectFill" />
+        <!-- 价格标签 -->
+        <view class="item-price-tag">
+          <text class="price-symbol">¥</text>
+          <text class="price-num">{{item.price}}</text>
+        </view>
+      </view>
+      
+      <!-- 内容区域 -->
+      <view class="item-content">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-desc">{{item.desc || '发布者暂未填写简介'}}</view>
+        
+        <!-- 标签 -->
+        <view class="item-tags">
+          <view class="item-tag">{{item.typeLabel}}</view>
+          <view class="item-tag">{{item.mode === 'light' ? '明盒' : '暗盒'}}</view>
+        </view>
+        
+        <!-- 底部信息 -->
+        <view class="item-footer">
+          <view class="item-stats">
+            <view class="stat">
+              <text class="stat-icon eye-icon">👁️</text>
+              <text class="stat-value">{{item.sales}}</text>
+            </view>
+            <view class="stat">
+              <text class="stat-icon">❤</text>
+              <text class="stat-value">{{item.likes}}</text>
+            </view>
+            <view class="stat">
+              <text class="stat-icon">💬</text>
+              <text class="stat-value">{{item.comments}}</text>
+            </view>
+          </view>
+          <view class="item-location">{{item.campus}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:if="{{finished && list.length > 0}}" class="loading">没有更多了</view>
+</view>

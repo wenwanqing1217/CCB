@@ -1,0 +1,109 @@
+<view class="page">
+  <view class="card">
+    <view class="title">我的订单</view>
+    <view class="meta">
+      查看和管理您的订单，跟踪配送状态
+    </view>
+  </view>
+
+  <!-- 标签切换 -->
+  <view class="tabs">
+    <view class="tab {{tab==='pending'?'active':''}}" data-tab="pending" bindtap="switchTab">待抢单</view>
+    <view class="tab {{tab==='rider'?'active':''}}" data-tab="rider" bindtap="switchTab">我的配送</view>
+  </view>
+
+  <!-- 待抢单列表 -->
+  <block wx:if="{{tab === 'pending'}}">
+    <block wx:if="{{pendingOrders.length === 0 && !loading}}">
+      <view class="card empty">
+        <view class="empty-icon">📦</view>
+        <view class="empty-text">暂无待抢订单</view>
+        <view class="empty-sub">新订单会在这里显示，敬请期待</view>
+      </view>
+    </block>
+
+    <block wx:for="{{pendingOrders}}" wx:key="_id">
+      <view class="card item">
+        <view class="order-header">
+          <view class="order-title">{{item.boxInfo.title}}</view>
+          <view class="order-price">{{item.price}} 元</view>
+        </view>
+        <view class="order-info">
+          <view class="info-item">
+            <view class="info-label">下单时间</view>
+            <view class="info-value">{{item.formattedTime}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">收货地址</view>
+            <view class="info-value">{{item.address}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">联系人</view>
+            <view class="info-value">{{item.contact.name}} {{item.contact.phone}}</view>
+          </view>
+        </view>
+        <view class="order-actions">
+          <button class="btn-grab" loading="{{grabbing}}" bindtap="grabOrder" data-orderId="{{item._id}}">抢单</button>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- 配送员订单列表 -->
+  <block wx:if="{{tab === 'rider'}}">
+    <block wx:if="{{riderOrders.length === 0 && !loading}}">
+      <view class="card empty">
+        <view class="empty-icon">🚚</view>
+        <view class="empty-text">暂无配送订单</view>
+        <view class="empty-sub">去抢单大厅看看吧</view>
+      </view>
+    </block>
+
+    <block wx:for="{{riderOrders}}" wx:key="_id">
+      <view class="card item">
+        <view class="order-header">
+          <view class="order-title">{{item.order.boxInfo.title}}</view>
+          <view class="order-price">{{item.order.price}} 元</view>
+        </view>
+        <view class="order-info">
+          <view class="info-item">
+            <view class="info-label">下单时间</view>
+            <view class="info-value">{{item.order.formattedTime}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">收货地址</view>
+            <view class="info-value">{{item.order.address}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">联系人</view>
+            <view class="info-value">{{item.order.contact.name}} {{item.order.contact.phone}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">配送状态</view>
+            <view class="info-value status-{{item.status}}">{{item.status === 'pending' ? '待取件' : item.status === 'delivering' ? '配送中' : '已完成'}}</view>
+          </view>
+        </view>
+        <view class="order-actions">
+          <block wx:if="{{item.status === 'pending'}}">
+            <button class="btn-primary" loading="{{updating}}" bindtap="updateDeliveryStatus" data-delivery-id="{{item._id}}" data-status="delivering">开始配送</button>
+          </block>
+          <block wx:if="{{item.status === 'delivering'}}">
+            <button class="btn-primary" loading="{{updating}}" bindtap="updateDeliveryStatus" data-delivery-id="{{item._id}}" data-status="completed">确认完成</button>
+          </block>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:if="{{finished && (pendingOrders.length > 0 || riderOrders.length > 0)}}" class="loading">没有更多了</view>
+
+  <view class="card">
+    <view class="section-title">订单说明</view>
+    <view class="meta">
+      · 抢单后请及时与买家联系，确认取件和送达时间。
+      · 配送完成后请及时更新订单状态。
+      · 如有问题请联系客服。
+    </view>
+  </view>
+</view>

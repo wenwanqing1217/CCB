@@ -1,0 +1,93 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/love/love",
+    "pages/box-publish/box-publish",
+    "pages/message/message",
+    "pages/profile/profile"
+  ],
+  "subpackages": [
+    {
+      "root": "pages",
+      "pages": [
+        "box-list/box-list",
+        "box-detail/box-detail",
+        "blindBox/blindBox",
+        "order-confirm/order-confirm",
+        "order-list/order-list",
+        "order-detail/order-detail",
+        "logistics-detail/logistics-detail",
+        "order/order",
+        "myPublish/myPublish",
+        "favorite/favorite",
+        "address/address",
+        "wallet/wallet",
+        "certification/certification",
+        "coinLog/coinLog",
+        "user-profile/user-profile",
+        "ai/ai",
+        "courier-center/courier-center",
+        "courier-center/order-detail/order-detail",
+        "courier-center/stats/stats",
+        "rider/rider",
+        "community/community",
+        "chat/chat",
+        "map/map",
+        "love-donate/love-donate",
+        "donationDetail/donationDetail",
+        "exchange/exchange",
+        "exchangeDetail/exchangeDetail",
+        "admin/admin",
+        "admin/orders/orders",
+        "admin/riders/riders",
+        "admin/delivery-monitor/delivery-monitor",
+        "admin/charts/charts",
+        "merchantApply/merchantApply",
+        "merchant/merchant",
+        "system-message/system-message",
+        "report/report",
+        "review/review",
+        "about/about"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0a0a1a",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "武生院盲盒",
+    "backgroundColor": "#020208",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#666666",
+    "selectedColor": "#c8a2ff",
+    "borderStyle": "white",
+    "backgroundColor": "#050510",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/love/love",
+        "text": "盲盒"
+      },
+      {
+        "pagePath": "pages/box-publish/box-publish",
+        "text": "发布"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {}
+}

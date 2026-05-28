@@ -1,0 +1,208 @@
+<view class="container" wx:if="{{order && !loading}}">
+
+  <!-- 主信息卡片 -->
+  <view class="info-card main-card interactive-card">
+    <!-- 订单状态 -->
+    <view class="status-section">
+      <view class="status-header">
+        <view class="status-badge {{order.status}}">
+          {{order.status === 'pending' ? '待取件' : order.status === 'delivering' ? '配送中' : '已完成'}}
+        </view>
+        <view class="order-id">{{order._id}}</view>
+      </view>
+      
+      <!-- 盲盒信息 -->
+      <view class="box-section">
+        <view class="box-info-main">
+          <image class="box-image lazy-image" src="{{order.boxInfo.images[0]}}" mode="aspectFill" bindload="onImageLoad"></image>
+          <view class="box-details">
+            <text class="box-title">{{order.boxInfo.title}}</text>
+            <text class="box-desc">{{order.boxInfo.desc}}</text>
+            <view class="box-price">¥{{order.price + 1}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="divider"></view>
+    
+    <!-- 配送信息 -->
+    <view class="delivery-info-section">
+      <view class="info-row">
+        <view class="info-item">
+          <text class="info-icon">👤</text>
+          <text class="info-label">联系人</text>
+          <text class="info-value">{{order.contact.name}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-icon">📞</text>
+          <text class="info-label">电话</text>
+          <text class="info-value">{{order.contact.phone}}</text>
+        </view>
+      </view>
+      <view class="info-row">
+        <view class="info-item full">
+          <text class="info-icon">📍</text>
+          <text class="info-label">地址</text>
+          <text class="info-value">{{order.address}}</text>
+        </view>
+      </view>
+      <view class="info-row">
+        <view class="info-item">
+          <text class="info-icon">📦</text>
+          <text class="info-label">盲盒</text>
+          <text class="info-value">{{order.boxInfo.title}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-icon">⏰</text>
+          <text class="info-label">下单</text>
+          <text class="info-value">{{order.formattedTime || (order.createdAt ? order.createdAt : '—')}}</text>
+        </view>
+      </view>
+      <view class="contact-actions">
+        <button class="btn btn-secondary interactive-btn" bindtap="makeCall" data-phone="{{order.contact.phone}}">
+          <text class="btn-icon">📞</text>
+          <text>拨打电话</text>
+        </button>
+        <button class="btn btn-secondary interactive-btn" bindtap="copyAddress" data-address="{{order.address}}">
+          <text class="btn-icon">📋</text>
+          <text>复制地址</text>
+        </button>
+      </view>
+    </view>
+    
+    <!-- 骑手信息 -->
+    <view class="rider-section" wx:if="{{order.status === 'delivering' && order.rider}}">
+      <view class="section-header">
+        <text class="section-title">骑手信息</text>
+      </view>
+      <view class="rider-info">
+        <image class="rider-avatar lazy-image" src="{{order.rider.avatar}}" mode="aspectFill" bindload="onImageLoad"></image>
+        <view class="rider-details">
+          <view class="rider-name">{{order.rider.name}}</view>
+          <view class="rider-rating">
+            <text class="rating-icon">⭐</text>
+            <text class="rating-value">{{order.rider.rating}}</text>
+            <text class="rating-count">({{order.rider.completedOrders}}单)</text>
+          </view>
+          <button class="btn btn-secondary interactive-btn" bindtap="callRider" data-phone="{{order.rider.phone}}">联系骑手</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 配送追踪 -->
+  <view class="info-card logistics-card interactive-card">
+    <view class="card-header">
+      <text class="card-title">配送追踪</text>
+      <view class="delivery-status" wx:if="{{order.status === 'delivering'}}">
+        <view class="pulse-dot"></view>
+        <text class="status-text">配送中</text>
+      </view>
+    </view>
+    
+    <!-- 配送进度条 -->
+    <view class="delivery-progress">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{order.status === 'pending' ? '0%' : order.status === 'delivering' ? '60%' : '100%'}}"></view>
+      </view>
+      <view class="progress-steps">
+        <view class="progress-step {{order.status !== 'pending' ? 'completed' : 'active'}}">
+          <view class="step-dot">✓</view>
+          <text class="step-name">已接单</text>
+        </view>
+        <view class="progress-step {{order.status === 'delivering' ? 'active' : order.status === 'completed' ? 'completed' : ''}}">
+          <view class="step-dot">{{order.status === 'completed' ? '✓' : '2'}}</view>
+          <text class="step-name">配送中</text>
+        </view>
+        <view class="progress-step {{order.status === 'completed' ? 'completed' : ''}}">
+          <view class="step-dot">{{order.status === 'completed' ? '✓' : '3'}}</view>
+          <text class="step-name">已送达</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 预计送达时间 -->
+    <view class="eta-section" wx:if="{{order.status === 'delivering'}}">
+      <view class="eta-icon">🕐</view>
+      <view class="eta-info">
+        <text class="eta-label">预计送达</text>
+        <text class="eta-time">{{order.estimatedArrival || '15分钟内'}}</text>
+      </view>
+      <view class="eta-countdown">
+        <text class="countdown-num">{{order.remainingTime || '12'}}</text>
+        <text class="countdown-unit">分钟</text>
+      </view>
+    </view>
+
+    <!-- 地图组件 - 实时位置可视化 -->
+    <view class="map-section" wx:if="{{order.status === 'delivering' && order.rider}}">
+      <view class="map-container interactive-card">
+        <map 
+          id="map" 
+          style="width: 100%; height: 300rpx;" 
+          longitude="{{order.rider.longitude || 116.397428}}" 
+          latitude="{{order.rider.latitude || 39.90923}}" 
+          scale="16" 
+          markers="{{markers}}" 
+          polyline="{{polyline}}" 
+          show-location="true"
+        ></map>
+        <view class="map-overlay">
+          <view class="map-info">
+            <text class="map-distance">距您约 {{order.distance || '200'}} 米</text>
+            <text class="map-rider">{{order.rider.name}} 正在配送</text>
+          </view>
+        </view>
+      </view>
+      <view class="route-info interactive-card">
+        <view class="route-point">
+          <view class="point-marker start"></view>
+          <text class="point-name">{{order.fromDorm || '1号楼'}}</text>
+        </view>
+        <view class="route-line"></view>
+        <view class="route-point">
+          <view class="point-marker end"></view>
+          <text class="point-name">{{order.toDorm || '2号楼'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 物流时间轴 -->
+    <view class="logistics-timeline">
+      <view class="timeline-item {{index === 0 ? 'latest' : ''}} interactive-card" wx:for="{{logisticsTimeline}}" wx:key="time">
+        <view class="timeline-dot {{index === 0 ? 'active' : ''}}"></view>
+        <view class="timeline-content">
+          <text class="timeline-status">{{item.status}}</text>
+          <text class="timeline-desc">{{item.desc}}</text>
+          <text class="timeline-time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 线下交接说明 -->
+    <view class="divider"></view>
+    <view class="notice-info interactive-card">
+      <text class="notice-text">请通过线下或校内联系方式与对方确认交接地点与时间，完成支付与取件/交付。</text>
+      <text class="notice-hint">建议在公共区域进行交易，确保安全。</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-buttons">
+      <button class="btn btn-secondary interactive-btn" bindtap="contactSeller">联系卖家</button>
+      <button class="btn btn-primary interactive-btn" loading="{{updating}}" bindtap="updateOrderStatus" data-status="{{order.status === 'pending' ? 'delivering' : 'completed'}}">
+        {{order.status === 'pending' ? '开始配送' : order.status === 'delivering' ? '确认完成' : '再次购买'}}
+      </button>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{loading}}" class="loading">
+  <view class="loading-spinner"></view>
+  <text>加载中...</text>
+</view>
+<view wx:if="{{!loading && !order}}" class="loading">
+  <text>订单不存在</text>
+</view>

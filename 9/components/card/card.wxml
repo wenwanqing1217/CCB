@@ -1,0 +1,3 @@
+<view class="card {{type}} {{hover ? 'card-hover' : ''}}">
+  <slot></slot>
+</view>

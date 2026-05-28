@@ -1,0 +1,96 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/love/love",
+    "pages/love-donate/love-donate",
+    "pages/box-publish/box-publish",
+    "pages/message/message",
+    "pages/order-message/order-message",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/about/about",
+    "pages/address/address",
+    "pages/admin/admin",
+    "pages/admin/charts/charts",
+    "pages/admin/delivery-monitor/delivery-monitor",
+    "pages/admin/riders/riders",
+    "pages/admin/orders/orders",
+    "pages/ai/ai",
+    "pages/blindBox/blindBox",
+    "pages/blindBoxDetail/blindBoxDetail",
+    "pages/box-list/box-list",
+    "pages/box-detail/box-detail",
+    "pages/certification/certification",
+    "pages/chat/chat",
+    "pages/coinLog/coinLog",
+    "pages/community/community",
+    "pages/delivery/delivery",
+    "pages/courier-center/courier-center",
+    "pages/courier-center/stats/stats",
+    "pages/courier-center/order-detail/order-detail",
+    "pages/donation/donation",
+    "pages/donationDetail/donationDetail",
+    "pages/exchange/exchange",
+    "pages/exchangePublish/exchangePublish",
+    "pages/exchangeDetail/exchangeDetail",
+    "pages/favorite/favorite",
+    "pages/logistics-detail/logistics-detail",
+    "pages/map/map",
+    "pages/market/market",
+    "pages/merchant/merchant",
+    "pages/merchantApply/merchantApply",
+    "pages/myDonation/myDonation",
+    "pages/myPublish/myPublish",
+    "pages/order/order",
+    "pages/order-confirm/order-confirm",
+    "pages/order-detail/order-detail",
+    "pages/order-list/order-list",
+    "pages/orderGrab/orderGrab",
+    "pages/report/report",
+    "pages/review/review",
+    "pages/rider/rider",
+    "pages/search/search",
+    "pages/system-message/system-message",
+    "pages/user-profile/user-profile",
+    "pages/wallet/wallet"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0a0a1a",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "武生院盲盒",
+    "backgroundColor": "#020208",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#666666",
+    "selectedColor": "#c8a2ff",
+    "borderStyle": "white",
+    "backgroundColor": "#050510",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/love/love",
+        "text": "盲盒"
+      },
+      {
+        "pagePath": "pages/box-publish/box-publish",
+        "text": "发布"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {}
+}

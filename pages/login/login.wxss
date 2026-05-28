@@ -1,0 +1,47 @@
+.container {
+  min-height: 100vh;
+  padding: 120rpx 48rpx;
+  background: #020208;
+  box-sizing: border-box;
+}
+
+.logo-section {
+  margin-bottom: 120rpx;
+  text-align: center;
+}
+
+.app-name {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24rpx;
+}
+
+.app-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #888;
+}
+
+.login-btn {
+  width: 100%;
+  height: 96rpx;
+  line-height: 96rpx;
+  background: linear-gradient(135deg, #7c4dff, #c8a2ff);
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  border: none;
+}
+
+.login-btn::after {
+  border: none;
+}
+
+.skip-link {
+  margin-top: 48rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+}

@@ -1,0 +1,70 @@
+@startuml 09-recommendation
+!theme plain
+title 协同过滤推荐算法流程图
+
+skinparam backgroundColor #FFFFFF
+
+start
+
+:用户访问首页\n触发recommendationService;
+
+:获取用户基本信息\n(openid, purchaseHistory);
+
+if (用户有历史行为?) then (否)
+  :执行冷启动策略;
+  note right
+    **冷启动处理方案：**
+    1. 基于热门盲盒推荐
+    2. 基于新品推荐
+    3. 基于地理位置推荐
+    4. 基于分类加权推荐
+  end note
+  
+  :返回热门/新品列表;
+  stop
+else (是)
+endif
+
+:获取用户购买历史\n和浏览记录;
+
+:构建用户-物品矩阵;
+
+:计算用户相似度\n(余弦相似度);
+
+note right
+  **相似度计算公式：**
+  
+  sim(u,v) = cos(θ) = 
+      Σ(r_ui × r_vi)
+  ─────────────────────
+  √Σ(r_ui²) × √Σ(r_vi²)
+  
+  r_ui: 用户u对物品i的评分
+end note
+
+:找到K个最相似用户\n(K=20);
+
+:获取相似用户的\n购买/浏览物品;
+
+:过滤已购买物品\n和已浏览物品;
+
+:计算推荐得分\nScore_i;
+
+note right
+  **推荐得分公式：**
+  
+  Score(i) = Σ(sim(u,v) × r_vi)
+  
+  选择得分最高的N个物品
+  (N=10)
+end note
+
+:结合热门权重;
+
+:去重并排序\n返回Top10推荐;
+
+:记录推荐日志;
+
+stop
+
+@enduml

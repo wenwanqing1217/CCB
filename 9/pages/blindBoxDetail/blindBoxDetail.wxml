@@ -1,0 +1,140 @@
+<view class="container">
+  <!-- 自定义顶部导航栏 -->
+  <view class="detail-header">
+    <view class="detail-back" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="detail-title-bar">盲盒详情</text>
+    <view class="detail-empty"></view>
+  </view>
+  
+  <!-- 商品大图轮播 -->
+  <view class="detail-hero-section">
+    <swiper class="detail-swiper" indicator-dots indicator-color="rgba(255,255,255,0.3)" indicator-active-color="#c8a2ff" bindchange="onImageChange">
+      <swiper-item wx:for="{{box.images}}" wx:key="index">
+        <image class="detail-hero-image" src="{{item}}" mode="aspectFill" bindtap="previewImage" data-src="{{item}}" />
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 商品信息区域 - 可滚动 -->
+  <scroll-view class="detail-content" scroll-y>
+    <!-- 价格卡片 -->
+    <view class="price-card">
+      <view class="price-main">
+        <text class="price-symbol">¥</text>
+        <text class="price-number">{{box.price}}</text>
+        <view class="price-tag">盲盒特惠</view>
+      </view>
+      <view class="price-meta">
+        <text class="price-sales">{{box.sales || 0}}人购买</text>
+      </view>
+    </view>
+
+    <!-- 标题卡片 -->
+    <view class="title-card">
+      <view class="title-row">
+        <view class="title-tag">神秘盲盒</view>
+        <text class="title-text">{{box.title}}</text>
+      </view>
+      <view class="title-tags">
+        <text class="tag">{{box.typeName || '盲盒'}}</text>
+      </view>
+    </view>
+
+    <!-- 信息卡片 -->
+    <view class="info-card">
+      <view class="info-header">
+        <text class="info-title">商品信息</text>
+      </view>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-label">配送费</text>
+          <text class="info-value">¥1</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 配送信息卡片 -->
+    <view class="delivery-card">
+      <view class="info-header">
+        <text class="info-title">配送信息</text>
+      </view>
+      <view class="delivery-info">
+        <view class="delivery-item">
+          <text class="delivery-label">发货</text>
+          <text class="delivery-value">{{box.fromDorm}}</text>
+        </view>
+        <text class="delivery-arrow">→</text>
+        <view class="delivery-item">
+          <text class="delivery-label">送达</text>
+          <text class="delivery-value">{{box.toDorm}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 盲盒内容卡片 -->
+    <view class="content-card" wx:if="{{box.contents && box.contents.length > 0}}">
+      <view class="info-header">
+        <text class="info-title">盲盒内容</text>
+      </view>
+      <view class="content-list">
+        <view class="content-item" wx:for="{{box.contents}}" wx:key="index">
+          <text class="content-name">{{item.name}}</text>
+          <text class="content-prob">{{item.probability}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 卖家信息卡片 -->
+    <view class="seller-card" wx:if="{{box.seller}}">
+      <view class="info-header">
+        <text class="info-title">卖家信息</text>
+      </view>
+      <view class="seller-content">
+        <image class="seller-avatar" src="{{box.seller.avatar}}" />
+        <view class="seller-info">
+          <text class="seller-name">{{box.seller.name}}</text>
+          <text class="seller-rating">评分 {{box.seller.rating}}</text>
+        </view>
+        <view class="seller-action" bindtap="contactSeller">
+          <text>联系</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 购买须知卡片 -->
+    <view class="notice-card">
+      <view class="info-header">
+        <text class="info-title">购买须知</text>
+      </view>
+      <view class="notice-list">
+        <view class="notice-item">
+          <text class="notice-dot">•</text>
+          <text>盲盒内含多件商品，价值远超售价</text>
+        </view>
+        <view class="notice-item">
+          <text class="notice-dot">•</text>
+          <text>商品随机分配，不接受指定款式</text>
+        </view>
+        <view class="notice-item">
+          <text class="notice-dot">•</text>
+          <text>拆封后不支持退换，请知悉</text>
+        </view>
+        <view class="notice-item">
+          <text class="notice-dot">•</text>
+          <text>质量问题可联系卖家处理</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="detail-bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 购买按钮 - 固定在底部 -->
+  <view class="buy-button-fixed" bindtap="buyBox">
+    <text>立即购买</text>
+    <text class="buy-price">¥{{box.price}}</text>
+  </view>
+</view>

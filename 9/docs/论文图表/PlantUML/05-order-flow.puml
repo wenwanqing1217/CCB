@@ -1,0 +1,85 @@
+@startuml 05-order-flow
+!theme plain
+title 订单创建与状态流转图
+
+skinparam backgroundColor #FFFFFF
+skinparam activityFontSize 11
+
+|买家|
+start
+:选择盲盒并点击购买;
+
+|系统|
+:检查盲盒状态\n(available)];
+
+if (盲盒可售?) then (否)
+  :提示"盲盒已下架"];
+  detach
+else (是)
+endif
+
+:检查买家积分\n是否足够];
+
+if (积分充足?) then (否)
+  :提示"积分不足"];
+  detach
+else (是)
+endif
+
+:扣除买家积分;
+
+:创建订单记录\n写入orders集合];
+
+|卖家|
+:收到新订单通知;
+
+|买家|
+:支付成功\n进入pending状态];
+
+stop
+
+|骑手|
+start
+:打开配送中心\n查看待抢单;
+
+:点击"抢单"];
+
+|系统|
+:检查骑手状态\n和当前位置];
+
+if (骑手可用?) then (否)
+  :提示"当前无法抢单"];
+  detach
+else (是)
+endif
+
+:执行顺路匹配算法\n计算最优骑手];
+
+if (匹配成功?) then (失败)
+  :订单进入派单池\n等待其他骑手];
+  detach
+else (成功)
+endif
+
+:更新订单状态\ngrapped];
+
+|骑手|
+:接单成功\n前往取货;
+
+:到达卖家位置\n点击"已取货"];
+
+|系统|
+:更新配送状态\ndelivering];
+
+|骑手|
+:到达买家位置\n点击"已送达"];
+
+|系统|
+:更新配送状态\ncompleted;
+
+|买家|
+:确认收货\n订单完成;
+
+stop
+
+@enduml

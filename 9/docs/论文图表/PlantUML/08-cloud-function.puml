@@ -1,0 +1,81 @@
+@startuml 08-cloud-function
+!theme plain
+title 云函数模块交互图
+
+skinparam backgroundColor #FFFFFF
+skinparam packageStyle rectangle
+
+package "微信小程序端" {
+  [页面组件] as Pages
+  [业务逻辑层] as Service
+}
+
+package "云函数层" {
+  
+  rectangle "用户服务" as US {
+    usecase "login" as US1
+    usecase "updateCampus" as US2
+    usecase "getUserInfo" as US3
+  }
+  
+  rectangle "盲盒服务" as BS {
+    usecase "publishBox" as BS1
+    usecase "getBoxList" as BS2
+    usecase "getBoxDetail" as BS3
+    usecase "updateBoxStatus" as BS4
+  }
+  
+  rectangle "订单服务" as OS {
+    usecase "createOrder" as OS1
+    usecase "getOrderList" as OS2
+    usecase "updateOrderStatus" as OS3
+  }
+  
+  rectangle "配送服务" as DS {
+    usecase "grabOrder" as DS1
+    usecase "updateDelivery" as DS2
+    usecase "riderMatching" as DS3
+  }
+  
+  rectangle "推荐服务" as RS {
+    usecase "getRecommendations" as RS1
+    usecase "getHotBoxes" as RS2
+  }
+  
+  rectangle "积分服务" as CS {
+    usecase "signIn" as CS1
+    usecase "share" as CS2
+    usecase "invite" as CS3
+    usecase "trade" as CS4
+    usecase "donate" as CS5
+    usecase "shake" as CS6
+  }
+}
+
+package "云数据库" {
+  database "users" as DB1
+  database "boxes" as DB2
+  database "orders" as DB3
+  database "deliveries" as DB4
+  database "riders" as DB5
+  database "coinLogs" as DB6
+}
+
+Pages --> Service : 业务请求
+Service --> US : cloud.callFunction()
+Service --> BS : cloud.callFunction()
+Service --> OS : cloud.callFunction()
+Service --> DS : cloud.callFunction()
+Service --> RS : cloud.callFunction()
+Service --> CS : cloud.callFunction()
+
+US --> DB1
+BS --> DB2
+OS --> DB3
+DS --> DB4
+DS --> DB5
+CS --> DB6
+RS --> DB1
+RS --> DB2
+
+@enduml

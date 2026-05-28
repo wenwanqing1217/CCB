@@ -1,0 +1,99 @@
+@startuml 03-usecase
+!theme plain
+title 校园盲盒即时配送平台用例图
+
+skinparam backgroundColor #FFFFFF
+left to right direction
+
+actor "买家" as Buyer
+actor "卖家" as Seller
+actor "骑手" as Rider
+
+package "用户模块" {
+  usecase "登录/注册" as UC1
+  usecase "完善校园信息" as UC2
+  usecase "查看个人信息" as UC3
+  usecase "查看积分余额" as UC4
+}
+
+package "盲盒交易模块" {
+  usecase "发布盲盒" as UC5
+  usecase "浏览盲盒" as UC6
+  usecase "查看盲盒详情" as UC7
+  usecase "搜索盲盒" as UC8
+  usecase "购买盲盒" as UC9
+  usecase "查看我的盲盒" as UC10
+}
+
+package "订单与配送模块" {
+  usecase "创建订单" as UC11
+  usecase "查看订单列表" as UC12
+  usecase "查看订单详情" as UC13
+  usecase "确认收货" as UC14
+  usecase "抢配送单" as UC15
+  usecase "更新配送状态" as UC16
+}
+
+package "智能推荐模块" {
+  usecase "查看猜你喜欢" as UC17
+  usecase "查看热门推荐" as UC18
+}
+
+package "积分激励模块" {
+  usecase "每日签到" as UC19
+  usecase "分享盲盒" as UC20
+  usecase "邀请好友" as UC21
+  usecase "摇一摇" as UC22
+  usecase "捐赠盲盒" as UC23
+}
+
+package "社区互动模块" {
+  usecase "查看社区动态" as UC24
+  usecase "发布社区内容" as UC25
+}
+
+Buyer --> UC1
+Buyer --> UC2
+Buyer --> UC3
+Buyer --> UC4
+Buyer --> UC6
+Buyer --> UC7
+Buyer --> UC8
+Buyer --> UC9
+Buyer --> UC12
+Buyer --> UC13
+Buyer --> UC14
+Buyer --> UC17
+Buyer --> UC18
+Buyer --> UC19
+Buyer --> UC20
+Buyer --> UC22
+Buyer --> UC24
+Buyer --> UC25
+
+Seller --> UC1
+Seller --> UC2
+Seller --> UC3
+Seller --> UC4
+Seller --> UC5
+Seller --> UC10
+Seller --> UC12
+Seller --> UC13
+Seller --> UC19
+Seller --> UC20
+Seller --> UC21
+Seller --> UC22
+Seller --> UC23
+Seller --> UC24
+
+Rider --> UC1
+Rider --> UC2
+Rider --> UC3
+Rider --> UC12
+Rider --> UC13
+Rider --> UC15
+Rider --> UC16
+Rider --> UC19
+Rider --> UC24
+
+@enduml

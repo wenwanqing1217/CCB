@@ -1,0 +1,34 @@
+<view class="container">
+  <view class="tab-container">
+    <view class="tab-item {{activeStatus === 'all' ? 'active' : ''}}" bindtap="setStatus" data-status="all">全部</view>
+    <view class="tab-item {{activeStatus === 'active' ? 'active' : ''}}" bindtap="setStatus" data-status="active">在售</view>
+    <view class="tab-item {{activeStatus === 'sold' ? 'active' : ''}}" bindtap="setStatus" data-status="sold">已售</view>
+    <view class="tab-item {{activeStatus === 'expired' ? 'active' : ''}}" bindtap="setStatus" data-status="expired">已下架</view>
+  </view>
+
+  <view wx:if="{{boxes.length > 0}}">
+    <view class="box-card" wx:for="{{boxes}}" wx:key="_id" bindtap="navigateToDetail" data-id="{{item._id}}">
+      <view class="box-header">
+        <text class="box-title">{{item.title}}</text>
+        <text class="box-status">{{item.statusText}}</text>
+      </view>
+      <view class="box-content">
+        <image class="box-img" src="{{item.images[0]}}" mode="aspectFill" />
+        <view class="box-info">
+          <text class="box-price">¥{{item.price}}</text>
+          <text class="box-meta">{{item.from_dorm}} → {{item.to_dorm}}</text>
+          <text class="box-meta">已售 {{item.sales}} 件</text>
+        </view>
+      </view>
+      <view class="box-actions" wx:if="{{item.status === 'active'}}">
+        <view class="action-btn secondary" catchtap="editBox" data-id="{{item._id}}">编辑</view>
+        <view class="action-btn secondary" catchtap="offlineBox" data-id="{{item._id}}">下架</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <text>暂无发布记录</text>
+    <view class="publish-btn" bindtap="navigateToPublish">立即发布</view>
+  </view>
+</view>

@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="map-container">
+    <map 
+      id="map" 
+      class="map" 
+      longitude="{{longitude}}" 
+      latitude="{{latitude}}" 
+      scale="16" 
+      markers="{{markers}}" 
+      polyline="{{polyline}}" 
+      show-location 
+      bindmarkertap="onMarkerTap"
+      bindregionchange="onRegionChange"
+    ></map>
+  </view>
+  
+  <view class="bottom-panel">
+    <view class="order-info" wx:if="{{currentOrder}}">
+      <view class="order-header">
+        <text class="order-id">订单号: {{currentOrder.orderId}}</text>
+        <text class="order-fee">¥{{currentOrder.deliveryFee}}</text>
+      </view>
+      <view class="order-route">
+        <view class="route-point">
+          <view class="point-tag">取</view>
+          <text class="point-text">{{currentOrder.fromDorm}} {{currentOrder.fromRoom}}</text>
+        </view>
+        <view class="route-line"></view>
+        <view class="route-point">
+          <view class="point-tag to">送</view>
+          <text class="point-text">{{currentOrder.toDorm}} {{currentOrder.toRoom}}</text>
+        </view>
+      </view>
+      <view class="order-actions">
+        <view class="action-btn call" bindtap="callCustomer">
+          <text class="btn-icon">📞</text>
+          <text>联系顾客</text>
+        </view>
+        <view class="action-btn status" bindtap="updateOrderStatus">
+          <text>{{statusText}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="no-order" wx:else>
+      <text>暂无配送订单</text>
+      <text class="hint">请先接取订单</text>
+    </view>
+  </view>
+  
+  <view class="location-info">
+    <text class="location-text">当前位置: {{locationText}}</text>
+    <text class="update-time">更新时间: {{updateTime}}</text>
+  </view>
+</view>

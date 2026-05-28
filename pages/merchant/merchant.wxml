@@ -1,0 +1,46 @@
+<view class="container">
+  <view class="page-header">
+    <text class="title">Merchant Center</text>
+  </view>
+
+  <view class="dashboard">
+    <view class="dashboard-item" bindtap="navigateToOrders">
+      <text class="dashboard-label">Sales</text>
+      <text class="dashboard-value">{{stats.totalSales}}</text>
+    </view>
+    <view class="dashboard-item">
+      <text class="dashboard-label">Income</text>
+      <text class="dashboard-value">{{stats.totalIncome}}</text>
+    </view>
+    <view class="dashboard-item">
+      <text class="dashboard-label">Active</text>
+      <text class="dashboard-value">{{stats.activeBoxes}}</text>
+    </view>
+  </view>
+
+  <view class="my-boxes">
+    <view class="section-header">
+      <text class="section-title">My Boxes</text>
+      <text class="section-more" bindtap="navigateToPublish">+ New</text>
+    </view>
+    
+    <view class="box-list" wx:if="{{myBoxes.length > 0}}">
+      <view class="box-card" wx:for="{{myBoxes}}" wx:key="_id" bindtap="navigateToBoxDetail" data-id="{{item._id}}">
+        <image class="box-image" src="{{item.images[0]}}" mode="aspectFill" />
+        <view class="box-info">
+          <text class="box-title">{{item.title}}</text>
+          <text class="box-price">{{item.price}} CNY</text>
+          <text class="box-status">{{item.status === 'active' ? 'Active' : item.status === 'sold' ? 'Sold' : 'Expired'}}</text>
+        </view>
+        <view class="box-actions" wx:if="{{item.status === 'active'}}">
+          <button class="action-btn" catchtap="editBox" data-id="{{item._id}}">Edit</button>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty" wx:else>
+      <text>No boxes yet</text>
+      <button class="publish-btn" bindtap="navigateToPublish">Publish Now</button>
+    </view>
+  </view>
+</view>

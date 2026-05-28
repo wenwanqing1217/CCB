@@ -1,0 +1,15 @@
+{
+  "name": "userBehavior",
+  "version": "1.0.0",
+  "description": "用户行为统计服务",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["user", "behavior", "analytics"],
+  "author": "",
+  "license": "ISC"
+}

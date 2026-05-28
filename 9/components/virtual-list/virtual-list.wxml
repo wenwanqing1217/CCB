@@ -1,0 +1,16 @@
+<scroll-view 
+  class="virtual-list-container" 
+  scroll-y 
+  bindscroll="onScroll"
+  scroll-with-animation
+>
+  <view class="virtual-list-content" style="height: {{totalHeight}}px;">
+    <view 
+      class="virtual-list-spacer" 
+      style="height: {{startIndex * itemHeight}}px;"
+    ></view>
+    <view class="virtual-list-visible">
+      <slot></slot>
+    </view>
+  </view>
+</scroll-view>

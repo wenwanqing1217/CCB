@@ -1,0 +1,139 @@
+<view class="container">
+  <view class="wallet-card">
+    <view class="wallet-header">
+      <text class="wallet-label">账户余额</text>
+      <view class="wallet-eyes" bindtap="toggleBalance">
+        <text>{{showBalance ? '👁️' : '🙈'}}</text>
+      </view>
+    </view>
+    <text class="wallet-balance">¥{{showBalance ? balance : '****'}}</text>
+    <view class="wallet-actions">
+      <view class="wallet-btn" bindtap="showWithdraw">提现</view>
+      <view class="wallet-btn primary" bindtap="navigateToRecharge">充值</view>
+    </view>
+  </view>
+
+  <view class="stats-row">
+    <view class="stat-item" bindtap="viewIncome">
+      <text class="stat-value">{{totalIncome}}</text>
+      <text class="stat-label">累计收入</text>
+    </view>
+    <view class="stat-item" bindtap="viewExpense">
+      <text class="stat-value">{{totalExpense}}</text>
+      <text class="stat-label">累计支出</text>
+    </view>
+    <view class="stat-item" bindtap="viewWithdraw">
+      <text class="stat-value">{{totalWithdraw}}</text>
+      <text class="stat-label">累计提现</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">金币中心</text>
+      <text class="coin-rate">100金币=1元</text>
+    </view>
+    <view class="earn-grid">
+      <view class="earn-item" bindtap="playGame" data-game="spin">
+        <view class="earn-icon-wrap spin">
+          <text class="earn-icon">🎰</text>
+        </view>
+        <text class="earn-name">幸运转盘</text>
+        <text class="earn-reward">+10~100</text>
+      </view>
+      <view class="earn-item" bindtap="playGame" data-game="quiz">
+        <view class="earn-icon-wrap quiz">
+          <text class="earn-icon">📝</text>
+        </view>
+        <text class="earn-name">答题赢币</text>
+        <text class="earn-reward">+5~50</text>
+      </view>
+      <view class="earn-item" bindtap="playGame" data-game="sign">
+        <view class="earn-icon-wrap sign">
+          <text class="earn-icon">📅</text>
+        </view>
+        <text class="earn-name">每日签到</text>
+        <text class="earn-reward">+20</text>
+      </view>
+      <view class="earn-item" bindtap="shareApp">
+        <view class="earn-icon-wrap share">
+          <text class="earn-icon">🔗</text>
+        </view>
+        <text class="earn-name">邀请好友</text>
+        <text class="earn-reward">+100</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">交易记录</text>
+      <text class="section-more" bindtap="viewAllRecords">全部 ></text>
+    </view>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="_id">
+        <view class="record-icon {{item.type}}">
+          <text>{{item.type === 'income' ? '↓' : '↑'}}</text>
+        </view>
+        <view class="record-info">
+          <text class="record-title">{{item.title}}</text>
+          <text class="record-time">{{item.createTime}}</text>
+        </view>
+        <text class="record-amount {{item.type}}">
+          {{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}
+        </text>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{records.length === 0}}">
+      <text>暂无交易记录</text>
+    </view>
+  </view>
+
+  <view class="withdraw-modal" wx:if="{{showWithdraw}}">
+    <view class="modal-mask" bindtap="closeWithdraw"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">提现到微信零钱</text>
+        <view class="modal-close" bindtap="closeWithdraw">×</view>
+      </view>
+      <view class="modal-body">
+        <view class="withdraw-balance">
+          <text class="withdraw-label">可提现金额</text>
+          <text class="withdraw-amount">¥{{balance}}</text>
+        </view>
+        <view class="withdraw-input-wrap">
+          <text class="withdraw-currency">¥</text>
+          <input class="withdraw-input" type="digit" placeholder="0.00" value="{{withdrawAmount}}" bindinput="onWithdrawInput" />
+          <view class="withdraw-all" bindtap="withdrawAll">全部</view>
+        </view>
+        <text class="withdraw-tip">最低提现1元，1-3个工作日到账</text>
+      </view>
+      <view class="modal-actions">
+        <view class="modal-btn cancel" bindtap="closeWithdraw">取消</view>
+        <view class="modal-btn confirm {{canWithdraw ? '' : 'disabled'}}" bindtap="confirmWithdraw">确认提现</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="game-modal" wx:if="{{showGameModal}}">
+    <view class="modal-mask" bindtap="closeGameModal"></view>
+    <view class="game-content">
+      <view class="game-header">
+        <text class="game-title">{{gameTitle}}</text>
+        <view class="modal-close" bindtap="closeGameModal">×</view>
+      </view>
+      <view class="game-body">
+        <view class="game-result" wx:if="{{gameResult}}">
+          <text class="result-icon">{{gameResult.icon}}</text>
+          <text class="result-title">{{gameResult.title}}</text>
+          <text class="result-amount">+{{gameResult.amount}}</text>
+          <text class="result-desc">{{gameResult.desc}}</text>
+        </view>
+        <view class="game-play" wx:else>
+          <text class="play-tip">{{gameTip}}</text>
+          <view class="play-btn" bindtap="startGame">开始游戏</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

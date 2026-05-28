@@ -1,0 +1,12 @@
+<view class="container">
+  <view class="logo-section">
+    <text class="app-name">武生院盲盒</text>
+    <text class="app-desc">登录后即可使用完整功能</text>
+  </view>
+
+  <button class="login-btn" bindtap="doLogin" loading="{{isLoggingIn}}" disabled="{{isLoggingIn}}">
+  微信一键登录
+  </button>
+
+  <view class="skip-link" bindtap="goBack">暂不登录，返回</view>
+</view>

@@ -1,0 +1,48 @@
+<view class="chat-container">
+  <!-- 顶部标题栏 -->
+  <view class="chat-header">
+    <view class="header-back" bindtap="goBack">
+      <text class="back-icon">‹</text>
+    </view>
+    <text class="header-title">{{targetUser.name}}</text>
+    <view class="header-more" bindtap="showMore">
+      <text class="more-icon">⋯</text>
+    </view>
+  </view>
+
+  <!-- 消息列表 -->
+  <scroll-view class="message-list" scroll-y scroll-into-view="{{scrollToMessage}}" scroll-with-animation>
+    <view class="message-item {{item.type}}" wx:for="{{messages}}" wx:key="_id" id="{{item._id}}">
+      <!-- 时间显示 -->
+      <view class="message-time" wx:if="{{index === 0 || messages[index-1].time !== item.time}}">
+        {{item.time}}
+      </view>
+      
+      <!-- 消息内容 -->
+      <view class="message-content">
+        <image class="message-avatar" src="{{item.avatar}}" mode="aspectFill" />
+        <view class="message-bubble">
+          <text class="message-text">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部输入框 -->
+  <view class="chat-input-bar">
+    <view class="input-wrap">
+      <input 
+        class="chat-input" 
+        placeholder="输入消息..." 
+        placeholder-class="input-placeholder"
+        value="{{inputValue}}"
+        bindinput="onInput"
+        confirm-type="send"
+        bindconfirm="sendMessage"
+      />
+    </view>
+    <view class="send-btn {{inputValue ? 'active' : ''}}" bindtap="sendMessage">
+      <text>发送</text>
+    </view>
+  </view>
+</view>

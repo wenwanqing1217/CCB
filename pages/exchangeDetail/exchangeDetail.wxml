@@ -1,0 +1,120 @@
+<view class="container">
+  <view class="exchange-header">
+    <view class="exchange-visual">
+      <view class="exchange-item want">
+        <text class="item-label">求</text>
+        <text class="item-text">{{item.wantItem}}</text>
+      </view>
+      <view class="exchange-arrow">
+        <text>⟷</text>
+      </view>
+      <view class="exchange-item have">
+        <text class="item-label">出</text>
+        <text class="item-text">{{item.haveItem}}</text>
+      </view>
+    </view>
+    <view class="status-row">
+      <view class="status-tag {{item.status}}">{{item.statusText}}</view>
+      <text class="create-time">{{item.createTime}}</text>
+    </view>
+  </view>
+
+  <view class="user-card">
+    <image class="user-avatar" src="{{item.userAvatar}}" />
+    <view class="user-info">
+      <text class="user-name">{{item.userName}}</text>
+      <text class="user-school">{{item.school}}</text>
+    </view>
+    <view class="follow-btn" bindtap="followUser">
+      <text>{{isFollowing ? '已关注' : '关注'}}</text>
+    </view>
+  </view>
+
+  <view class="image-section" wx:if="{{item.images && item.images.length > 0}}">
+    <text class="section-title">物品图片</text>
+    <view class="image-grid">
+      <image class="item-image" wx:for="{{item.images}}" wx:key="index" src="{{item}}" mode="aspectFill" bindtap="previewImage" data-index="{{index}}" />
+    </view>
+  </view>
+
+  <view class="desc-section">
+    <text class="section-title">详细描述</text>
+    <text class="desc-text">{{item.description}}</text>
+  </view>
+
+  <view class="info-card">
+    <view class="info-row">
+      <text class="info-label">物品分类</text>
+      <text class="info-value">{{item.category}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">物品成色</text>
+      <text class="info-value">{{item.condition}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">所在位置</text>
+      <text class="info-value">{{item.location}}</text>
+    </view>
+    <view class="info-row" wx:if="{{item.deliveryFee > 0}}">
+      <text class="info-label">配送费</text>
+      <text class="info-value fee">¥{{item.deliveryFee}}</text>
+    </view>
+  </view>
+
+  <view class="tags-section" wx:if="{{item.tags && item.tags.length > 0}}">
+    <text class="section-title">标签</text>
+    <view class="tag-list">
+      <view class="tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="match-section" wx:if="{{matchedItems.length > 0}}">
+    <text class="section-title">匹配推荐</text>
+    <view class="match-list">
+      <view class="match-card" wx:for="{{matchedItems}}" wx:key="_id" bindtap="navigateToDetail" data-id="{{item._id}}">
+        <view class="match-content">
+          <text class="match-label">求</text>
+          <text class="match-text">{{item.wantItem}}</text>
+        </view>
+        <view class="match-arrow">⟷</view>
+        <view class="match-content">
+          <text class="match-label have">出</text>
+          <text class="match-text">{{item.haveItem}}</text>
+        </view>
+        <view class="match-rate">{{item.matchRate}}%匹配</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="exchange-records" wx:if="{{exchangeRecords.length > 0}}">
+    <text class="section-title">交换记录</text>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{exchangeRecords}}" wx:key="_id">
+        <image class="record-avatar" src="{{item.userAvatar}}" />
+        <view class="record-info">
+          <text class="record-name">{{item.userName}}</text>
+          <text class="record-time">{{item.createTime}}</text>
+        </view>
+        <view class="record-status {{item.status}}">{{item.statusText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-bar">
+    <view class="action-left">
+      <view class="action-item" bindtap="toggleFavorite">
+        <text class="action-icon">{{isFavorite ? '♥' : '♡'}}</text>
+        <text class="action-text">{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="action-item" bindtap="navigateToChat">
+        <text class="action-icon">✉</text>
+        <text class="action-text">私信</text>
+      </view>
+    </view>
+    <view class="action-right">
+      <view class="apply-btn {{item.status !== 'pending' ? 'disabled' : ''}}" bindtap="applyExchange">
+        <text>{{item.status === 'pending' ? '申请交换' : '已交换'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

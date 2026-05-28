@@ -1,0 +1,74 @@
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">物流详情</text>
+    <view class="header-placeholder"></view>
+  </view>
+
+  <!-- 物流状态卡片 -->
+  <view class="status-card">
+    <view class="status-header">
+      <view class="status-icon">🚚</view>
+      <view class="status-info">
+        <text class="status-text">{{logisticsInfo.statusText}}</text>
+        <text class="status-desc">预计30分钟内送达</text>
+      </view>
+    </view>
+    <view class="tracking-info">
+      <text class="tracking-label">运单号：</text>
+      <text class="tracking-no">{{logisticsInfo.trackingNo}}</text>
+      <text class="copy-btn" bindtap="copyTrackingNo">复制</text>
+    </view>
+  </view>
+
+  <!-- 骑手信息 -->
+  <view class="rider-card" bindtap="contactRider">
+    <view class="rider-avatar">{{logisticsInfo.rider.name[0]}}</view>
+    <view class="rider-info">
+      <text class="rider-name">配送员 {{logisticsInfo.rider.name}}</text>
+      <text class="rider-phone">{{logisticsInfo.rider.phone}}</text>
+    </view>
+    <view class="contact-btn">
+      <text class="contact-icon">📞</text>
+      <text class="contact-text">联系</text>
+    </view>
+  </view>
+
+  <!-- 物流时间线 -->
+  <view class="timeline-section">
+    <text class="section-title">物流轨迹</text>
+    <view class="timeline">
+      <view class="timeline-item {{item.active ? 'active' : ''}}" wx:for="{{logisticsInfo.timeline}}" wx:key="index">
+        <view class="timeline-left">
+          <text class="timeline-time">{{item.time}}</text>
+          <text class="timeline-date">{{item.date}}</text>
+        </view>
+        <view class="timeline-dot {{item.active ? 'active' : ''}}"></view>
+        <view class="timeline-content">
+          <text class="timeline-status">{{item.status}}</text>
+          <text class="timeline-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单信息 -->
+  <view class="order-section">
+    <text class="section-title">订单信息</text>
+    <view class="order-card" bindtap="viewOrderDetail">
+      <image class="order-image" src="{{orderInfo.itemImage}}" mode="aspectFill" />
+      <view class="order-info">
+        <text class="order-name">{{orderInfo.itemName}}</text>
+        <text class="order-price">¥{{orderInfo.price}}</text>
+        <text class="order-meta">卖家：{{orderInfo.seller}} · {{orderInfo.createTime}}</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 底部安全区域 -->
+  <view class="safe-area"></view>
+</view>

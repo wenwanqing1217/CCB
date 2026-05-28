@@ -1,0 +1,102 @@
+<view class="container">
+  <view class="filter-tabs">
+    <view class="filter-tab {{filterType === 'all' ? 'active' : ''}}" bindtap="setFilter" data-type="all">全部</view>
+    <view class="filter-tab {{filterType === 'nearby' ? 'active' : ''}}" bindtap="setFilter" data-type="nearby">附近</view>
+    <view class="filter-tab {{filterType === 'high' ? 'active' : ''}}" bindtap="setFilter" data-type="high">高价优先</view>
+  </view>
+
+  <view wx:if="{{isRider}}">
+    <view class="map-container">
+      <map
+        id="orderMap"
+        class="order-map"
+        longitude="{{currentLocation ? currentLocation.longitude : 114.3055}}"
+        latitude="{{currentLocation ? currentLocation.latitude : 30.5928}}"
+        scale="16"
+        markers="{{markers}}"
+        show-location
+      ></map>
+      <view class="map-tip">
+        <text>点击地图标记查看订单详情</text>
+      </view>
+    </view>
+    
+    <view class="update-info">
+      <text>最后更新: {{lastUpdateTime}}</text>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-container">
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <view wx:elif="{{empty}}" class="empty-container">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无可抢订单</text>
+      <text class="empty-hint">下拉刷新试试</text>
+    </view>
+    
+    <view wx:else class="order-list">
+      <view class="order-card {{item.isNew ? 'new' : ''}}" wx:for="{{orders}}" wx:key="_id">
+        <view class="card-header">
+          <view class="order-type {{item.type}}">
+            <text>{{item.typeName}}</text>
+          </view>
+          <view class="order-fee">
+            <text class="fee-num">¥{{item.fee}}</text>
+          </view>
+          <view class="new-badge" wx:if="{{item.isNew}}">NEW</view>
+        </view>
+
+        <view class="card-route">
+          <view class="route-point">
+            <view class="point-icon from">
+              <text>取</text>
+            </view>
+            <view class="point-info">
+              <text class="point-dorm">{{item.fromDorm}}</text>
+              <text class="point-room">{{item.fromRoom}}</text>
+            </view>
+          </view>
+          <view class="route-line">
+            <view class="line-arrow">→</view>
+          </view>
+          <view class="route-point">
+            <view class="point-icon to">
+              <text>送</text>
+            </view>
+            <view class="point-info">
+              <text class="point-dorm">{{item.toDorm}}</text>
+              <text class="point-room">{{item.toRoom}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="card-info">
+          <view class="info-item">
+            <text class="info-label">距离</text>
+            <text class="info-value">{{item.distance}}m</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">物品</text>
+            <text class="info-value">{{item.itemName}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">备注</text>
+            <text class="info-value">{{item.remark || '无'}}</text>
+          </view>
+        </view>
+
+        <view class="card-footer">
+          <text class="order-time">{{item.createTime}}</text>
+          <view class="grab-btn" bindtap="grabOrder" data-id="{{item._id}}">立即抢单</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="not-rider" wx:if="{{!isRider}}">
+    <text class="not-rider-icon">🚴</text>
+    <text class="not-rider-title">成为骑手后才能抢单</text>
+    <view class="not-rider-btn" bindtap="navigateToRider">立即申请</view>
+  </view>
+</view>

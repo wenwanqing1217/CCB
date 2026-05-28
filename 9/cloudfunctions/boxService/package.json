@@ -1,0 +1,10 @@
+{
+  "name": "boxService",
+  "version": "1.0.0",
+  "description": "盲盒相关云函数（首页mock数据）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}
+

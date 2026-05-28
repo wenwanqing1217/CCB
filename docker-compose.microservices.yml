@@ -1,0 +1,154 @@
+# ==========================================
+# 校园盲盒平台 - 微服务Docker配置
+# 使用方式：
+# 1. 先启动基础中间件：docker-compose up -d
+# 2. 再启动微服务：docker-compose -f docker-compose.microservices.yml up -d
+# 或者一键启动：docker-compose -f docker-compose.yml -f docker-compose.microservices.yml up -d
+# ==========================================
+
+version: '3.8'
+
+services:
+  # ==========================================
+  # user-service (端口8001)
+  # ==========================================
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: campus-blindbox-user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root123456
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - campus-blindbox-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # box-service (端口8002)
+  # ==========================================
+  box-service:
+    build:
+      context: ./services/box-service
+      dockerfile: Dockerfile
+    container_name: campus-blindbox-box-service
+    ports:
+      - "8002:8002"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/box_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root123456
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - campus-blindbox-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # order-service (端口8003)
+  # ==========================================
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: campus-blindbox-order-service
+    ports:
+      - "8003:8003"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/order_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root123456
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - ROCKETMQ_NAMESRV_ADDR=rocketmq-namesrv:9876
+    depends_on:
+      - mysql
+      - redis
+      - rocketmq-namesrv
+    networks:
+      - campus-blindbox-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # delivery-service (端口8004)
+  # ==========================================
+  delivery-service:
+    build:
+      context: ./services/delivery-service
+      dockerfile: Dockerfile
+    container_name: campus-blindbox-delivery-service
+    ports:
+      - "8004:8004"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root123456
+      - DB_NAME=delivery_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - campus-blindbox-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # recommendation-service (端口8005)
+  # ==========================================
+  recommendation-service:
+    build:
+      context: ./services/recommendation-service
+      dockerfile: Dockerfile
+    container_name: campus-blindbox-recommendation-service
+    ports:
+      - "8005:8005"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ES_HOSTS=elasticsearch:9200
+    depends_on:
+      - redis
+      - elasticsearch
+    networks:
+      - campus-blindbox-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  campus-blindbox-network:
+    external: true

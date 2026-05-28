@@ -1,0 +1,51 @@
+<view class="container">
+  <view class="search-box">
+    <input class="search-input" placeholder="搜索盲盒..." bindinput="onSearchChange" bindconfirm="searchBoxes" />
+    <view class="search-btn" bindtap="searchBoxes">搜索</view>
+  </view>
+
+  <scroll-view class="category-scroll" scroll-x show-scrollbar="{{false}}">
+    <view class="category-row">
+      <view class="category-item {{activeCategory === 'all' ? 'active' : ''}}" bindtap="setCategory" data-category="all">全部</view>
+      <view class="category-item {{activeCategory === 'stationery' ? 'active' : ''}}" bindtap="setCategory" data-category="stationery">文具</view>
+      <view class="category-item {{activeCategory === 'food' ? 'active' : ''}}" bindtap="setCategory" data-category="food">零食</view>
+      <view class="category-item {{activeCategory === 'beauty' ? 'active' : ''}}" bindtap="setCategory" data-category="beauty">美妆</view>
+      <view class="category-item {{activeCategory === 'tech' ? 'active' : ''}}" bindtap="setCategory" data-category="tech">数码</view>
+      <view class="category-item {{activeCategory === 'book' ? 'active' : ''}}" bindtap="setCategory" data-category="book">图书</view>
+      <view class="category-item {{activeCategory === 'toy' ? 'active' : ''}}" bindtap="setCategory" data-category="toy">玩具</view>
+    </view>
+  </scroll-view>
+
+  <view class="sort-bar">
+    <view class="sort-item {{activeSort === 'default' ? 'active' : ''}}" bindtap="setSort" data-sort="default">默认</view>
+    <view class="sort-item {{activeSort === 'sales' ? 'active' : ''}}" bindtap="setSort" data-sort="sales">销量</view>
+    <view class="sort-item {{activeSort === 'price_asc' ? 'active' : ''}}" bindtap="setSort" data-sort="price_asc">价格升</view>
+    <view class="sort-item {{activeSort === 'price_desc' ? 'active' : ''}}" bindtap="setSort" data-sort="price_desc">价格降</view>
+  </view>
+
+  <view class="product-grid" wx:if="{{boxes.length > 0}}">
+    <view class="product-card" wx:for="{{boxes}}" wx:key="_id" bindtap="navigateToBoxDetail" data-id="{{item._id}}">
+      <image class="product-img" src="{{item.images[0]}}" mode="aspectFill" />
+      <view class="product-info">
+        <text class="product-title">{{item.title}}</text>
+        <text class="product-location">{{item.from_dorm}} → {{item.to_dorm}}</text>
+        <view class="product-bottom">
+          <text class="product-price">¥{{item.price}}</text>
+          <text class="product-sales">{{item.sales}}人购买</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-more" wx:if="{{loadingMore}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="no-more" wx:if="{{!hasMore && boxes.length > 0 && !loading}}">
+    <text>没有更多了</text>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && boxes.length === 0}}">
+    <text>暂无相关商品</text>
+  </view>
+</view>

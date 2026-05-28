@@ -1,0 +1,7 @@
+# 测试依赖
+requests>=2.31.0
+pytest>=7.4.0
+pytest-html>=3.2.0
+pytest-asyncio>=0.21.1
+faker>=19.0.0
+python-dotenv>=1.0.0

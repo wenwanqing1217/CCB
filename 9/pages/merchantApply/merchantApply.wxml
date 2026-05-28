@@ -1,0 +1,151 @@
+<view class="container">
+  <view class="benefits">
+    <view class="benefit-item">
+      <text class="benefit-icon">🏪</text>
+      <text class="benefit-text">专属店铺展示</text>
+    </view>
+    <view class="benefit-item">
+      <text class="benefit-icon">💰</text>
+      <text class="benefit-text">零门槛入驻</text>
+    </view>
+    <view class="benefit-item">
+      <text class="benefit-icon">📈</text>
+      <text class="benefit-text">数据分析支持</text>
+    </view>
+    <view class="benefit-item">
+      <text class="benefit-icon">🎯</text>
+      <text class="benefit-text">精准校园推广</text>
+    </view>
+  </view>
+
+  <view class="form-section" wx:if="{{!status || status === 'rejected'}}">
+    <view class="reject-notice" wx:if="{{status === 'rejected'}}">
+      <text class="reject-title">审核未通过</text>
+      <text class="reject-reason">原因: {{rejectReason}}</text>
+      <text class="reject-hint">请修改后重新提交</text>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">商家类型<text class="required">*</text></text>
+      <view class="type-cards">
+        <view class="type-card {{merchantType === 'student' ? 'active' : ''}}" bindtap="setMerchantType" data-type="student">
+          <text class="type-icon">🎓</text>
+          <text class="type-title">学生商家</text>
+          <text class="type-desc">在校学生创业</text>
+          <text class="type-feature">无需营业执照</text>
+        </view>
+        <view class="type-card {{merchantType === 'formal' ? 'active' : ''}}" bindtap="setMerchantType" data-type="formal">
+          <text class="type-icon">🏪</text>
+          <text class="type-title">正式商家</text>
+          <text class="type-desc">校外商家入驻</text>
+          <text class="type-feature">需营业执照</text>
+        </view>
+      </view>
+    </view>
+
+    <block wx:if="{{merchantType}}">
+      <view class="form-item">
+        <text class="form-label">经营类目<text class="required">*</text></text>
+        <picker class="form-picker" value="{{categoryIndex}}" range="{{categories}}" bindchange="onCategoryChange">
+          <text class="{{categoryIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
+            {{categoryIndex >= 0 ? categories[categoryIndex] : '请选择经营类目'}}
+          </text>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">店铺名称<text class="required">*</text></text>
+        <input class="form-input" placeholder="请输入店铺名称" value="{{shopName}}" data-field="shopName" bindinput="onInputChange" maxlength="20" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">店铺简介<text class="required">*</text></text>
+        <textarea class="form-textarea" placeholder="请输入店铺简介，让更多人了解您的店铺" value="{{shopDesc}}" data-field="shopDesc" bindinput="onInputChange" maxlength="200" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">联系人<text class="required">*</text></text>
+        <input class="form-input" placeholder="请输入联系人姓名" value="{{contactName}}" data-field="contactName" bindinput="onInputChange" maxlength="10" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">联系电话<text class="required">*</text></text>
+        <input class="form-input" type="number" placeholder="请输入11位手机号" value="{{contactPhone}}" data-field="contactPhone" bindinput="onInputChange" maxlength="11" />
+      </view>
+
+      <view class="form-item" wx:if="{{merchantType === 'formal'}}">
+        <text class="form-label">营业执照<text class="required">*</text></text>
+        <view class="upload-area">
+          <view class="upload-box license-upload" wx:if="{{!businessLicense}}" bindtap="uploadBusinessLicense">
+            <text class="upload-icon">📄</text>
+            <text class="upload-text">上传营业执照</text>
+            <text class="upload-hint">支持个体户或企业执照</text>
+          </view>
+          <view class="upload-preview license-preview" wx:else>
+            <image class="license-image" src="{{businessLicense}}" mode="aspectFit" />
+            <view class="preview-badge">✓</view>
+            <view class="preview-remove" bindtap="removeBusinessLicense">×</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">店铺照片<text class="required">*</text></text>
+        <view class="shop-images">
+          <view class="shop-image-item" wx:for="{{shopImages}}" wx:key="index">
+            <image class="shop-image" src="{{item}}" mode="aspectFill" />
+            <view class="image-remove" bindtap="removeShopImage" data-index="{{index}}">×</view>
+          </view>
+          <view class="add-image" wx:if="{{shopImages.length < 5}}" bindtap="uploadShopImage">
+            <text class="add-icon">+</text>
+            <text class="add-text">添加照片</text>
+          </view>
+        </view>
+        <text class="form-hint">最多上传5张，展示您的店铺环境或商品</text>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">身份证照片<text class="required">*</text></text>
+        <view class="id-card-upload">
+          <view class="id-card-item" bindtap="uploadIdFront">
+            <image wx:if="{{idFront}}" src="{{idFront}}" mode="aspectFill" class="id-image" />
+            <view wx:else class="id-placeholder">
+              <text class="placeholder-icon">📷</text>
+              <text class="placeholder-text">身份证人像面</text>
+            </view>
+            <view class="id-badge" wx:if="{{idFront}}">✓</view>
+          </view>
+          <view class="id-card-item" bindtap="uploadIdBack">
+            <image wx:if="{{idBack}}" src="{{idBack}}" mode="aspectFill" class="id-image" />
+            <view wx:else class="id-placeholder">
+              <text class="placeholder-icon">📷</text>
+              <text class="placeholder-text">身份证国徽面</text>
+            </view>
+            <view class="id-badge" wx:if="{{idBack}}">✓</view>
+          </view>
+        </view>
+        <text class="form-hint">请确保照片清晰，四角完整</text>
+      </view>
+
+      <view class="submit-btn {{canSubmit ? 'active' : ''}}" bindtap="submitApply">提交申请</view>
+    </block>
+  </view>
+
+  <view class="pending-section" wx:if="{{status === 'pending'}}">
+    <view class="pending-card">
+      <text class="pending-icon">⏳</text>
+      <text class="pending-title">审核中</text>
+      <text class="pending-info">您的商家入驻申请正在审核中，请耐心等待</text>
+      <text class="pending-time">提交时间: {{applyTime}}</text>
+    </view>
+  </view>
+
+  <view class="approved-section" wx:if="{{status === 'approved'}}">
+    <view class="approved-card">
+      <text class="approved-icon">🎉</text>
+      <text class="approved-title">审核通过</text>
+      <text class="approved-info">恭喜您成为商家，现在可以开始发布商品了</text>
+      <view class="approved-btn" bindtap="navigateToMerchant">进入商家中心</view>
+    </view>
+  </view>
+</view>
