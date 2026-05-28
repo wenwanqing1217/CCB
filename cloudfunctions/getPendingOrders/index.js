@@ -1,23 +1,9 @@
-// 获取待抢订单云函数
+// 获取待抢订单云函数（委托给orderService）
 const cloud = require('wx-server-sdk')
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
-})
-
-const db = cloud.database()
-
+// 委托给orderService处理
 exports.main = async (event, context) => {
-  try {
-    // 查询待抢单状态的订单
-    const orders = await db.collection('orders').where({
-      status: 'pending', // 待抢单状态
-      isDeleted: false
-    }).orderBy('created_at', 'desc').get()
-    
-    return orders.data
-  } catch (error) {
-    console.error('获取待抢订单失败:', error)
-    return []
-  }
+  const orderService = require('../orderService/index.js')
+  return await orderService.main({ ...event, action: 'list' }, context)
 }

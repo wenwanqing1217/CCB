@@ -1,3 +1,0 @@
-<view class="btn {{type}} {{size}} {{disabled ? 'btn-disabled' : ''}}" bindtap="handleTap">
-  <slot></slot>
-</view>

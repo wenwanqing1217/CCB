@@ -1,9 +1,0 @@
-{
-  "name": "banUser",
-  "version": "1.0.0",
-  "description": "封禁用户云函数",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
-}

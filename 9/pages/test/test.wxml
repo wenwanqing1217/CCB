@@ -1,9 +1,0 @@
-<view class="container">
-  <view class="test-header">
-    <text class="test-title">测试页面</text>
-    <text class="test-subtitle">这是一个测试页面</text>
-  </view>
-  <view class="test-content">
-    <text class="test-text">如果您看到这个页面，说明修改能够生效</text>
-  </view>
-</view>
