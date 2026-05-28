@@ -89,18 +89,18 @@ const ErrorCodes = {
     FILE_TOO_LARGE: { code: 8000005, message: '文件过大' },
     FILE_TYPE_NOT_ALLOWED: { code: 8000006, message: '文件类型不允许' }
   }
-}
+};
 
 /**
  * 业务异常类
  */
 class BusinessError extends Error {
   constructor(errorInfo, details = null) {
-    super(errorInfo.message)
-    this.code = errorInfo.code
-    this.message = errorInfo.message
-    this.details = details
-    this.name = 'BusinessError'
+    super(errorInfo.message);
+    this.code = errorInfo.code;
+    this.message = errorInfo.message;
+    this.details = details;
+    this.name = 'BusinessError';
   }
 
   toJSON() {
@@ -111,7 +111,7 @@ class BusinessError extends Error {
         message: this.message,
         details: this.details
       }
-    }
+    };
   }
 }
 
@@ -119,8 +119,8 @@ class BusinessError extends Error {
  * 创建业务异常
  */
 function bizError(errorKey, details = null) {
-  const errorInfo = getErrorByKey(errorKey)
-  return new BusinessError(errorInfo, details)
+  const errorInfo = getErrorByKey(errorKey);
+  return new BusinessError(errorInfo, details);
 }
 
 /**
@@ -129,33 +129,33 @@ function bizError(errorKey, details = null) {
  * @returns {Object} 错误信息对象
  */
 function getErrorByKey(key) {
-  const [module, errorName] = key.split('.')
+  const [module, errorName] = key.split('.');
 
   if (!module || !errorName) {
-    return ErrorCodes.SYSTEM.PARAM_INVALID
+    return ErrorCodes.SYSTEM.PARAM_INVALID;
   }
 
-  const moduleErrors = ErrorCodes[module.toUpperCase()]
+  const moduleErrors = ErrorCodes[module.toUpperCase()];
   if (!moduleErrors) {
-    return ErrorCodes.SYSTEM.PARAM_INVALID
+    return ErrorCodes.SYSTEM.PARAM_INVALID;
   }
 
-  const error = moduleErrors[errorName.toUpperCase()]
+  const error = moduleErrors[errorName.toUpperCase()];
   if (!error) {
-    return ErrorCodes.SYSTEM.PARAM_INVALID
+    return ErrorCodes.SYSTEM.PARAM_INVALID;
   }
 
-  return error
+  return error;
 }
 
 /**
  * 统一错误处理函数
  */
 function handleError(error, version = 'v1') {
-  console.error('Error:', error)
+  console.error('Error:', error);
 
   if (error instanceof BusinessError) {
-    return error.toJSON()
+    return error.toJSON();
   }
 
   // 未知错误
@@ -167,20 +167,20 @@ function handleError(error, version = 'v1') {
         message: '系统内部错误',
         requestId: generateRequestId()
       }
-    }
+    };
   }
 
   return {
     success: false,
     message: '系统错误，请稍后重试'
-  }
+  };
 }
 
 /**
  * 生成请求ID（用于链路追踪）
  */
 function generateRequestId() {
-  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
 /**
@@ -189,41 +189,41 @@ function generateRequestId() {
 const Validators = {
   isNonEmptyString(value, fieldName) {
     if (!value || typeof value !== 'string' || value.trim().length === 0) {
-      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}不能为空` }])
+      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}不能为空` }]);
     }
   },
 
   isPositiveNumber(value, fieldName) {
     if (!value || isNaN(Number(value)) || Number(value) < 0) {
-      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须是大于等于0的数字` }])
+      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须是大于等于0的数字` }]);
     }
   },
 
   isInRange(value, fieldName, min, max) {
-    const num = Number(value)
+    const num = Number(value);
     if (isNaN(num) || num < min || num > max) {
-      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须在${min}-${max}之间` }])
+      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须在${min}-${max}之间` }]);
     }
   },
 
   isOpenid(value, fieldName = 'openid') {
     if (!value || typeof value !== 'string' || value.length < 20) {
-      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: '无效的用户标识' }])
+      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: '无效的用户标识' }]);
     }
   },
 
   isArray(value, fieldName) {
     if (!Array.isArray(value)) {
-      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须是数组` }])
+      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}必须是数组` }]);
     }
   },
 
   maxLength(value, fieldName, max) {
     if (value && typeof value === 'string' && value.length > max) {
-      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}不能超过${max}个字符` }])
+      throw bizError('SYSTEM.PARAM_INVALID', [{ field: fieldName, message: `${fieldName}不能超过${max}个字符` }]);
     }
   }
-}
+};
 
 module.exports = {
   ErrorCodes,
@@ -233,4 +233,4 @@ module.exports = {
   handleError,
   generateRequestId,
   Validators
-}
+};

@@ -1,4 +1,4 @@
-const cloud = require('../../utils/cloud.js')
+const cloud = require('../../utils/cloud.js');
 
 Page({
   data: {
@@ -19,25 +19,25 @@ Page({
   },
 
   onLoad() {
-    this.loadOrders()
+    this.loadOrders();
   },
 
   onShow() {
-    this.loadOrders()
+    this.loadOrders();
   },
 
   onPullDownRefresh() {
-    this.loadOrders()
+    this.loadOrders();
   },
 
   setStatus(e) {
-    const status = e.currentTarget.dataset.status
-    this.setData({ activeStatus: status, orders: [], loading: true })
-    this.loadOrders()
+    const status = e.currentTarget.dataset.status;
+    this.setData({ activeStatus: status, orders: [], loading: true });
+    this.loadOrders();
   },
 
   async loadOrders() {
-    this.setData({ loading: true })
+    this.setData({ loading: true });
     
     try {
       const result = await cloud.callCloudFunction({
@@ -45,17 +45,17 @@ Page({
         data: { status: this.data.activeStatus },
         showLoading: false,
         showError: false
-      })
+      });
       if (result) {
-        this.processOrders(result)
+        this.processOrders(result);
       } else {
-          this.useMockData()
-        }
-      wx.stopPullDownRefresh()
+        this.useMockData();
+      }
+      wx.stopPullDownRefresh();
     } catch (error) {
-      console.error('加载订单失败:', error)
-      this.useMockData()
-      wx.stopPullDownRefresh()
+      console.error('加载订单失败:', error);
+      this.useMockData();
+      wx.stopPullDownRefresh();
     }
   },
 
@@ -65,21 +65,21 @@ Page({
       pending: orders.filter(o => o.status === 'pending').length,
       delivering: orders.filter(o => o.status === 'delivering').length,
       completed: orders.filter(o => o.status === 'completed').length
-    }
+    };
 
     const counts = {
       all: orders.length,
       pending: stats.pending,
       delivering: stats.delivering,
       completed: stats.completed
-    }
+    };
 
     this.setData({
       orders,
       stats,
       counts,
       loading: false
-    })
+    });
   },
 
   useMockData() {
@@ -155,109 +155,109 @@ Page({
         tags: ['零食', '进口'],
         rider: null
       }
-    ]
+    ];
 
-    this.processOrders(mockOrders)
+    this.processOrders(mockOrders);
   },
 
   navigateToDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: '../order-detail/order-detail?id=' + id })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '../order-detail/order-detail?id=' + id });
   },
 
   contactSeller(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.navigateTo({ 
       url: '../chat/chat?orderId=' + id,
       fail: () => {
-        wx.showToast({ title: '聊天功能开发中', icon: 'none' })
+        wx.showToast({ title: '聊天功能开发中', icon: 'none' });
       }
-    })
+    });
   },
 
   viewLogistics(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.navigateTo({ 
       url: '../order-detail/order-detail?id=' + id + '&tab=logistics',
       fail: () => {
-        wx.showToast({ title: '查看物流', icon: 'none' })
+        wx.showToast({ title: '查看物流', icon: 'none' });
       }
-    })
+    });
   },
 
   confirmReceive(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.showModal({
       title: '确认收货',
       content: '确认已收到商品吗？确认后订单将完成',
       confirmColor: '#8b5cf6',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '处理中' })
+          wx.showLoading({ title: '处理中' });
           setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({ title: '已确认收货', icon: 'success' })
-            this.loadOrders()
-          }, 800)
+            wx.hideLoading();
+            wx.showToast({ title: '已确认收货', icon: 'success' });
+            this.loadOrders();
+          }, 800);
         }
       }
-    })
+    });
   },
 
   payOrder(e) {
-    const id = e.currentTarget.dataset.id
-    wx.showLoading({ title: '支付中' })
+    const id = e.currentTarget.dataset.id;
+    wx.showLoading({ title: '支付中' });
     setTimeout(() => {
-      wx.hideLoading()
-      wx.showToast({ title: '支付成功', icon: 'success' })
-      this.loadOrders()
-    }, 1000)
+      wx.hideLoading();
+      wx.showToast({ title: '支付成功', icon: 'success' });
+      this.loadOrders();
+    }, 1000);
   },
 
   cancelOrder(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.showModal({
       title: '取消订单',
       content: '确定要取消该订单吗？取消后无法恢复',
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '取消中' })
+          wx.showLoading({ title: '取消中' });
           setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({ title: '订单已取消', icon: 'success' })
-            this.loadOrders()
-          }, 800)
+            wx.hideLoading();
+            wx.showToast({ title: '订单已取消', icon: 'success' });
+            this.loadOrders();
+          }, 800);
         }
       }
-    })
+    });
   },
 
   deleteOrder(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.showModal({
       title: '删除订单',
       content: '确定要删除该订单吗？删除后无法恢复',
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '删除中' })
+          wx.showLoading({ title: '删除中' });
           setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({ title: '订单已删除', icon: 'success' })
-            this.loadOrders()
-          }, 800)
+            wx.hideLoading();
+            wx.showToast({ title: '订单已删除', icon: 'success' });
+            this.loadOrders();
+          }, 800);
         }
       }
-    })
+    });
   },
 
   buyAgain(e) {
-    const id = e.currentTarget.dataset.id
-    wx.showToast({ title: '已添加到购物车', icon: 'success' })
+    const id = e.currentTarget.dataset.id;
+    wx.showToast({ title: '已添加到购物车', icon: 'success' });
   },
 
   goShopping() {
-    wx.switchTab({ url: '../index/index' })
+    wx.switchTab({ url: '../index/index' });
   }
-})
+});

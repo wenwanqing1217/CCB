@@ -20,17 +20,17 @@
  */
 
 // 云函数入口文件
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 // 初始化云开发环境
-cloud.init()
+cloud.init();
 
 // 获取数据库实例
-const db = cloud.database()
+const db = cloud.database();
 
 // 获取用户集合引用（对应论文4.3.1 用户集合）
-const usersCollection = db.collection('users')
-const certificationAppliesCollection = db.collection('certification_applies')
+const usersCollection = db.collection('users');
+const certificationAppliesCollection = db.collection('certification_applies');
 
 /**
  * 云函数入口函数
@@ -41,34 +41,34 @@ const certificationAppliesCollection = db.collection('certification_applies')
  * @returns {Object} - 操作结果
  */
 exports.main = async (event, context) => {
-  console.log('用户服务云函数收到请求:', event)
-  const { action, data } = event
+  console.log('用户服务云函数收到请求:', event);
+  const { action, data } = event;
 
   try {
     switch (action) {
       case 'login':
-        console.log('执行用户登录操作')
-        const loginResult = await handleLogin(data)
-        console.log('登录操作完成:', loginResult)
-        return loginResult
+        console.log('执行用户登录操作');
+        const loginResult = await handleLogin(data);
+        console.log('登录操作完成:', loginResult);
+        return loginResult;
       case 'updateCampusInfo':
-        console.log('执行更新校园信息操作')
-        return await handleUpdateCampusInfo(data)
+        console.log('执行更新校园信息操作');
+        return await handleUpdateCampusInfo(data);
       case 'getUserInfo':
-        console.log('执行获取用户信息操作')
-        return await handleGetUserInfo(data)
+        console.log('执行获取用户信息操作');
+        return await handleGetUserInfo(data);
       case 'submitCertification':
-        console.log('执行提交学生认证操作')
-        return await handleSubmitCertification(data)
+        console.log('执行提交学生认证操作');
+        return await handleSubmitCertification(data);
       default:
-        console.log('未知操作类型:', action)
-        return { success: false, message: '未知操作: ' + action }
+        console.log('未知操作类型:', action);
+        return { success: false, message: '未知操作: ' + action };
     }
   } catch (error) {
-    console.error('用户服务云函数执行错误:', error)
-    return { success: false, message: '服务器错误: ' + error.message }
+    console.error('用户服务云函数执行错误:', error);
+    return { success: false, message: '服务器错误: ' + error.message };
   }
-}
+};
 
 /**
  * 处理微信登录
@@ -79,21 +79,21 @@ exports.main = async (event, context) => {
  * @returns {Object} - 登录结果
  */
 async function handleLogin(data) {
-  const { userInfo, code } = data
+  const { userInfo, code } = data;
   
   try {
     // 调用微信接口获取用户openid（唯一标识）
-    const wxContext = cloud.getWXContext()
-    const openid = wxContext.OPENID
-    console.log('获取用户openid:', openid)
+    const wxContext = cloud.getWXContext();
+    const openid = wxContext.OPENID;
+    console.log('获取用户openid:', openid);
     
     // 查询用户是否已存在（通过openid唯一标识）
-    const existingUser = await usersCollection.where({ openid }).get()
+    const existingUser = await usersCollection.where({ openid }).get();
     
     if (existingUser.data.length > 0) {
       // 用户已存在，更新用户信息
-      const user = existingUser.data[0]
-      console.log('用户已存在，更新信息:', user._id)
+      const user = existingUser.data[0];
+      console.log('用户已存在，更新信息:', user._id);
       
       await usersCollection.doc(user._id).update({
         data: {
@@ -101,7 +101,7 @@ async function handleLogin(data) {
           avatarUrl: userInfo.avatarUrl,
           updatedAt: new Date()  // 更新时间戳
         }
-      })
+      });
       
       return {
         success: true,
@@ -116,10 +116,10 @@ async function handleLogin(data) {
           role: user.role || 'student',
           updatedAt: new Date()
         }
-      }
+      };
     } else {
       // 新用户，创建用户记录
-      console.log('新用户，创建用户记录')
+      console.log('新用户，创建用户记录');
       
       const newUser = {
         openid,                                  // 微信openid
@@ -132,10 +132,10 @@ async function handleLogin(data) {
         verifyStatus: 'unverified',              // 认证状态：未认证
         createdAt: new Date(),                   // 创建时间
         updatedAt: new Date()                    // 更新时间
-      }
+      };
       
-      const result = await usersCollection.add(newUser)
-      console.log('新用户创建成功:', result._id)
+      const result = await usersCollection.add(newUser);
+      console.log('新用户创建成功:', result._id);
       
       return {
         success: true,
@@ -143,11 +143,11 @@ async function handleLogin(data) {
           ...newUser,
           _id: result._id
         }
-      }
+      };
     }
   } catch (error) {
-    console.error('登录处理失败:', error)
-    return { success: false, message: '登录失败: ' + error.message }
+    console.error('登录处理失败:', error);
+    return { success: false, message: '登录失败: ' + error.message };
   }
 }
 
@@ -161,14 +161,14 @@ async function handleLogin(data) {
  * @returns {Object} - 更新结果
  */
 async function handleUpdateCampusInfo(data) {
-  const { openid, college, dorm } = data
+  const { openid, college, dorm } = data;
   
   try {
     // 查询用户是否存在
-    const user = await usersCollection.where({ openid }).get()
+    const user = await usersCollection.where({ openid }).get();
     
     if (user.data.length === 0) {
-      return { success: false, message: '用户不存在' }
+      return { success: false, message: '用户不存在' };
     }
     
     // 更新用户校园信息
@@ -180,15 +180,15 @@ async function handleUpdateCampusInfo(data) {
         },
         updatedAt: new Date()
       }
-    })
+    });
     
     return {
       success: true,
       message: '校园信息更新成功'
-    }
+    };
   } catch (error) {
-    console.error('更新校园信息失败:', error)
-    return { success: false, message: '更新失败: ' + error.message }
+    console.error('更新校园信息失败:', error);
+    return { success: false, message: '更新失败: ' + error.message };
   }
 }
 
@@ -200,23 +200,23 @@ async function handleUpdateCampusInfo(data) {
  * @returns {Object} - 用户信息
  */
 async function handleGetUserInfo(data) {
-  const { openid } = data
+  const { openid } = data;
   
   try {
     // 查询用户信息
-    const user = await usersCollection.where({ openid }).get()
+    const user = await usersCollection.where({ openid }).get();
     
     if (user.data.length === 0) {
-      return { success: false, message: '用户不存在' }
+      return { success: false, message: '用户不存在' };
     }
     
     return {
       success: true,
       user: user.data[0]
-    }
+    };
   } catch (error) {
-    console.error('获取用户信息失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
+    console.error('获取用户信息失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -224,28 +224,28 @@ async function handleGetUserInfo(data) {
  * 提交学生认证申请
  */
 async function handleSubmitCertification(data) {
-  const wxContext = cloud.getWXContext()
-  const openid = wxContext.OPENID
-  const { realName, school, studentId, phone, studentCard } = data || {}
+  const wxContext = cloud.getWXContext();
+  const openid = wxContext.OPENID;
+  const { realName, school, studentId, phone, studentCard } = data || {};
 
   if (!realName || !studentId || !phone) {
-    return { success: false, message: '请填写完整认证信息' }
+    return { success: false, message: '请填写完整认证信息' };
   }
 
   try {
-    const userRes = await usersCollection.where({ openid }).get()
+    const userRes = await usersCollection.where({ openid }).get();
     if (userRes.data.length === 0) {
-      return { success: false, message: '用户不存在，请先登录' }
+      return { success: false, message: '用户不存在，请先登录' };
     }
 
-    const user = userRes.data[0]
+    const user = userRes.data[0];
     const pending = await certificationAppliesCollection.where({
       openid,
       status: 'pending'
-    }).get()
+    }).get();
 
     if (pending.data.length > 0) {
-      return { success: false, message: '已有待审核的认证申请' }
+      return { success: false, message: '已有待审核的认证申请' };
     }
 
     await certificationAppliesCollection.add({
@@ -259,18 +259,18 @@ async function handleSubmitCertification(data) {
         status: 'pending',
         createdAt: new Date()
       }
-    })
+    });
 
     await usersCollection.doc(user._id).update({
       data: {
         verifyStatus: 'pending',
         updatedAt: new Date()
       }
-    })
+    });
 
-    return { success: true, message: '认证申请已提交' }
+    return { success: true, message: '认证申请已提交' };
   } catch (error) {
-    console.error('提交认证失败:', error)
-    return { success: false, message: '提交失败: ' + error.message }
+    console.error('提交认证失败:', error);
+    return { success: false, message: '提交失败: ' + error.message };
   }
 }

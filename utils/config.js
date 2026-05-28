@@ -130,7 +130,9 @@ class Config {
    * @returns {any}
    */
   get(path, defaultValue = null) {
-    if (!path) return this.config;
+    if (!path) {
+      return this.config;
+    }
     
     return path.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : defaultValue;

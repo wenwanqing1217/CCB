@@ -19,16 +19,16 @@
  */
 
 // 云函数入口文件
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 // 初始化云开发环境
-cloud.init()
+cloud.init();
 
 // 获取数据库实例
-const db = cloud.database()
+const db = cloud.database();
 
 // 获取盲盒集合引用（对应论文4.3.2 盲盒集合）
-const boxesCollection = db.collection('boxes')
+const boxesCollection = db.collection('boxes');
 
 /**
  * 云函数入口函数
@@ -39,31 +39,31 @@ const boxesCollection = db.collection('boxes')
  * @returns {Object} - 操作结果
  */
 exports.main = async (event, context) => {
-  const { action, data } = event
+  const { action, data } = event;
 
   try {
     switch (action) {
       case 'publish':
-        console.log('执行盲盒发布操作')
-        return await handlePublish(data)
+        console.log('执行盲盒发布操作');
+        return await handlePublish(data);
       case 'list':
-        console.log('执行盲盒列表查询操作')
-        return await handleList(data)
+        console.log('执行盲盒列表查询操作');
+        return await handleList(data);
       case 'detail':
-        console.log('执行盲盒详情查询操作')
-        return await handleDetail(data)
+        console.log('执行盲盒详情查询操作');
+        return await handleDetail(data);
       case 'home':
-        console.log('执行首页数据获取操作')
-        return await handleHome(data)
+        console.log('执行首页数据获取操作');
+        return await handleHome(data);
       default:
-        console.log('未知操作类型:', action)
-        return { success: false, message: '未知操作: ' + action }
+        console.log('未知操作类型:', action);
+        return { success: false, message: '未知操作: ' + action };
     }
   } catch (error) {
-    console.error('盲盒服务云函数执行错误:', error)
-    return { success: false, message: '服务器错误: ' + error.message }
+    console.error('盲盒服务云函数执行错误:', error);
+    return { success: false, message: '服务器错误: ' + error.message };
   }
-}
+};
 
 /**
  * 处理盲盒发布
@@ -91,11 +91,11 @@ async function handlePublish(data) {
     building,
     images,
     openid
-  } = data
+  } = data;
 
-  const validationError = validatePublishInput({ title, price, openid, images })
+  const validationError = validatePublishInput({ title, price, openid, images });
   if (validationError) {
-    return { success: false, message: validationError }
+    return { success: false, message: validationError };
   }
 
   try {
@@ -112,9 +112,9 @@ async function handlePublish(data) {
       status: 'available',
       createdAt: new Date(),
       updatedAt: new Date()
-    }
+    };
 
-    const result = await boxesCollection.add(newBox)
+    const result = await boxesCollection.add(newBox);
 
     return {
       success: true,
@@ -122,10 +122,10 @@ async function handlePublish(data) {
         ...newBox,
         _id: result._id
       }
-    }
+    };
   } catch (error) {
-    console.error('发布盲盒失败:', error)
-    return { success: false, message: '发布失败: ' + error.message }
+    console.error('发布盲盒失败:', error);
+    return { success: false, message: '发布失败: ' + error.message };
   }
 }
 
@@ -136,27 +136,27 @@ async function handlePublish(data) {
  */
 function validatePublishInput({ title, price, openid, images }) {
   if (!title || typeof title !== 'string' || title.trim().length === 0) {
-    return '标题不能为空'
+    return '标题不能为空';
   }
   if (title.trim().length > 50) {
-    return '标题不能超过50个字符'
+    return '标题不能超过50个字符';
   }
   if (!price || isNaN(Number(price)) || Number(price) < 0) {
-    return '价格必须是大于等于0的数字'
+    return '价格必须是大于等于0的数字';
   }
   if (Number(price) > 99999) {
-    return '价格不能超过99999'
+    return '价格不能超过99999';
   }
   if (!openid || typeof openid !== 'string') {
-    return '用户信息无效'
+    return '用户信息无效';
   }
   if (images && !Array.isArray(images)) {
-    return '图片格式无效'
+    return '图片格式无效';
   }
   if (images && images.length > 9) {
-    return '图片最多上传9张'
+    return '图片最多上传9张';
   }
-  return null
+  return null;
 }
 
 /**
@@ -170,31 +170,31 @@ function validatePublishInput({ title, price, openid, images }) {
  * @returns {Object} - 列表结果
  */
 async function handleList(data) {
-  const { page = 1, limit = 10, type, campus } = data
+  const { page = 1, limit = 10, type, campus } = data;
   
   try {
     // 构建查询条件，只查询在售盲盒
-    let query = boxesCollection.where({ status: 'available' })
+    let query = boxesCollection.where({ status: 'available' });
     
     // 按类型过滤
     if (type) {
-      query = query.where({ type })
+      query = query.where({ type });
     }
     
     // 按校区过滤
     if (campus) {
-      query = query.where({ campus })
+      query = query.where({ campus });
     }
     
     // 获取总数
-    const total = await query.count()
+    const total = await query.count();
     
     // 分页查询
     const boxes = await query
       .orderBy('createdAt', 'desc')  // 按创建时间倒序
       .skip((page - 1) * limit)      // 跳过前面的记录
       .limit(limit)                  // 限制每页数量
-      .get()
+      .get();
     
     return {
       success: true,
@@ -202,10 +202,10 @@ async function handleList(data) {
       total: total.total,
       page,
       limit
-    }
+    };
   } catch (error) {
-    console.error('获取盲盒列表失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
+    console.error('获取盲盒列表失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -217,23 +217,23 @@ async function handleList(data) {
  * @returns {Object} - 盲盒详情
  */
 async function handleDetail(data) {
-  const { boxId } = data
+  const { boxId } = data;
   
   try {
     // 根据ID查询盲盒详情
-    const box = await boxesCollection.doc(boxId).get()
+    const box = await boxesCollection.doc(boxId).get();
     
     if (!box.data) {
-      return { success: false, message: '盲盒不存在' }
+      return { success: false, message: '盲盒不存在' };
     }
     
     return {
       success: true,
       box: box.data
-    }
+    };
   } catch (error) {
-    console.error('获取盲盒详情失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
+    console.error('获取盲盒详情失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -250,7 +250,7 @@ async function handleHome(data) {
       .where({ status: 'available' })
       .orderBy('createdAt', 'desc')
       .limit(10)
-      .get()
+      .get();
     
     // 获取统计数据
     const stats = {
@@ -262,15 +262,15 @@ async function handleHome(data) {
         .count()).total,
       delivering: 3,  // 模拟数据：配送中订单数
       donateCount: 28 // 模拟数据：爱心捐赠数
-    }
+    };
     
     return {
       success: true,
       boxes: hotBoxes.data,
       stats
-    }
+    };
   } catch (error) {
-    console.error('获取首页数据失败:', error)
+    console.error('获取首页数据失败:', error);
     // 返回模拟数据作为降级方案
     return {
       success: false,
@@ -303,6 +303,6 @@ async function handleHome(data) {
         delivering: 3,
         donateCount: 28
       }
-    }
+    };
   }
 }

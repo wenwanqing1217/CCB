@@ -8,22 +8,22 @@
  * @returns {Function}
  */
 function debounce(func, wait, immediate = false) {
-  let timeout = null
-  return function(...args) {
-    const context = this
-    const later = function() {
-      timeout = null
+  let timeout = null;
+  return function (...args) {
+    const context = this;
+    const later = function () {
+      timeout = null;
       if (!immediate) {
-        func.apply(context, args)
+        func.apply(context, args);
       }
-    }
-    const callNow = immediate && !timeout
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
+    };
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
     if (callNow) {
-      func.apply(context, args)
+      func.apply(context, args);
     }
-  }
+  };
 }
 
 /**
@@ -33,15 +33,15 @@ function debounce(func, wait, immediate = false) {
  * @returns {Function}
  */
 function throttle(func, limit) {
-  let inThrottle = false
-  return function(...args) {
-    const context = this
+  let inThrottle = false;
+  return function (...args) {
+    const context = this;
     if (!inThrottle) {
-      func.apply(context, args)
-      inThrottle = true
-      setTimeout(() => (inThrottle = false), limit)
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
     }
-  }
+  };
 }
 
 /**
@@ -51,18 +51,18 @@ function throttle(func, limit) {
  */
 function deepClone(obj) {
   if (obj === null || typeof obj !== 'object') {
-    return obj
+    return obj;
   }
   if (Array.isArray(obj)) {
-    return obj.map(item => deepClone(item))
+    return obj.map(item => deepClone(item));
   }
-  const cloned = {}
+  const cloned = {};
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
-      cloned[key] = deepClone(obj[key])
+      cloned[key] = deepClone(obj[key]);
     }
   }
-  return cloned
+  return cloned;
 }
 
 /**
@@ -72,13 +72,13 @@ function deepClone(obj) {
  * @returns {string}
  */
 function formatTime(timestamp, format = 'YYYY-MM-DD HH:mm:ss') {
-  const date = new Date(timestamp)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
   
   return format
     .replace('YYYY', year)
@@ -86,7 +86,7 @@ function formatTime(timestamp, format = 'YYYY-MM-DD HH:mm:ss') {
     .replace('DD', day)
     .replace('HH', hours)
     .replace('mm', minutes)
-    .replace('ss', seconds)
+    .replace('ss', seconds);
 }
 
 /**
@@ -96,7 +96,7 @@ function formatTime(timestamp, format = 'YYYY-MM-DD HH:mm:ss') {
  * @returns {number}
  */
 function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
@@ -104,7 +104,7 @@ function random(min, max) {
  * @returns {string}
  */
 function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 9)
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 }
 
 /**
@@ -113,7 +113,7 @@ function generateId() {
  * @returns {Array}
  */
 function uniqueArray(arr) {
-  return [...new Set(arr)]
+  return [...new Set(arr)];
 }
 
 /**
@@ -123,15 +123,15 @@ function uniqueArray(arr) {
  * @returns {Array}
  */
 function uniqueObjectArray(arr, key) {
-  const seen = new Set()
+  const seen = new Set();
   return arr.filter(item => {
-    const value = item[key]
+    const value = item[key];
     if (seen.has(value)) {
-      return false
+      return false;
     }
-    seen.add(value)
-    return true
-  })
+    seen.add(value);
+    return true;
+  });
 }
 
 /**
@@ -142,13 +142,13 @@ function uniqueObjectArray(arr, key) {
  */
 function groupBy(arr, key) {
   return arr.reduce((groups, item) => {
-    const groupKey = typeof key === 'function' ? key(item) : item[key]
+    const groupKey = typeof key === 'function' ? key(item) : item[key];
     if (!groups[groupKey]) {
-      groups[groupKey] = []
+      groups[groupKey] = [];
     }
-    groups[groupKey].push(item)
-    return groups
-  }, {})
+    groups[groupKey].push(item);
+    return groups;
+  }, {});
 }
 
 /**
@@ -158,23 +158,23 @@ function groupBy(arr, key) {
  * @returns {Function}
  */
 function debouncePromise(asyncFunc, wait) {
-  let timeout = null
-  let lastPromise = null
+  let timeout = null;
+  let lastPromise = null;
   
-  return function(...args) {
+  return function (...args) {
     return new Promise((resolve, reject) => {
-      clearTimeout(timeout)
+      clearTimeout(timeout);
       timeout = setTimeout(async () => {
         try {
-          lastPromise = asyncFunc.apply(this, args)
-          const result = await lastPromise
-          resolve(result)
+          lastPromise = asyncFunc.apply(this, args);
+          const result = await lastPromise;
+          resolve(result);
         } catch (error) {
-          reject(error)
+          reject(error);
         }
-      }, wait)
-    })
-  }
+      }, wait);
+    });
+  };
 }
 
 /**
@@ -185,9 +185,9 @@ function debouncePromise(asyncFunc, wait) {
  */
 function safeJsonParse(str, defaultValue = null) {
   try {
-    return JSON.parse(str)
+    return JSON.parse(str);
   } catch {
-    return defaultValue
+    return defaultValue;
   }
 }
 
@@ -200,8 +200,8 @@ function safeJsonParse(str, defaultValue = null) {
  */
 function getProperty(obj, path, defaultValue = null) {
   return path.split('.').reduce((current, key) => {
-    return current && current[key] !== undefined ? current[key] : defaultValue
-  }, obj)
+    return current && current[key] !== undefined ? current[key] : defaultValue;
+  }, obj);
 }
 
 // 导出所有工具类和工具函数
@@ -240,4 +240,4 @@ module.exports = {
   debouncePromise,
   safeJsonParse,
   getProperty
-}
+};

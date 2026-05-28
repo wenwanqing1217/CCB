@@ -12,14 +12,14 @@ export const loadingStates = {
     wx.showLoading({
       title,
       mask: true
-    })
+    });
   },
 
   /**
    * 隐藏加载弹窗
    */
   hideLoading() {
-    wx.hideLoading()
+    wx.hideLoading();
   },
 
   /**
@@ -33,7 +33,7 @@ export const loadingStates = {
       title,
       icon,
       duration
-    })
+    });
   },
 
   /**
@@ -41,7 +41,7 @@ export const loadingStates = {
    * @param {string} title - 提示文字
    */
   showSuccess(title) {
-    this.showToast(title, 'success')
+    this.showToast(title, 'success');
   },
 
   /**
@@ -49,7 +49,7 @@ export const loadingStates = {
    * @param {string} title - 提示文字
    */
   showError(title) {
-    this.showToast(title, 'error')
+    this.showToast(title, 'error');
   },
 
   /**
@@ -64,7 +64,7 @@ export const loadingStates = {
       confirmText = '确定',
       cancelText = '取消',
       confirmColor = '#576B95'
-    } = options
+    } = options;
 
     return new Promise((resolve) => {
       wx.showModal({
@@ -74,13 +74,13 @@ export const loadingStates = {
         cancelText,
         confirmColor,
         success: (res) => {
-          resolve(res.confirm)
+          resolve(res.confirm);
         },
         fail: () => {
-          resolve(false)
+          resolve(false);
         }
-      })
-    })
+      });
+    });
   },
 
   /**
@@ -93,7 +93,7 @@ export const loadingStates = {
       itemList = [],
       itemColor = '#000000',
       cancelText = '取消'
-    } = options
+    } = options;
 
     return new Promise((resolve) => {
       wx.showActionSheet({
@@ -101,15 +101,15 @@ export const loadingStates = {
         itemColor,
         cancelText,
         success: (res) => {
-          resolve(res.tapIndex)
+          resolve(res.tapIndex);
         },
         fail: () => {
-          resolve(-1)
+          resolve(-1);
         }
-      })
-    })
+      });
+    });
   }
-}
+};
 
 /**
  * 动画效果工具
@@ -126,12 +126,12 @@ export const animations = {
       timingFunction: 'ease-in-out',
       delay: 0,
       transformOrigin: 'center center'
-    })
+    });
 
-    animation.opacity(0.5).step({ duration: duration / 2 })
-    animation.opacity(1).step({ duration: duration / 2 })
+    animation.opacity(0.5).step({ duration: duration / 2 });
+    animation.opacity(1).step({ duration: duration / 2 });
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -143,11 +143,11 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'ease-out'
-    })
+    });
 
-    animation.scale(scale).step()
+    animation.scale(scale).step();
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -158,11 +158,11 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'ease-out'
-    })
+    });
 
-    animation.opacity(1).step()
+    animation.opacity(1).step();
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -173,11 +173,11 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'ease-in'
-    })
+    });
 
-    animation.opacity(0).step()
+    animation.opacity(0).step();
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -190,31 +190,31 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'ease-out'
-    })
+    });
 
-    let fromStyle = {}
+    const fromStyle = {};
     switch (direction) {
       case 'top':
-        fromStyle.translateY = -distance
-        break
+        fromStyle.translateY = -distance;
+        break;
       case 'bottom':
-        fromStyle.translateY = distance
-        break
+        fromStyle.translateY = distance;
+        break;
       case 'left':
-        fromStyle.translateX = -distance
-        break
+        fromStyle.translateX = -distance;
+        break;
       case 'right':
-        fromStyle.translateX = distance
-        break
+        fromStyle.translateX = distance;
+        break;
     }
 
-    animation.opacity(1).translateX(0).translateY(0).step()
+    animation.opacity(1).translateX(0).translateY(0).step();
     const fromAnimation = wx.createAnimation({
       duration: 0
-    })
-    fromAnimation.opacity(0).setTranslate(fromStyle).step()
+    });
+    fromAnimation.opacity(0).setTranslate(fromStyle).step();
 
-    return { from: fromAnimation.export(), to: animation.export() }
+    return { from: fromAnimation.export(), to: animation.export() };
   },
 
   /**
@@ -225,13 +225,13 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'ease-out'
-    })
+    });
 
-    animation.scale(1.2).step({ duration: duration / 3 })
-    animation.scale(0.9).step({ duration: duration / 3 })
-    animation.scale(1).step({ duration: duration / 3 })
+    animation.scale(1.2).step({ duration: duration / 3 });
+    animation.scale(0.9).step({ duration: duration / 3 });
+    animation.scale(1).step({ duration: duration / 3 });
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -242,14 +242,14 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'ease-in-out'
-    })
+    });
 
-    animation.translateX(-10).step({ duration: duration / 4 })
-    animation.translateX(10).step({ duration: duration / 4 })
-    animation.translateX(-10).step({ duration: duration / 4 })
-    animation.translateX(0).step({ duration: duration / 4 })
+    animation.translateX(-10).step({ duration: duration / 4 });
+    animation.translateX(10).step({ duration: duration / 4 });
+    animation.translateX(-10).step({ duration: duration / 4 });
+    animation.translateX(0).step({ duration: duration / 4 });
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -261,11 +261,11 @@ export const animations = {
     const animation = wx.createAnimation({
       duration,
       timingFunction: 'linear'
-    })
+    });
 
-    animation.rotate(angle).step()
+    animation.rotate(angle).step();
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -273,27 +273,27 @@ export const animations = {
    * @param {number} duration - 持续时间（毫秒）
    */
   openBox(duration = 1000) {
-    const steps = duration / 4
+    const steps = duration / 4;
 
     const animation = wx.createAnimation({
       duration: 0
-    })
+    });
 
     // 抖动效果
-    animation.translateX(-5).step({ duration: steps / 3 })
-    animation.translateX(5).step({ duration: steps / 3 })
-    animation.translateX(-5).step({ duration: steps / 3 })
+    animation.translateX(-5).step({ duration: steps / 3 });
+    animation.translateX(5).step({ duration: steps / 3 });
+    animation.translateX(-5).step({ duration: steps / 3 });
 
     // 放大效果
-    animation.scale(1.3).step({ duration: steps })
+    animation.scale(1.3).step({ duration: steps });
 
     // 旋转开启
-    animation.rotateX(-180).step({ duration: steps * 2 })
+    animation.rotateX(-180).step({ duration: steps * 2 });
 
     // 恢复正常
-    animation.scale(1).step({ duration: steps })
+    animation.scale(1).step({ duration: steps });
 
-    return animation.export()
+    return animation.export();
   },
 
   /**
@@ -305,28 +305,28 @@ export const animations = {
    */
   async countUp(start, end, duration = 1000) {
     return new Promise((resolve) => {
-      const startTime = Date.now()
-      const diff = end - start
+      const startTime = Date.now();
+      const diff = end - start;
 
       const animate = () => {
-        const elapsed = Date.now() - startTime
-        const progress = Math.min(elapsed / duration, 1)
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
         
         // 使用缓动函数
-        const easeOut = 1 - Math.pow(1 - progress, 3)
-        const current = Math.floor(start + diff * easeOut)
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + diff * easeOut);
 
         if (progress < 1) {
-          requestAnimationFrame(animate)
+          requestAnimationFrame(animate);
         } else {
-          resolve(end)
+          resolve(end);
         }
-      }
+      };
 
-      animate()
-    })
+      animate();
+    });
   }
-}
+};
 
 /**
  * 页面导航工具
@@ -340,11 +340,11 @@ export const navigation = {
   navigateTo(url, params = {}) {
     const query = Object.entries(params)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join('&')
+      .join('&');
     
-    const fullUrl = query ? `${url}?${query}` : url
+    const fullUrl = query ? `${url}?${query}` : url;
     
-    wx.navigateTo({ url: fullUrl })
+    wx.navigateTo({ url: fullUrl });
   },
 
   /**
@@ -355,11 +355,11 @@ export const navigation = {
   redirectTo(url, params = {}) {
     const query = Object.entries(params)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join('&')
+      .join('&');
     
-    const fullUrl = query ? `${url}?${query}` : url
+    const fullUrl = query ? `${url}?${query}` : url;
     
-    wx.redirectTo({ url: fullUrl })
+    wx.redirectTo({ url: fullUrl });
   },
 
   /**
@@ -367,7 +367,7 @@ export const navigation = {
    * @param {number} delta - 返回页数
    */
   goBack(delta = 1) {
-    wx.navigateBack({ delta })
+    wx.navigateBack({ delta });
   },
 
   /**
@@ -375,17 +375,17 @@ export const navigation = {
    * @param {string} url - 页面路径
    */
   switchTab(url) {
-    wx.switchTab({ url })
+    wx.switchTab({ url });
   },
 
   /**
    * 重新加载页面
    */
   reload() {
-    const pages = getCurrentPages()
+    const pages = getCurrentPages();
     if (pages.length > 0) {
-      const currentPage = pages[pages.length - 1]
-      currentPage.onLoad(currentPage.options)
+      const currentPage = pages[pages.length - 1];
+      currentPage.onLoad(currentPage.options);
     }
   },
 
@@ -394,11 +394,11 @@ export const navigation = {
    * @returns {object} - 参数对象
    */
   getParams() {
-    const pages = getCurrentPages()
+    const pages = getCurrentPages();
     if (pages.length > 0) {
-      return pages[pages.length - 1].options || {}
+      return pages[pages.length - 1].options || {};
     }
-    return {}
+    return {};
   },
 
   /**
@@ -407,19 +407,19 @@ export const navigation = {
    * @returns {object} - 参数对象
    */
   parseUrlParams(url) {
-    const params = {}
-    const queryString = url.split('?')[1]
+    const params = {};
+    const queryString = url.split('?')[1];
     
     if (queryString) {
       queryString.split('&').forEach(param => {
-        const [key, value] = param.split('=')
-        params[key] = decodeURIComponent(value || '')
-      })
+        const [key, value] = param.split('=');
+        params[key] = decodeURIComponent(value || '');
+      });
     }
     
-    return params
+    return params;
   }
-}
+};
 
 /**
  * 表单验证工具
@@ -431,7 +431,7 @@ export const formValidator = {
    * @returns {boolean} - 是否有效
    */
   isPhone(phone) {
-    return /^1[3-9]\d{9}$/.test(phone)
+    return /^1[3-9]\d{9}$/.test(phone);
   },
 
   /**
@@ -440,7 +440,7 @@ export const formValidator = {
    * @returns {boolean} - 是否有效
    */
   isEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   },
 
   /**
@@ -449,7 +449,7 @@ export const formValidator = {
    * @returns {boolean} - 是否有效
    */
   isIdCard(idCard) {
-    return /^\d{17}[\dXx]$/.test(idCard)
+    return /^\d{17}[\dXx]$/.test(idCard);
   },
 
   /**
@@ -458,15 +458,25 @@ export const formValidator = {
    * @returns {number} - 强度等级（0-3）
    */
   passwordStrength(password) {
-    let strength = 0
+    let strength = 0;
     
-    if (password.length >= 8) strength++
-    if (/[a-z]/.test(password)) strength++
-    if (/[A-Z]/.test(password)) strength++
-    if (/[0-9]/.test(password)) strength++
-    if (/[^a-zA-Z0-9]/.test(password)) strength++
+    if (password.length >= 8) {
+      strength++;
+    }
+    if (/[a-z]/.test(password)) {
+      strength++;
+    }
+    if (/[A-Z]/.test(password)) {
+      strength++;
+    }
+    if (/[0-9]/.test(password)) {
+      strength++;
+    }
+    if (/[^a-zA-Z0-9]/.test(password)) {
+      strength++;
+    }
 
-    return Math.min(strength, 3)
+    return Math.min(strength, 3);
   },
 
   /**
@@ -475,7 +485,7 @@ export const formValidator = {
    * @returns {boolean} - 是否为空
    */
   isRequired(value) {
-    return value !== undefined && value !== null && value !== ''
+    return value !== undefined && value !== null && value !== '';
   },
 
   /**
@@ -485,7 +495,7 @@ export const formValidator = {
    * @returns {boolean} - 是否满足
    */
   minLength(value, min) {
-    return String(value).length >= min
+    return String(value).length >= min;
   },
 
   /**
@@ -495,7 +505,7 @@ export const formValidator = {
    * @returns {boolean} - 是否满足
    */
   maxLength(value, max) {
-    return String(value).length <= max
+    return String(value).length <= max;
   },
 
   /**
@@ -506,7 +516,7 @@ export const formValidator = {
    * @returns {boolean} - 是否满足
    */
   inRange(value, min, max) {
-    return value >= min && value <= max
+    return value >= min && value <= max;
   },
 
   /**
@@ -517,9 +527,9 @@ export const formValidator = {
    * @returns {boolean} - 是否满足
    */
   arrayLength(value, min, max) {
-    return value.length >= min && value.length <= max
+    return value.length >= min && value.length <= max;
   }
-}
+};
 
 /**
  * 键盘工具
@@ -529,7 +539,7 @@ export const keyboard = {
    * 隐藏键盘
    */
   hide() {
-    wx.hideKeyboard()
+    wx.hideKeyboard();
   },
 
   /**
@@ -537,7 +547,7 @@ export const keyboard = {
    * @param {object} options - 选项
    */
   show(options = {}) {
-    wx.showKeyboard(options)
+    wx.showKeyboard(options);
   },
 
   /**
@@ -545,9 +555,9 @@ export const keyboard = {
    * @param {string} selector - 选择器
    */
   focus(selector) {
-    wx.createSelectorQuery().select(selector).focus()
+    wx.createSelectorQuery().select(selector).focus();
   }
-}
+};
 
 /**
  * 分享工具
@@ -564,7 +574,7 @@ export const share = {
       imageUrl = '',
       success = () => {},
       fail = () => {}
-    } = options
+    } = options;
 
     wx.onShareAppMessage(() => ({
       title,
@@ -572,12 +582,12 @@ export const share = {
       imageUrl,
       success,
       fail
-    }))
+    }));
 
     wx.onShareTimeline(() => ({
       title,
       imageUrl
-    }))
+    }));
   },
 
   /**
@@ -588,6 +598,6 @@ export const share = {
     wx.showShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
-    })
+    });
   }
-}
+};

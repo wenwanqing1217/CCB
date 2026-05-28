@@ -14,7 +14,7 @@ Component({
     }
   },
   methods: {
-    handleTap: function() {
+    handleTap: function () {
       if (!this.properties.disabled) {
         this.triggerEvent('tap');
       }

@@ -7,27 +7,35 @@ const ALL_DORMS = [
   '敏学1栋', '敏学2栋', '敏学3栋', '敏学4栋', '敏学5栋',
   '洪山园1栋', '洪山园2栋', '洪山园4栋',
   '滨水居', '巴山居', '青枫居', '新梧居', '文园', '静园', '竹园', '兰园', '菊园'
-]
+];
 
 const MAIN_DORMS = [
   '中园公寓', '中南公寓', '新柏居', '苏园居', '知行1栋', '敏学1栋',
   '松柏居', '三友园', '四季园', '清水居', '新松居', '洪山园1栋'
-]
+];
 
 const COLLEGES = [
   '计算机学院', '生命科学技术学院', '建筑工程学院', '管理学院',
   '外国语学院', '医药学院', '艺术学院', '机械工程学院', '经济管理学院'
-]
+];
 
-const SCHOOL_NAME = '武汉生物工程学院'
+const SCHOOL_NAME = '武汉生物工程学院';
 
 function getLevel(count, maxCount) {
-  if (!count || !maxCount) return 'cold'
-  const ratio = count / maxCount
-  if (ratio >= 0.75) return 'hot'
-  if (ratio >= 0.5) return 'warm'
-  if (ratio >= 0.25) return 'normal'
-  return 'cold'
+  if (!count || !maxCount) {
+    return 'cold';
+  }
+  const ratio = count / maxCount;
+  if (ratio >= 0.75) {
+    return 'hot';
+  }
+  if (ratio >= 0.5) {
+    return 'warm';
+  }
+  if (ratio >= 0.25) {
+    return 'normal';
+  }
+  return 'cold';
 }
 
 function getDemoDormHeat() {
@@ -40,17 +48,17 @@ function getDemoDormHeat() {
     { dorm: '三友园', count: 47 },
     { dorm: '敏学1栋', count: 43 },
     { dorm: '松柏居', count: 38 }
-  ]
-  const maxCount = raw[0].count
+  ];
+  const maxCount = raw[0].count;
   return raw.map((item) => ({
     ...item,
     level: getLevel(item.count, maxCount),
     percent: Math.round((item.count / maxCount) * 100)
-  }))
+  }));
 }
 
 function getDemoOrders() {
-  const now = Date.now()
+  const now = Date.now();
   return [
     {
       _id: 'demo_order_1',
@@ -85,11 +93,11 @@ function getDemoOrders() {
       create_time: now - 5400000,
       distance: 0.6
     }
-  ]
+  ];
 }
 
 function getDemoGrabOrders() {
-  const now = Date.now()
+  const now = Date.now();
   return [
     {
       _id: 'demo_grab_1',
@@ -113,7 +121,7 @@ function getDemoGrabOrders() {
       createTime: '25分钟前',
       create_time: now - 1500000
     }
-  ]
+  ];
 }
 
 function getDemoHotBoxes() {
@@ -124,10 +132,10 @@ function getDemoHotBoxes() {
     ['三友园', '松柏居'],
     ['清水居', '四季园'],
     ['苏园居', '洪山园1栋']
-  ]
-  const titles = ['神秘文具盲盒', '零食大礼包', '美妆盲盒', '科技小玩意儿', '图书盲盒', '运动器材盲盒']
-  const prices = [9.9, 19.9, 29.9, 39.9, 14.9, 24.9]
-  const sales = [23, 45, 18, 12, 27, 15]
+  ];
+  const titles = ['神秘文具盲盒', '零食大礼包', '美妆盲盒', '科技小玩意儿', '图书盲盒', '运动器材盲盒'];
+  const prices = [9.9, 19.9, 29.9, 39.9, 14.9, 24.9];
+  const sales = [23, 45, 18, 12, 27, 15];
 
   return pairs.map(([from, to], i) => ({
     _id: String(i + 1),
@@ -138,7 +146,7 @@ function getDemoHotBoxes() {
     to_dorm: to,
     stock: 30,
     sales: sales[i]
-  }))
+  }));
 }
 
 module.exports = {
@@ -152,4 +160,4 @@ module.exports = {
   getDemoGrabOrders,
   getDemoHotBoxes,
   getLevel
-}
+};

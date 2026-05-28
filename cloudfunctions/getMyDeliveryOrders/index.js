@@ -1,10 +1,10 @@
-const cloud = require('wx-server-sdk')
-cloud.init()
+const cloud = require('wx-server-sdk');
+cloud.init();
 
-const db = cloud.database()
+const db = cloud.database();
 
 exports.main = async (event, context) => {
-  const { riderId } = event
+  const { riderId } = event;
   
   try {
     const result = await db.collection('orders')
@@ -14,7 +14,7 @@ exports.main = async (event, context) => {
         status: db.command.neq('pending')
       })
       .orderBy('createTime', 'desc')
-      .get()
+      .get();
     
     return {
       success: true,
@@ -23,17 +23,17 @@ exports.main = async (event, context) => {
         acceptTime: item.acceptTime ? formatTime(item.acceptTime) : '',
         finishTime: item.finishTime ? formatTime(item.finishTime) : ''
       }))
-    }
+    };
   } catch (error) {
-    console.error('获取骑手订单失败:', error)
+    console.error('获取骑手订单失败:', error);
     return {
       success: false,
       message: '获取订单失败'
-    }
+    };
   }
-}
+};
 
 function formatTime(date) {
-  const d = new Date(date)
-  return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
+  const d = new Date(date);
+  return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
 }

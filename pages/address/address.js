@@ -1,6 +1,6 @@
-const cloud = require('../../utils/cloud.js')
-const toast = require('../../utils/toast.js')
-const { ALL_DORMS } = require('../../utils/campusData.js')
+const cloud = require('../../utils/cloud.js');
+const toast = require('../../utils/toast.js');
+const { ALL_DORMS } = require('../../utils/campusData.js');
 
 Page({
   data: {
@@ -18,11 +18,11 @@ Page({
   },
 
   onLoad() {
-    this.loadAddresses()
+    this.loadAddresses();
   },
 
   onShow() {
-    this.loadAddresses()
+    this.loadAddresses();
   },
 
   async loadAddresses() {
@@ -31,54 +31,56 @@ Page({
         name: 'getAddresses',
         showLoading: false,
         showError: false
-      })
+      });
       if (result) {
-        this.setData({ addresses: result })
+        this.setData({ addresses: result });
       }
     } catch (error) {
-      console.error('加载地址失败:', error)
+      console.error('加载地址失败:', error);
       this.setData({
         addresses: [
           { _id: '1', name: '小明', phone: '13800138000', dorm: '中园公寓', room: '302', isDefault: true },
           { _id: '2', name: '小红', phone: '13900139000', dorm: '苏园居', room: '201', isDefault: false }
         ]
-      })
+      });
     }
   },
 
   onPasteInput(e) {
-    this.setData({ pasteText: e.detail.value })
+    this.setData({ pasteText: e.detail.value });
   },
 
   parseAddress() {
-    if (!this.data.pasteText.trim()) return
+    if (!this.data.pasteText.trim()) {
+      return;
+    }
     
-    const text = this.data.pasteText
+    const text = this.data.pasteText;
     
-    const phoneMatch = text.match(/1[3-9]\d{9}/)
-    const phone = phoneMatch ? phoneMatch[0] : ''
+    const phoneMatch = text.match(/1[3-9]\d{9}/);
+    const phone = phoneMatch ? phoneMatch[0] : '';
     
-    const nameMatch = text.match(/[^\d\s\u4e00-\u9fa5]{2,4}|[\u4e00-\u9fa5]{2,4}/)
-    const name = nameMatch ? nameMatch[0] : ''
+    const nameMatch = text.match(/[^\d\s\u4e00-\u9fa5]{2,4}|[\u4e00-\u9fa5]{2,4}/);
+    const name = nameMatch ? nameMatch[0] : '';
     
     this.setData({
       'form.name': name,
       'form.phone': phone,
       pasteText: ''
-    })
+    });
     
-    wx.showToast({ title: '解析成功', icon: 'success' })
+    wx.showToast({ title: '解析成功', icon: 'success' });
   },
 
   selectAddress(e) {
-    const id = e.currentTarget.dataset.id
-    const pages = getCurrentPages()
-    const prevPage = pages[pages.length - 2]
+    const id = e.currentTarget.dataset.id;
+    const pages = getCurrentPages();
+    const prevPage = pages[pages.length - 2];
     
     if (prevPage && prevPage.route === 'pages/order/order') {
-      const address = this.data.addresses.find(item => item._id === id)
-      prevPage.setData({ selectedAddress: address })
-      wx.navigateBack()
+      const address = this.data.addresses.find(item => item._id === id);
+      prevPage.setData({ selectedAddress: address });
+      wx.navigateBack();
     }
   },
 
@@ -92,12 +94,12 @@ Page({
         room: '',
         isDefault: false
       }
-    })
+    });
   },
 
   editAddress(e) {
-    const id = e.currentTarget.dataset.id
-    const address = this.data.addresses.find(item => item._id === id)
+    const id = e.currentTarget.dataset.id;
+    const address = this.data.addresses.find(item => item._id === id);
     if (address) {
       this.setData({
         showForm: true,
@@ -109,38 +111,38 @@ Page({
           room: address.room,
           isDefault: address.isDefault
         }
-      })
+      });
     }
   },
 
   closeForm() {
-    this.setData({ showForm: false })
+    this.setData({ showForm: false });
   },
 
   onFormInput(e) {
-    const field = e.currentTarget.dataset.field
-    this.setData({ [`form.${field}`]: e.detail.value })
+    const field = e.currentTarget.dataset.field;
+    this.setData({ [`form.${field}`]: e.detail.value });
   },
 
   onDormChange(e) {
-    this.setData({ 'form.dormIndex': parseInt(e.detail.value) })
+    this.setData({ 'form.dormIndex': parseInt(e.detail.value) });
   },
 
   onSwitchChange(e) {
-    this.setData({ 'form.isDefault': e.detail.value })
+    this.setData({ 'form.isDefault': e.detail.value });
   },
 
   async saveAddress() {
-    const { name, phone, dormIndex, room, isDefault, id } = this.data.form
+    const { name, phone, dormIndex, room, isDefault, id } = this.data.form;
     
     if (!name.trim() || !phone.trim() || dormIndex < 0 || !room.trim()) {
-      toast.info('请填写完整地址信息')
-      return
+      toast.info('请填写完整地址信息');
+      return;
     }
 
     if (!/^1[3-9]\d{9}$/.test(phone)) {
-      toast.info('请输入正确的手机号码')
-      return
+      toast.info('请输入正确的手机号码');
+      return;
     }
 
     const data = {
@@ -149,7 +151,7 @@ Page({
       dorm: this.data.dormList[dormIndex],
       room: room.trim(),
       isDefault
-    }
+    };
 
     try {
       await cloud.callCloudFunction({
@@ -158,31 +160,31 @@ Page({
         loadingTitle: '保存中...',
         showSuccess: true,
         successTitle: '保存成功'
-      })
-      this.setData({ showForm: false })
-      this.loadAddresses()
+      });
+      this.setData({ showForm: false });
+      this.loadAddresses();
     } catch (error) {
-      console.error('保存地址失败:', error)
+      console.error('保存地址失败:', error);
     }
   },
 
   setDefault(e) {
-    const id = e.currentTarget.dataset.id
-    wx.showToast({ title: '设置成功', icon: 'success' })
-    this.loadAddresses()
+    const id = e.currentTarget.dataset.id;
+    wx.showToast({ title: '设置成功', icon: 'success' });
+    this.loadAddresses();
   },
 
   deleteAddress(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个地址吗？',
       success: (res) => {
         if (res.confirm) {
-          wx.showToast({ title: '删除成功', icon: 'success' })
-          this.loadAddresses()
+          wx.showToast({ title: '删除成功', icon: 'success' });
+          this.loadAddresses();
         }
       }
-    })
+    });
   }
-})
+});

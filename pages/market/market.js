@@ -9,34 +9,34 @@ Page({
   },
 
   onShow() {
-    this.loadBoxes()
+    this.loadBoxes();
   },
 
   onPullDownRefresh() {
-    this.setData({ page: 1, boxes: [] })
-    this.loadBoxes()
+    this.setData({ page: 1, boxes: [] });
+    this.loadBoxes();
   },
 
   onReachBottom() {
     if (this.data.hasMore && !this.data.loading) {
-      this.loadMore()
+      this.loadMore();
     }
   },
 
   setCategory(e) {
-    const category = e.currentTarget.dataset.category
-    this.setData({ activeCategory: category, page: 1, boxes: [] })
-    this.loadBoxes()
+    const category = e.currentTarget.dataset.category;
+    this.setData({ activeCategory: category, page: 1, boxes: [] });
+    this.loadBoxes();
   },
 
   setSort(e) {
-    const sort = e.currentTarget.dataset.sort
-    this.setData({ activeSort: sort, page: 1, boxes: [] })
-    this.loadBoxes()
+    const sort = e.currentTarget.dataset.sort;
+    this.setData({ activeSort: sort, page: 1, boxes: [] });
+    this.loadBoxes();
   },
 
   loadBoxes() {
-    this.setData({ loading: true })
+    this.setData({ loading: true });
     
     wx.cloud.callFunction({
       name: 'getBlindBoxes',
@@ -51,46 +51,48 @@ Page({
             boxes: res.result,
             hasMore: res.result.length === 10,
             loading: false
-          })
+          });
         } else {
-          this.useMockData()
+          this.useMockData();
         }
-        wx.stopPullDownRefresh()
+        wx.stopPullDownRefresh();
       },
       fail: () => {
-        this.useMockData()
-        wx.stopPullDownRefresh()
+        this.useMockData();
+        wx.stopPullDownRefresh();
       }
-    })
+    });
   },
 
   useMockData() {
-    const campusData = require('../../utils/campusData.js')
-    const mockBoxes = campusData.getDemoHotBoxes()
+    const campusData = require('../../utils/campusData.js');
+    const mockBoxes = campusData.getDemoHotBoxes();
     this.setData({
       boxes: mockBoxes,
       loading: false,
       hasMore: false
-    })
+    });
   },
 
   loadMore() {
-    this.setData({ loading: true, page: this.data.page + 1 })
-    this.loadBoxes()
+    this.setData({ loading: true, page: this.data.page + 1 });
+    this.loadBoxes();
   },
 
   onSearchChange(e) {
-    this.setData({ keyword: e.detail.value })
+    this.setData({ keyword: e.detail.value });
   },
 
   searchBoxes() {
-    if (!this.data.keyword) return
-    this.setData({ page: 1, boxes: [] })
-    this.loadBoxes()
+    if (!this.data.keyword) {
+      return;
+    }
+    this.setData({ page: 1, boxes: [] });
+    this.loadBoxes();
   },
 
   navigateToBoxDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `../box-detail/box-detail?id=${id}` })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `../box-detail/box-detail?id=${id}` });
   }
-})
+});

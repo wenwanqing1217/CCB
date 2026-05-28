@@ -55,7 +55,9 @@ class Store {
    * @returns {any}
    */
   get(path) {
-    if (!path) return this.state;
+    if (!path) {
+      return this.state;
+    }
     
     return path.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : null;

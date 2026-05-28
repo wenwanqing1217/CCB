@@ -3,12 +3,12 @@ const { blindBoxesData } = require('./love_data');
 
 // 防抖函数
 function debounce(func, wait) {
-  let timeout
-  return function(...args) {
-    const context = this
-    clearTimeout(timeout)
-    timeout = setTimeout(() => func.apply(context, args), wait)
-  }
+  let timeout;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
 }
 
 Page({
@@ -81,7 +81,7 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
         selected: 1
-      })
+      });
     }
   },
 
@@ -109,7 +109,6 @@ Page({
   },
 
 
-
   // 计算视频容器高度
   calculateContainerHeight() {
     const windowInfo = wx.getWindowInfo();
@@ -119,7 +118,7 @@ Page({
   },
 
   // 摇一摇功能
-  startShake: debounce(function() {
+  startShake: debounce(function () {
     const { userCoins, shakeCost } = this.data;
     
     if (userCoins < shakeCost) {
@@ -151,8 +150,10 @@ Page({
     // 阻止冒泡，防止点击内容区域关闭弹窗
   },
 
-  startShakeAction: debounce(function() {
-    if (this.data.isShaking) return;
+  startShakeAction: debounce(function () {
+    if (this.data.isShaking) {
+      return;
+    }
 
     this.setData({ isShaking: true });
 
@@ -224,7 +225,7 @@ Page({
   },
 
   // 存入我的盲盒
-  saveToMyBoxes: debounce(function() {
+  saveToMyBoxes: debounce(function () {
     const { shakedBox } = this.data;
     
     // 添加按钮点击反馈
@@ -245,7 +246,7 @@ Page({
   }, 300),
 
   // 直接发货
-  sendDirectly: debounce(function() {
+  sendDirectly: debounce(function () {
     const { shakedBox } = this.data;
     
     // 添加按钮点击反馈
@@ -272,7 +273,6 @@ Page({
       });
     }, 2000);
   }, 300),
-
 
 
   // 设置分类
@@ -411,7 +411,7 @@ Page({
     });
     
     // 找出浏览最多的分类
-    let mostViewedCategory = Object.keys(categoryMap).reduce((a, b) => 
+    const mostViewedCategory = Object.keys(categoryMap).reduce((a, b) => 
       categoryMap[a] > categoryMap[b] ? a : b
     );
     
@@ -561,7 +561,9 @@ Page({
 
   // 加载更多
   loadMore() {
-    if (this.data.loading) return;
+    if (this.data.loading) {
+      return;
+    }
     
     this.setData({ loading: true });
     

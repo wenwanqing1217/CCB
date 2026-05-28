@@ -107,7 +107,7 @@ function checkLogin(needRedirect = false) {
  * @returns {Function}
  */
 function requireLogin(fn) {
-  return function(...args) {
+  return function (...args) {
     if (!isLoggedIn()) {
       wx.showModal({
         title: '提示',

@@ -132,7 +132,9 @@ Page({
   },
 
   loadMore() {
-    if (this.data.loadingMore || !this.data.hasMore) return;
+    if (this.data.loadingMore || !this.data.hasMore) {
+      return;
+    }
     
     this.setData({ loadingMore: true });
     

@@ -16,9 +16,9 @@ Page({
 
   onLoad(options) {
     if (options.type === 'blindBox') {
-      this.loadBlindBoxOrder(options)
+      this.loadBlindBoxOrder(options);
     } else if (options.boxId) {
-      this.loadBoxInfo(options.boxId)
+      this.loadBoxInfo(options.boxId);
     }
   },
 
@@ -96,23 +96,23 @@ Page({
         campus: '中南公寓',
         category: 'sports'
       }
-    }
+    };
 
-    let boxInfo
+    let boxInfo;
     if (options.id && mockBoxes[options.id]) {
-      boxInfo = mockBoxes[options.id]
+      boxInfo = mockBoxes[options.id];
     } else {
-      const keys = Object.keys(mockBoxes)
-      const randomKey = keys[Math.floor(Math.random() * keys.length)]
-      boxInfo = mockBoxes[randomKey]
+      const keys = Object.keys(mockBoxes);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      boxInfo = mockBoxes[randomKey];
     }
 
     if (options.price) {
-      boxInfo.price = parseFloat(options.price)
+      boxInfo.price = parseFloat(options.price);
     }
 
-    const deliveryFee = 2 // 配送费2元/单
-    const totalPrice = boxInfo.price + deliveryFee
+    const deliveryFee = 2; // 配送费2元/单
+    const totalPrice = boxInfo.price + deliveryFee;
 
     this.setData({
       boxInfo,
@@ -120,7 +120,7 @@ Page({
       isShakeOrder: true,
       deliveryFee,
       totalPrice
-    })
+    });
   },
 
   loadBoxInfo(boxId) {
@@ -141,11 +141,11 @@ Page({
         desc: '笔、本子、尺子、橡皮等文具',
         campus: '苏园居'
       }
-    }
+    };
 
-    const boxInfo = mockBoxes[boxId] || mockBoxes['1']
-    const deliveryFee = 2 // 配送费2元/单
-    const totalPrice = boxInfo.price + deliveryFee
+    const boxInfo = mockBoxes[boxId] || mockBoxes['1'];
+    const deliveryFee = 2; // 配送费2元/单
+    const totalPrice = boxInfo.price + deliveryFee;
 
     this.setData({
       boxInfo,
@@ -153,7 +153,7 @@ Page({
       isShakeOrder: false,
       deliveryFee,
       totalPrice
-    })
+    });
   },
 
   chooseAddress() {
@@ -165,13 +165,13 @@ Page({
             phone: res.telNumber,
             detail: res.provinceName + res.cityName + res.countyName + res.detailInfo
           }
-        })
+        });
       },
       fail: (err) => {
-        console.log('选择地址失败:', err)
+        console.log('选择地址失败:', err);
         // 开发环境或用户取消时，使用模拟数据
         if (err.errMsg && err.errMsg.includes('cancel')) {
-          return
+          return;
         }
         // 显示手动输入地址的提示
         wx.showModal({
@@ -186,32 +186,32 @@ Page({
                 phone: '13800138000',
                 detail: '武汉生物工程学院中园公寓302室'
               }
-            })
+            });
           }
-        })
+        });
       }
-    })
+    });
   },
 
   selectPayment(e) {
-    const method = e.currentTarget.dataset.method
-    this.setData({ paymentMethod: method })
+    const method = e.currentTarget.dataset.method;
+    this.setData({ paymentMethod: method });
   },
 
   onRemarkInput(e) {
-    this.setData({ remark: e.detail.value })
+    this.setData({ remark: e.detail.value });
   },
 
   submitOrder() {
     if (!this.data.address.name) {
-      wx.showToast({ title: '请选择收货地址', icon: 'none' })
-      return
+      wx.showToast({ title: '请选择收货地址', icon: 'none' });
+      return;
     }
 
-    wx.showLoading({ title: '提交订单中...' })
+    wx.showLoading({ title: '提交订单中...' });
 
     setTimeout(() => {
-      wx.hideLoading()
+      wx.hideLoading();
 
       if (this.data.isShakeOrder) {
         wx.showModal({
@@ -219,15 +219,15 @@ Page({
           content: '恭喜你抽中了"' + this.data.boxInfo.title + '"！卖家会尽快与你联系。',
           showCancel: false,
           success: () => {
-            wx.navigateBack()
+            wx.navigateBack();
           }
-        })
+        });
       } else {
-        wx.showToast({ title: '订单提交成功', icon: 'success' })
+        wx.showToast({ title: '订单提交成功', icon: 'success' });
         setTimeout(() => {
-          wx.navigateTo({ url: '../order-list/order-list' })
-        }, 1500)
+          wx.navigateTo({ url: '../order-list/order-list' });
+        }, 1500);
       }
-    }, 1000)
+    }, 1000);
   }
-})
+});

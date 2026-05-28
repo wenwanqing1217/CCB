@@ -8,12 +8,12 @@ Page({
   },
 
   onLoad() {
-    this.loadFavorites()
-    this.loadRecommendations()
+    this.loadFavorites();
+    this.loadRecommendations();
   },
 
   onShow() {
-    this.loadFavorites()
+    this.loadFavorites();
   },
 
   loadFavorites() {
@@ -22,8 +22,8 @@ Page({
       success: res => {
         if (res.result) {
           this.setData({ 
-            favorites: res.result.map(item => ({...item, selected: false}))
-          })
+            favorites: res.result.map(item => ({ ...item, selected: false }))
+          });
         }
       },
       fail: () => {
@@ -36,7 +36,7 @@ Page({
           'digital': { icon: '📱', name: '数码' },
           'secondhand': { icon: '📦', name: '二手' },
           'original': { icon: '🎨', name: '原创' }
-        }
+        };
         
         const mockFavorites = [
           {
@@ -86,10 +86,10 @@ Page({
             tags: ['二手', '九成新'],
             selected: false
           }
-        ]
-        this.setData({ favorites: mockFavorites })
+        ];
+        this.setData({ favorites: mockFavorites });
       }
-    })
+    });
   },
 
   loadRecommendations() {
@@ -101,7 +101,7 @@ Page({
       'digital': { icon: '📱', name: '数码' },
       'secondhand': { icon: '📦', name: '二手' },
       'original': { icon: '🎨', name: '原创' }
-    }
+    };
     
     const recommendations = [
       {
@@ -128,64 +128,66 @@ Page({
         type: 'original',
         typeIcon: typeMap['original'].icon
       }
-    ]
-    this.setData({ recommendations })
+    ];
+    this.setData({ recommendations });
   },
 
   // 切换编辑模式
   toggleEdit() {
-    const isEditing = !this.data.isEditing
+    const isEditing = !this.data.isEditing;
     const favorites = this.data.favorites.map(item => ({
       ...item,
       selected: false
-    }))
+    }));
     this.setData({
       isEditing,
       favorites,
       allSelected: false,
       selectedCount: 0
-    })
+    });
   },
 
   // 选择/取消选择
   toggleSelect(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     const favorites = this.data.favorites.map(item => {
       if (item._id === id) {
-        return { ...item, selected: !item.selected }
+        return { ...item, selected: !item.selected };
       }
-      return item
-    })
+      return item;
+    });
     
-    const selectedCount = favorites.filter(item => item.selected).length
-    const allSelected = selectedCount === favorites.length
+    const selectedCount = favorites.filter(item => item.selected).length;
+    const allSelected = selectedCount === favorites.length;
     
     this.setData({
       favorites,
       selectedCount,
       allSelected
-    })
+    });
   },
 
   // 全选/取消全选
   selectAll() {
-    const allSelected = !this.data.allSelected
+    const allSelected = !this.data.allSelected;
     const favorites = this.data.favorites.map(item => ({
       ...item,
       selected: allSelected
-    }))
-    const selectedCount = allSelected ? favorites.length : 0
+    }));
+    const selectedCount = allSelected ? favorites.length : 0;
     
     this.setData({
       favorites,
       allSelected,
       selectedCount
-    })
+    });
   },
 
   // 批量删除
   batchDelete() {
-    if (this.data.selectedCount === 0) return
+    if (this.data.selectedCount === 0) {
+      return;
+    }
     
     wx.showModal({
       title: '删除收藏',
@@ -193,56 +195,58 @@ Page({
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '删除中' })
+          wx.showLoading({ title: '删除中' });
           
-          const favorites = this.data.favorites.filter(item => !item.selected)
+          const favorites = this.data.favorites.filter(item => !item.selected);
           
           setTimeout(() => {
-            wx.hideLoading()
+            wx.hideLoading();
             this.setData({
               favorites,
               isEditing: false,
               allSelected: false,
               selectedCount: 0
-            })
+            });
             wx.showToast({
               title: '删除成功',
               icon: 'success'
-            })
-          }, 600)
+            });
+          }, 600);
         }
       }
-    })
+    });
   },
 
   navigateToDetail(e) {
-    if (this.data.isEditing) return
-    const id = e.currentTarget.dataset.id
+    if (this.data.isEditing) {
+      return;
+    }
+    const id = e.currentTarget.dataset.id;
     wx.navigateTo({ 
       url: '../box-detail/box-detail?id=' + id,
       fail: () => {
-        wx.showToast({ title: '页面跳转中', icon: 'none' })
+        wx.showToast({ title: '页面跳转中', icon: 'none' });
       }
-    })
+    });
   },
 
   removeFavorite(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.showModal({
       title: '移除收藏',
       content: '确定要移除这个收藏吗？',
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          const favorites = this.data.favorites.filter(item => item._id !== id)
-          this.setData({ favorites })
-          wx.showToast({ title: '移除成功', icon: 'success' })
+          const favorites = this.data.favorites.filter(item => item._id !== id);
+          this.setData({ favorites });
+          wx.showToast({ title: '移除成功', icon: 'success' });
         }
       }
-    })
+    });
   },
 
   navigateToMarket() {
-    wx.switchTab({ url: '../index/index' })
+    wx.switchTab({ url: '../index/index' });
   }
-})
+});

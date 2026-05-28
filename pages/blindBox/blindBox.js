@@ -1,24 +1,24 @@
 // 防抖函数
 function debounce(func, wait) {
-  let timeout
-  return function() {
-    clearTimeout(timeout)
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
     timeout = setTimeout(() => {
-      func.apply(this, arguments)
-    }, wait)
-  }
+      func.apply(this, arguments);
+    }, wait);
+  };
 }
 
 // 节流函数
 function throttle(func, limit) {
-  let inThrottle
-  return function() {
+  let inThrottle;
+  return function () {
     if (!inThrottle) {
-      func.apply(this, arguments)
-      inThrottle = true
-      setTimeout(() => inThrottle = false, limit)
+      func.apply(this, arguments);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
     }
-  }
+  };
 }
 
 Page({
@@ -48,19 +48,19 @@ Page({
   },
 
   onLoad() {
-    wx.switchTab({ url: '/pages/love/love' })
+    wx.switchTab({ url: '/pages/love/love' });
   },
 
   onShow() {
     // 每次显示页面时加载用户积分
-    this.loadUserCoins()
+    this.loadUserCoins();
   },
 
   loadUserCoins() {
-    const userInfo = wx.getStorageSync('userInfo')
+    const userInfo = wx.getStorageSync('userInfo');
     if (!userInfo || !userInfo.openid) {
-      this.setData({ userCoins: 0 })
-      return
+      this.setData({ userCoins: 0 });
+      return;
     }
 
     wx.cloud.callFunction({
@@ -75,66 +75,68 @@ Page({
         if (res.result && res.result.success && res.result.user) {
           this.setData({
             userCoins: res.result.user.blindBoxCoins || 0
-          })
+          });
         }
       },
       fail: () => {
-        this.setData({ userCoins: 0 })
+        this.setData({ userCoins: 0 });
       }
-    })
+    });
   },
 
   onUnload() {
     // 移除事件监听
-    this.app.off('loginSuccess', this.onLoginSuccess)
+    this.app.off('loginSuccess', this.onLoginSuccess);
   },
 
   onLoginSuccess(userInfo) {
     // 登录成功后更新数据
-    this.loadBoxes()
+    this.loadBoxes();
   },
 
   onPullDownRefresh() {
-    this.setData({ page: 1, boxes: [], refreshing: true })
-    this.loadBoxes()
-    this.loadGrabOrders()
+    this.setData({ page: 1, boxes: [], refreshing: true });
+    this.loadBoxes();
+    this.loadGrabOrders();
   },
 
   onReachBottom() {
     if (this.data.hasMore && !this.data.loading) {
-      this.loadMore()
+      this.loadMore();
     }
   },
 
   initData() {
     // 先显示骨架屏
-    this.setData({ skeleton: true })
+    this.setData({ skeleton: true });
     
     // 延迟加载数据，模拟网络请求
     setTimeout(() => {
-      this.loadBoxes()
-      this.loadGrabOrders()
-    }, 500)
+      this.loadBoxes();
+      this.loadGrabOrders();
+    }, 500);
   },
 
   // 防抖处理的标签切换
-  setTab: debounce(function(e) {
-    const tab = e.currentTarget.dataset.tab
-    this.setData({ activeTab: tab, page: 1, boxes: [], skeleton: true })
-    this.loadBoxes()
+  setTab: debounce(function (e) {
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({ activeTab: tab, page: 1, boxes: [], skeleton: true });
+    this.loadBoxes();
   }, 300),
 
   // 防抖处理的排序切换
-  setSort: debounce(function(e) {
-    const sort = e.currentTarget.dataset.sort
-    this.setData({ sortType: sort, page: 1, boxes: [], skeleton: true })
-    this.loadBoxes()
+  setSort: debounce(function (e) {
+    const sort = e.currentTarget.dataset.sort;
+    this.setData({ sortType: sort, page: 1, boxes: [], skeleton: true });
+    this.loadBoxes();
   }, 300),
 
   loadBoxes() {
-    if (this.data.loading) return
+    if (this.data.loading) {
+      return;
+    }
     
-    this.setData({ loading: true })
+    this.setData({ loading: true });
     
     wx.cloud.callFunction({
       name: 'getBlindBoxes',
@@ -146,32 +148,32 @@ Page({
       success: res => {
         try {
           if (res.result && res.result.length > 0) {
-            const newBoxes = this.data.page === 1 ? res.result : [...this.data.boxes, ...res.result]
+            const newBoxes = this.data.page === 1 ? res.result : [...this.data.boxes, ...res.result];
             this.setData({
               boxes: newBoxes,
               hasMore: res.result.length === 10,
               loading: false,
               skeleton: false,
               refreshing: false
-            })
+            });
             // 缓存数据
-            this.cacheData()
+            this.cacheData();
           } else {
-            this.useMockData()
+            this.useMockData();
           }
         } catch (error) {
-          console.error('处理盲盒数据失败:', error)
-          this.useMockData()
+          console.error('处理盲盒数据失败:', error);
+          this.useMockData();
         } finally {
-          wx.stopPullDownRefresh()
+          wx.stopPullDownRefresh();
         }
       },
       fail: (err) => {
-        console.error('获取盲盒数据失败:', err)
-        this.useMockData()
-        wx.stopPullDownRefresh()
+        console.error('获取盲盒数据失败:', err);
+        this.useMockData();
+        wx.stopPullDownRefresh();
       }
-    })
+    });
   },
 
   useMockData() {
@@ -182,21 +184,23 @@ Page({
       { _id: '4', title: '图书盲盒', price: 12.9, images: ['https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600'], fromDorm: '新柏居', sales: 34, type: 'book', typeName: '图书盲盒' },
       { _id: '5', title: '运动装备盲盒', price: 29.9, images: ['https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600'], fromDorm: '三友园', sales: 18, type: 'sports', typeName: '运动盲盒', isNew: true },
       { _id: '6', title: '校园生活盲盒', price: 19.9, images: ['https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600'], fromDorm: '知行1栋', sales: 56, type: 'life', typeName: '生活盲盒' }
-    ]
+    ];
     this.setData({
       boxes: mockBoxes,
       loading: false,
       hasMore: false,
       skeleton: false,
       refreshing: false
-    })
+    });
   },
 
   loadMore() {
-    if (this.data.loading) return
+    if (this.data.loading) {
+      return;
+    }
     
-    this.setData({ loading: true, page: this.data.page + 1 })
-    this.loadBoxes()
+    this.setData({ loading: true, page: this.data.page + 1 });
+    this.loadBoxes();
   },
 
   loadGrabOrders() {
@@ -208,18 +212,18 @@ Page({
             this.setData({ 
               grabOrders: res.result,
               pendingOrders: res.result.length
-            })
+            });
           }
         } catch (error) {
-          console.error('处理抢单数据失败:', error)
-          this.useMockGrabOrders()
+          console.error('处理抢单数据失败:', error);
+          this.useMockGrabOrders();
         }
       },
       fail: (err) => {
-        console.error('获取抢单数据失败:', err)
-        this.useMockGrabOrders()
+        console.error('获取抢单数据失败:', err);
+        this.useMockGrabOrders();
       }
-    })
+    });
   },
 
   useMockGrabOrders() {
@@ -229,19 +233,19 @@ Page({
         { _id: '2', fromDorm: '中南公寓', toDorm: '知行1栋', fee: 1 }
       ],
       pendingOrders: 2
-    })
+    });
   },
 
   // 防抖处理的导航函数
-  navigateToDetail: debounce(function(e) {
-    const id = e.currentTarget.dataset.id
+  navigateToDetail: debounce(function (e) {
+    const id = e.currentTarget.dataset.id;
     wx.navigateTo({ 
       url: `../box-detail/box-detail?id=${id}`,
       success: () => {
         // 预加载盲盒详情页数据
-        this.preloadBoxDetail(id)
+        this.preloadBoxDetail(id);
       }
-    })
+    });
   }, 300),
 
   preloadBoxDetail(id) {
@@ -252,15 +256,17 @@ Page({
       success: res => {
         if (res.result) {
           // 可以将数据存储到全局，供详情页使用
-          getApp().globalData.currentBox = res.result
+          getApp().globalData.currentBox = res.result;
         }
       },
       fail: err => console.error('预加载盲盒详情失败:', err)
-    })
+    });
   },
 
   openLuckyBox() {
-    if (this.data.isOpening) return
+    if (this.data.isOpening) {
+      return;
+    }
     
     // 检查积分是否足够
     if (this.data.userCoins < this.data.luckyBox.price) {
@@ -268,17 +274,17 @@ Page({
         title: '积分不足',
         content: '您的盲盒积分不足，请通过签到、分享、交易等方式获取积分',
         showCancel: false
-      })
-      return
+      });
+      return;
     }
     
-    this.setData({ isOpening: true })
+    this.setData({ isOpening: true });
     
     // 显示加载动画
     wx.showLoading({
       title: '正在开盲盒...',
       mask: true
-    })
+    });
     
     // 调用云函数消耗积分
     wx.cloud.callFunction({
@@ -294,7 +300,7 @@ Page({
         if (coinRes.result && coinRes.result.success) {
           // 积分扣除成功，执行开盒逻辑
           setTimeout(() => {
-            wx.hideLoading()
+            wx.hideLoading();
             
             // 更新用户积分
             this.setData({
@@ -308,50 +314,50 @@ Page({
                 description: '恭喜获得全新数码配件盲盒',
                 score: Math.floor(Math.random() * 5) + 1
               }
-            })
+            });
             
             // 播放开盒音效
-            this.playOpenBoxSound()
-          }, 2000)
+            this.playOpenBoxSound();
+          }, 2000);
         } else {
-          wx.hideLoading()
-          this.setData({ isOpening: false })
+          wx.hideLoading();
+          this.setData({ isOpening: false });
           wx.showToast({
             title: coinRes.result?.message || '开盒失败',
             icon: 'none'
-          })
+          });
         }
       },
       fail: (err) => {
-        wx.hideLoading()
-        this.setData({ isOpening: false })
-        console.error('消耗积分失败:', err)
+        wx.hideLoading();
+        this.setData({ isOpening: false });
+        console.error('消耗积分失败:', err);
         wx.showToast({
           title: '开盒失败',
           icon: 'none'
-        })
+        });
       }
-    })
+    });
   },
 
   playOpenBoxSound() {
     // 这里可以添加开盒音效
-    console.log('播放开盒音效')
+    console.log('播放开盒音效');
   },
 
   closeResult() {
-    this.setData({ showResult: false })
+    this.setData({ showResult: false });
   },
 
   shareResult() {
     wx.showShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
-    })
+    });
   },
 
   // 防抖处理的导航函数
-  navigateToPublishDemand: debounce(function() {
+  navigateToPublishDemand: debounce(function () {
     wx.navigateTo({ 
       url: '../box-publish/box-publish?type=demand',
       success: () => {
@@ -359,13 +365,13 @@ Page({
           title: '前往发布需求',
           icon: 'none',
           duration: 1000
-        })
+        });
       }
-    })
+    });
   }, 300),
 
   // 防抖处理的导航函数
-  navigateToPublishSupply: debounce(function() {
+  navigateToPublishSupply: debounce(function () {
     wx.navigateTo({ 
       url: '../box-publish/box-publish?type=supply',
       success: () => {
@@ -373,21 +379,21 @@ Page({
           title: '前往发布供给',
           icon: 'none',
           duration: 1000
-        })
+        });
       }
-    })
+    });
   }, 300),
 
   // 防抖处理的响应需求
-  respondDemand: debounce(function(e) {
-    const id = e.currentTarget.dataset.id
-    wx.showToast({ title: '响应成功', icon: 'success' })
+  respondDemand: debounce(function (e) {
+    const id = e.currentTarget.dataset.id;
+    wx.showToast({ title: '响应成功', icon: 'success' });
   }, 300),
 
   // 防抖处理的联系供给
-  contactSupply: debounce(function(e) {
-    const id = e.currentTarget.dataset.id
-    wx.showToast({ title: '聊天功能开发中', icon: 'none' })
+  contactSupply: debounce(function (e) {
+    const id = e.currentTarget.dataset.id;
+    wx.showToast({ title: '聊天功能开发中', icon: 'none' });
   }, 300),
 
   cacheData() {
@@ -398,19 +404,19 @@ Page({
         activeTab: this.data.activeTab,
         sortType: this.data.sortType,
         cachedAt: new Date().getTime()
-      })
+      });
     } catch (error) {
-      console.error('缓存数据失败:', error)
+      console.error('缓存数据失败:', error);
     }
   },
 
   onShareAppMessage() {
-    const that = this
+    const that = this;
     return {
       title: 'CBB校园盲盒 - 发现惊喜，分享快乐',
       path: '/pages/love/love',
       imageUrl: 'https://img.zcool.cn/community/01786557e4a6fa0000018c1bf080ca.png@1280w_1l_2o_100sh.png',
-      success: function(res) {
+      success: function (res) {
         // 分享成功后获取积分
         wx.cloud.callFunction({
           name: 'coinService',
@@ -424,33 +430,33 @@ Page({
             if (coinRes.result && coinRes.result.success) {
               that.setData({
                 userCoins: that.data.userCoins + coinRes.result.coins
-              })
+              });
               wx.showToast({
                 title: `分享成功，获得${coinRes.result.coins}积分`,
                 icon: 'success'
-              })
+              });
             } else {
               wx.showToast({
                 title: coinRes.result?.message || '分享成功',
                 icon: 'none'
-              })
+              });
             }
           },
           fail: () => {
             wx.showToast({
               title: '分享成功',
               icon: 'success'
-            })
+            });
           }
-        })
+        });
       },
-      fail: function(res) {
+      fail: function (res) {
         wx.showToast({
           title: '分享失败',
           icon: 'none'
-        })
+        });
       }
-    }
+    };
   },
 
   onShareTimeline() {
@@ -458,33 +464,33 @@ Page({
       title: 'CBB校园盲盒 - 发现惊喜，分享快乐',
       query: 'from=timeline',
       imageUrl: 'https://img.zcool.cn/community/01786557e4a6fa0000018c1bf080ca.png@1280w_1l_2o_100sh.png'
-    }
+    };
   },
 
   onSearchInput(e) {
-    this.setData({ searchKeyword: e.detail.value })
+    this.setData({ searchKeyword: e.detail.value });
   },
 
   onSearchConfirm() {
-    const keyword = this.data.searchKeyword.trim()
+    const keyword = this.data.searchKeyword.trim();
     if (!keyword) {
-      wx.showToast({ title: '请输入搜索内容', icon: 'none' })
-      return
+      wx.showToast({ title: '请输入搜索内容', icon: 'none' });
+      return;
     }
-    console.log('搜索：', keyword)
+    console.log('搜索：', keyword);
     wx.navigateTo({
       url: `../box-list/box-list?keyword=${encodeURIComponent(keyword)}`
-    })
+    });
   },
 
   // 图片加载成功
   imageLoad(e) {
-    console.log('图片加载成功:', e)
+    console.log('图片加载成功:', e);
   },
 
   // 图片加载失败
   imageError(e) {
-    console.error('图片加载失败:', e)
+    console.error('图片加载失败:', e);
     // 可以设置默认图片
   }
-})
+});

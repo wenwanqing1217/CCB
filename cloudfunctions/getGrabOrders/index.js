@@ -1,14 +1,14 @@
 // 获取可抢订单云函数
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
-const db = cloud.database()
+const db = cloud.database();
 
 function getDemoOrders() {
-  const now = Date.now()
+  const now = Date.now();
   return [
     {
       _id: 'demo_order_1',
@@ -43,31 +43,31 @@ function getDemoOrders() {
       create_time: now - 5400000,
       distance: 0.6
     }
-  ]
+  ];
 }
 
 exports.main = async (event, context) => {
   try {
-    const { filter } = event
+    const { filter } = event;
     
     let query = db.collection('orders').where({
       status: 'pending',
       isDeleted: false
-    })
+    });
     
     if (filter && filter !== 'all') {
-      query = query.where({ type: filter })
+      query = query.where({ type: filter });
     }
     
-    const orders = await query.orderBy('created_at', 'desc').get()
+    const orders = await query.orderBy('created_at', 'desc').get();
     
     if (orders.data.length === 0) {
-      return getDemoOrders()
+      return getDemoOrders();
     }
     
-    return orders.data
+    return orders.data;
   } catch (error) {
-    console.error('获取抢单数据失败:', error)
-    return getDemoOrders()
+    console.error('获取抢单数据失败:', error);
+    return getDemoOrders();
   }
-}
+};

@@ -1,31 +1,31 @@
 // 获取订单详情云函数
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
-const db = cloud.database()
+const db = cloud.database();
 
 exports.main = async (event, context) => {
   try {
-    const { id } = event
+    const { id } = event;
     
     if (!id) {
       return {
         success: false,
         message: '订单ID不能为空'
-      }
+      };
     }
     
     // 查询订单详情
-    const order = await db.collection('orders').doc(id).get()
+    const order = await db.collection('orders').doc(id).get();
     
     if (!order.data) {
       return {
         success: false,
         message: '订单不存在'
-      }
+      };
     }
     
     // 构建物流时间轴数据
@@ -55,7 +55,7 @@ exports.main = async (event, context) => {
         desc: '您的盲盒订单已创建，等待骑手接单',
         time: new Date(Date.now() - 15 * 60000).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
       }
-    ]
+    ];
     
     return {
       success: true,
@@ -63,12 +63,12 @@ exports.main = async (event, context) => {
         order: order.data,
         logisticsTimeline: logisticsTimeline
       }
-    }
+    };
   } catch (error) {
-    console.error('获取订单详情失败:', error)
+    console.error('获取订单详情失败:', error);
     return {
       success: false,
       message: '获取订单详情失败'
-    }
+    };
   }
-}
+};

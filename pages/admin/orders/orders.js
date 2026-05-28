@@ -1,5 +1,5 @@
-const cloud = require('../../../utils/cloud.js')
-const ui = require('../../../utils/ui.js')
+const cloud = require('../../../utils/cloud.js');
+const ui = require('../../../utils/ui.js');
 
 Page({
   data: {
@@ -22,24 +22,26 @@ Page({
   },
 
   onLoad() {
-    this.loadOrders()
+    this.loadOrders();
   },
 
   onPullDownRefresh() {
-    this.loadOrders(true)
+    this.loadOrders(true);
   },
 
   onReachBottom() {
     if (!this.data.finished && !this.data.loading) {
-      this.loadOrders(false)
+      this.loadOrders(false);
     }
   },
 
   async loadOrders(reset = true) {
-    if (this.data.loading) return
+    if (this.data.loading) {
+      return;
+    }
     
-    const page = reset ? 1 : this.data.page + 1
-    this.setData({ loading: true })
+    const page = reset ? 1 : this.data.page + 1;
+    this.setData({ loading: true });
 
     try {
       const result = await cloud.callCloudFunction({
@@ -50,25 +52,25 @@ Page({
           status: this.data.statusFilter === 'all' ? undefined : this.data.statusFilter
         },
         showLoading: false
-      })
+      });
 
-      const newOrders = result?.success ? result.data : this.getMockOrders()
+      const newOrders = result?.success ? result.data : this.getMockOrders();
       
       this.setData({
         orders: reset ? newOrders : [...this.data.orders, ...newOrders],
         page,
         finished: newOrders.length < this.data.limit,
         loading: false
-      })
+      });
     } catch (error) {
-      console.error('加载订单失败:', error)
+      console.error('加载订单失败:', error);
       this.setData({
         orders: this.getMockOrders(),
         finished: true,
         loading: false
-      })
+      });
     } finally {
-      wx.stopPullDownRefresh()
+      wx.stopPullDownRefresh();
     }
   },
 
@@ -104,29 +106,29 @@ Page({
         contact: { name: '王五', phone: '137****7000' },
         address: '新柏居105'
       }
-    ]
+    ];
   },
 
   filterByStatus(e) {
-    const status = e.currentTarget.dataset.status
+    const status = e.currentTarget.dataset.status;
     this.setData({ 
       statusFilter: status,
       page: 1,
       finished: false 
-    }, () => this.loadOrders(true))
+    }, () => this.loadOrders(true));
   },
 
   viewOrderDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/pages/order-detail/order-detail?id=${id}` })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `/pages/order-detail/order-detail?id=${id}` });
   },
 
   async cancelOrder(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     const confirmed = await ui.loadingStates.showModal({
       title: '取消订单',
       content: '确定要取消此订单吗？'
-    })
+    });
 
     if (confirmed) {
       try {
@@ -134,21 +136,21 @@ Page({
           name: 'orderService',
           data: { action: 'cancelOrder', orderId: id },
           loadingTitle: '处理中...'
-        })
+        });
         if (result?.success) {
-          ui.loadingStates.showSuccess('取消成功')
-          this.loadOrders(true)
+          ui.loadingStates.showSuccess('取消成功');
+          this.loadOrders(true);
         } else {
-          ui.loadingStates.showError('取消失败')
+          ui.loadingStates.showError('取消失败');
         }
       } catch (error) {
-        console.error('取消订单失败:', error)
-        ui.loadingStates.showError('取消失败')
+        console.error('取消订单失败:', error);
+        ui.loadingStates.showError('取消失败');
       }
     }
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   }
-})
+});

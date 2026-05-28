@@ -26,21 +26,21 @@
  */
 
 // 云函数入口文件
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 // 初始化云开发环境
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
 // 获取数据库实例
-const db = cloud.database()
+const db = cloud.database();
 
 // 获取订单集合引用（对应论文4.3.3 订单集合）
-const ordersCollection = db.collection('orders')
+const ordersCollection = db.collection('orders');
 
 // 获取盲盒集合引用（用于订单创建时验证盲盒状态）
-const boxesCollection = db.collection('boxes')
+const boxesCollection = db.collection('boxes');
 
 /**
  * 云函数入口函数
@@ -51,31 +51,31 @@ const boxesCollection = db.collection('boxes')
  * @returns {Object} - 操作结果
  */
 exports.main = async (event, context) => {
-  const { action, data } = event
+  const { action, data } = event;
 
   try {
     switch (action) {
       case 'create':
-        console.log('执行创建订单操作')
-        return await handleCreateOrder(data)
+        console.log('执行创建订单操作');
+        return await handleCreateOrder(data);
       case 'updateStatus':
-        console.log('执行更新订单状态操作')
-        return await handleUpdateStatus(data)
+        console.log('执行更新订单状态操作');
+        return await handleUpdateStatus(data);
       case 'list':
-        console.log('执行订单列表查询操作')
-        return await handleListOrders(data)
+        console.log('执行订单列表查询操作');
+        return await handleListOrders(data);
       case 'detail':
-        console.log('执行订单详情查询操作')
-        return await handleOrderDetail(data)
+        console.log('执行订单详情查询操作');
+        return await handleOrderDetail(data);
       default:
-        console.log('未知操作类型:', action)
-        return { success: false, message: '未知操作: ' + action }
+        console.log('未知操作类型:', action);
+        return { success: false, message: '未知操作: ' + action };
     }
   } catch (error) {
-    console.error('订单服务云函数执行错误:', error)
-    return { success: false, message: '服务器错误: ' + error.message }
+    console.error('订单服务云函数执行错误:', error);
+    return { success: false, message: '服务器错误: ' + error.message };
   }
-}
+};
 
 /**
  * 处理创建订单
@@ -99,21 +99,21 @@ async function handleCreateOrder(data) {
     paymentMethod,
     address,
     contact
-  } = data
+  } = data;
 
-  const validationError = validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, contact })
+  const validationError = validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, contact });
   if (validationError) {
-    return { success: false, message: validationError }
+    return { success: false, message: validationError };
   }
 
   try {
-    const box = await boxesCollection.doc(boxId).get()
+    const box = await boxesCollection.doc(boxId).get();
     if (!box.data || box.data.status !== 'available') {
-      return { success: false, message: '盲盒不存在或已被购买' }
+      return { success: false, message: '盲盒不存在或已被购买' };
     }
 
     if (buyerOpenid === sellerOpenid) {
-      return { success: false, message: '不能购买自己的盲盒' }
+      return { success: false, message: '不能购买自己的盲盒' };
     }
 
     const newOrder = {
@@ -128,16 +128,16 @@ async function handleCreateOrder(data) {
       status: 'pending',
       createdAt: new Date(),
       updatedAt: new Date()
-    }
+    };
 
-    const result = await ordersCollection.add(newOrder)
+    const result = await ordersCollection.add(newOrder);
 
     await boxesCollection.doc(boxId).update({
       data: {
         status: 'sold',
         updatedAt: new Date()
       }
-    })
+    });
 
     return {
       success: true,
@@ -145,10 +145,10 @@ async function handleCreateOrder(data) {
         ...newOrder,
         _id: result._id
       }
-    }
+    };
   } catch (error) {
-    console.error('创建订单失败:', error)
-    return { success: false, message: '创建订单失败' }
+    console.error('创建订单失败:', error);
+    return { success: false, message: '创建订单失败' };
   }
 }
 
@@ -159,27 +159,27 @@ async function handleCreateOrder(data) {
  */
 function validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, contact }) {
   if (!boxId || typeof boxId !== 'string') {
-    return '盲盒信息无效'
+    return '盲盒信息无效';
   }
   if (!buyerOpenid || typeof buyerOpenid !== 'string') {
-    return '买家信息无效'
+    return '买家信息无效';
   }
   if (!sellerOpenid || typeof sellerOpenid !== 'string') {
-    return '卖家信息无效'
+    return '卖家信息无效';
   }
   if (!price || isNaN(Number(price)) || Number(price) < 0) {
-    return '价格无效'
+    return '价格无效';
   }
   if (!address || typeof address !== 'object') {
-    return '配送地址无效'
+    return '配送地址无效';
   }
   if (!contact || typeof contact !== 'object') {
-    return '联系方式无效'
+    return '联系方式无效';
   }
   if (!contact.phone && !contact.name) {
-    return '联系方式不完整'
+    return '联系方式不完整';
   }
-  return null
+  return null;
 }
 
 /**
@@ -192,40 +192,40 @@ function validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, 
  * @returns {Object} - 更新结果
  */
 async function handleUpdateStatus(data) {
-  const { orderId, status, riderOpenid } = data
+  const { orderId, status, riderOpenid } = data;
   
   try {
     // 查询订单是否存在
-    const order = await ordersCollection.doc(orderId).get()
+    const order = await ordersCollection.doc(orderId).get();
     if (!order.data) {
-      return { success: false, message: '订单不存在' }
+      return { success: false, message: '订单不存在' };
     }
     
-    const oldOrder = order.data
+    const oldOrder = order.data;
     
     // 更新订单状态（对应论文4.2.3订单状态流转）
     const updateData = {
       status,
       updatedAt: new Date()
-    }
+    };
     
     // 如果是抢单操作，记录骑手ID
     if (status === 'grabbed' && riderOpenid) {
-      updateData.riderOpenid = riderOpenid
+      updateData.riderOpenid = riderOpenid;
     }
     
-    await ordersCollection.doc(orderId).update({ data: updateData })
+    await ordersCollection.doc(orderId).update({ data: updateData });
     
     // 发送订单状态变更通知
-    await sendOrderStatusNotification(orderId, status, oldOrder)
+    await sendOrderStatusNotification(orderId, status, oldOrder);
     
     return {
       success: true,
       message: '订单状态更新成功'
-    }
+    };
   } catch (error) {
-    console.error('更新订单状态失败:', error)
-    return { success: false, message: '更新失败: ' + error.message }
+    console.error('更新订单状态失败:', error);
+    return { success: false, message: '更新失败: ' + error.message };
   }
 }
 
@@ -243,11 +243,11 @@ async function sendOrderStatusNotification(orderId, status, order) {
       delivering: '配送中',
       completed: '已完成',
       cancelled: '已取消'
-    }
+    };
     
-    const statusText = statusTextMap[status] || status
-    const title = `订单状态更新`
-    const content = `您的订单已${statusText}`
+    const statusText = statusTextMap[status] || status;
+    const title = '订单状态更新';
+    const content = `您的订单已${statusText}`;
     
     // 发送给买家
     if (order.buyerOpenid) {
@@ -263,7 +263,7 @@ async function sendOrderStatusNotification(orderId, status, order) {
             relatedId: orderId
           }
         }
-      })
+      });
     }
     
     // 发送给卖家
@@ -280,12 +280,12 @@ async function sendOrderStatusNotification(orderId, status, order) {
             relatedId: orderId
           }
         }
-      })
+      });
     }
     
-    console.log('订单状态通知发送成功')
+    console.log('订单状态通知发送成功');
   } catch (error) {
-    console.error('发送订单状态通知失败:', error)
+    console.error('发送订单状态通知失败:', error);
   }
 }
 
@@ -300,29 +300,29 @@ async function sendOrderStatusNotification(orderId, status, order) {
  * @returns {Object} - 订单列表
  */
 async function handleListOrders(data) {
-  const { openid, role, page = 1, limit = 10 } = data
+  const { openid, role, page = 1, limit = 10 } = data;
   
   try {
-    let query
+    let query;
     
     // 根据角色构建查询条件
     if (role === 'buyer') {
-      query = ordersCollection.where({ buyerOpenid: openid })
+      query = ordersCollection.where({ buyerOpenid: openid });
     } else if (role === 'seller') {
-      query = ordersCollection.where({ sellerOpenid: openid })
+      query = ordersCollection.where({ sellerOpenid: openid });
     } else {
-      return { success: false, message: '角色无效' }
+      return { success: false, message: '角色无效' };
     }
     
     // 获取订单总数
-    const total = await query.count()
+    const total = await query.count();
     
     // 分页查询订单列表
     const orders = await query
       .orderBy('createdAt', 'desc')
       .skip((page - 1) * limit)
       .limit(limit)
-      .get()
+      .get();
     
     return {
       success: true,
@@ -330,10 +330,10 @@ async function handleListOrders(data) {
       total: total.total,
       page,
       limit
-    }
+    };
   } catch (error) {
-    console.error('获取订单列表失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
+    console.error('获取订单列表失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -345,22 +345,22 @@ async function handleListOrders(data) {
  * @returns {Object} - 订单详情
  */
 async function handleOrderDetail(data) {
-  const { orderId } = data
+  const { orderId } = data;
   
   try {
     // 根据ID查询订单详情
-    const order = await ordersCollection.doc(orderId).get()
+    const order = await ordersCollection.doc(orderId).get();
     
     if (!order.data) {
-      return { success: false, message: '订单不存在' }
+      return { success: false, message: '订单不存在' };
     }
     
     return {
       success: true,
       order: order.data
-    }
+    };
   } catch (error) {
-    console.error('获取订单详情失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
+    console.error('获取订单详情失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }

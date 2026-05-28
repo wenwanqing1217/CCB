@@ -1,11 +1,11 @@
 // 云函数入口文件
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
-const db = cloud.database()
+const db = cloud.database();
 
 // 云函数入口函数
 exports.main = async (event, context) => {
@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
     const donations = await db.collection('donations')
       .orderBy('create_time', 'desc')
       .get()
-      .then(res => res.data)
+      .then(res => res.data);
     
     // 为每个捐赠记录添加盲盒信息
     const donationsWithBoxInfo = await Promise.all(
@@ -21,17 +21,17 @@ exports.main = async (event, context) => {
         const box = await db.collection('boxes')
           .doc(donation.box_id)
           .get()
-          .then(res => res.data)
+          .then(res => res.data);
         return {
           ...donation,
           box_info: box
-        }
+        };
       })
-    )
+    );
     
-    return donationsWithBoxInfo
+    return donationsWithBoxInfo;
   } catch (error) {
-    console.error('获取捐赠记录失败', error)
-    return []
+    console.error('获取捐赠记录失败', error);
+    return [];
   }
-}
+};

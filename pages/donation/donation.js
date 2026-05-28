@@ -38,7 +38,7 @@ const mockDonationItems = [
     status: 'pending',
     statusText: '待领取'
   }
-]
+];
 
 Page({
   data: {
@@ -55,47 +55,47 @@ Page({
   },
 
   onLoad() {
-    this.loadDonationItems()
-    this.loadStats()
+    this.loadDonationItems();
+    this.loadStats();
   },
 
   onPullDownRefresh() {
-    this.setData({ page: 1, donationItems: [] })
-    this.loadDonationItems()
-    this.loadStats()
+    this.setData({ page: 1, donationItems: [] });
+    this.loadDonationItems();
+    this.loadStats();
   },
 
   onReachBottom() {
     if (this.data.hasMore && !this.data.loading) {
-      this.loadMore()
+      this.loadMore();
     }
   },
 
   setCategory(e) {
-    const category = e.currentTarget.dataset.category
-    this.setData({ activeCategory: category, page: 1, donationItems: [] })
-    this.loadDonationItems()
+    const category = e.currentTarget.dataset.category;
+    this.setData({ activeCategory: category, page: 1, donationItems: [] });
+    this.loadDonationItems();
   },
 
   loadStats() {
-    const that = this
+    const that = this;
     wx.cloud.callFunction({
       name: 'getDonationStats',
       success: res => {
         if (res.result) {
-          that.setData({ stats: res.result })
+          that.setData({ stats: res.result });
         }
       },
       fail: () => {
         that.setData({
           stats: { total: 128, users: 86, today: 5 }
-        })
+        });
       }
-    })
+    });
   },
 
   loadDonationItems() {
-    this.setData({ loading: true })
+    this.setData({ loading: true });
 
     wx.cloud.callFunction({
       name: 'getDonationItems',
@@ -109,42 +109,42 @@ Page({
             donationItems: res.result,
             hasMore: res.result.length === 10,
             loading: false
-          })
+          });
         } else {
-          this.useMockData()
+          this.useMockData();
         }
-        wx.stopPullDownRefresh()
+        wx.stopPullDownRefresh();
       },
       fail: () => {
-        this.useMockData()
-        wx.stopPullDownRefresh()
+        this.useMockData();
+        wx.stopPullDownRefresh();
       }
-    })
+    });
   },
 
   useMockData() {
-    let items = mockDonationItems
+    let items = mockDonationItems;
     if (this.data.activeCategory !== 'all') {
-      items = mockDonationItems.filter(item => item.category === this.data.activeCategory)
+      items = mockDonationItems.filter(item => item.category === this.data.activeCategory);
     }
     this.setData({
       donationItems: items,
       loading: false,
       hasMore: false
-    })
+    });
   },
 
   loadMore() {
-    this.setData({ loading: true, page: this.data.page + 1 })
-    this.loadDonationItems()
+    this.setData({ loading: true, page: this.data.page + 1 });
+    this.loadDonationItems();
   },
 
   navigateToDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `../donationDetail/donationDetail?id=${id}` })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `../donationDetail/donationDetail?id=${id}` });
   },
 
   navigateToPublish() {
-    wx.switchTab({ url: '../box-publish/box-publish' })
+    wx.switchTab({ url: '../box-publish/box-publish' });
   }
-})
+});

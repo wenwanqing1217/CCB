@@ -14,31 +14,31 @@ Page({
       id: options.userId || '1',
       name: options.userName || '用户',
       avatar: options.userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop'
-    }
-    this.setData({ targetUser })
+    };
+    this.setData({ targetUser });
     
     // 加载聊天记录
-    this.loadMessages()
+    this.loadMessages();
     
     // 设置页面标题
     wx.setNavigationBarTitle({
       title: targetUser.name
-    })
+    });
   },
 
   onShow() {
     // 开始轮询新消息
-    this.startMessagePolling()
+    this.startMessagePolling();
   },
 
   onHide() {
     // 停止轮询
-    this.stopMessagePolling()
+    this.stopMessagePolling();
   },
 
   onUnload() {
     // 停止轮询
-    this.stopMessagePolling()
+    this.stopMessagePolling();
   },
 
   // 加载聊天记录
@@ -59,27 +59,27 @@ Page({
         time: '10:32',
         avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
       }
-    ]
+    ];
     
     this.setData({
       messages: mockMessages
     }, () => {
-      this.scrollToBottom()
-    })
+      this.scrollToBottom();
+    });
   },
 
   // 开始消息轮询
   startMessagePolling() {
     this.messageTimer = setInterval(() => {
-      this.checkNewMessages()
-    }, 3000)
+      this.checkNewMessages();
+    }, 3000);
   },
 
   // 停止消息轮询
   stopMessagePolling() {
     if (this.messageTimer) {
-      clearInterval(this.messageTimer)
-      this.messageTimer = null
+      clearInterval(this.messageTimer);
+      this.messageTimer = null;
     }
   },
 
@@ -93,12 +93,12 @@ Page({
         content: '这个盲盒还在吗？',
         time: this.formatTime(new Date()),
         avatar: this.data.targetUser.avatar
-      }
+      };
       
-      const messages = this.data.messages.concat(newMessage)
+      const messages = this.data.messages.concat(newMessage);
       this.setData({ messages }, () => {
-        this.scrollToBottom()
-      })
+        this.scrollToBottom();
+      });
     }
   },
 
@@ -106,13 +106,15 @@ Page({
   onInput(e) {
     this.setData({
       inputValue: e.detail.value
-    })
+    });
   },
 
   // 发送消息
   sendMessage() {
-    const content = this.data.inputValue.trim()
-    if (!content) return
+    const content = this.data.inputValue.trim();
+    if (!content) {
+      return;
+    }
     
     const newMessage = {
       _id: Date.now().toString(),
@@ -120,20 +122,20 @@ Page({
       content: content,
       time: this.formatTime(new Date()),
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
-    }
+    };
     
-    const messages = this.data.messages.concat(newMessage)
+    const messages = this.data.messages.concat(newMessage);
     this.setData({
       messages,
       inputValue: ''
     }, () => {
-      this.scrollToBottom()
-    })
+      this.scrollToBottom();
+    });
     
     // 模拟对方回复
     setTimeout(() => {
-      this.simulateReply()
-    }, 1000 + Math.random() * 2000)
+      this.simulateReply();
+    }, 1000 + Math.random() * 2000);
   },
 
   // 模拟回复
@@ -145,7 +147,7 @@ Page({
       '谢谢你的咨询！',
       '我还在考虑中',
       '可以拍个实物图看看吗？'
-    ]
+    ];
     
     const replyMessage = {
       _id: Date.now().toString(),
@@ -153,41 +155,41 @@ Page({
       content: replies[Math.floor(Math.random() * replies.length)],
       time: this.formatTime(new Date()),
       avatar: this.data.targetUser.avatar
-    }
+    };
     
-    const messages = this.data.messages.concat(replyMessage)
+    const messages = this.data.messages.concat(replyMessage);
     this.setData({ messages }, () => {
-      this.scrollToBottom()
-    })
+      this.scrollToBottom();
+    });
   },
 
   // 滚动到底部
   scrollToBottom() {
-    const messages = this.data.messages
+    const messages = this.data.messages;
     if (messages.length > 0) {
       this.setData({
         scrollToMessage: messages[messages.length - 1]._id
-      })
+      });
     }
   },
 
   // 格式化时间
   formatTime(date) {
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    return `${hours}:${minutes}`
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   },
 
   // 查看用户资料
   viewUserProfile() {
     wx.navigateTo({
       url: `/pages/user-profile/user-profile?userId=${this.data.targetUser.id}`
-    })
+    });
   },
 
   // 返回上一页
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   },
 
   // 显示更多选项
@@ -197,27 +199,27 @@ Page({
       success: (res) => {
         switch (res.tapIndex) {
           case 0:
-            this.viewUserProfile()
-            break
+            this.viewUserProfile();
+            break;
           case 1:
             wx.showModal({
               title: '提示',
               content: '确定要清空聊天记录吗？',
               success: (res) => {
                 if (res.confirm) {
-                  this.setData({ messages: [] })
+                  this.setData({ messages: [] });
                 }
               }
-            })
-            break
+            });
+            break;
           case 2:
             wx.showToast({
               title: '举报功能开发中',
               icon: 'none'
-            })
-            break
+            });
+            break;
         }
       }
-    })
+    });
   }
-})
+});

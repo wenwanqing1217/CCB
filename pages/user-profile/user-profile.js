@@ -11,20 +11,20 @@ Page({
   },
 
   onLoad(options) {
-    const userId = options.userId || '1'
-    this.setData({ userId })
+    const userId = options.userId || '1';
+    this.setData({ userId });
     
     // 加载用户信息
-    this.loadUserInfo()
+    this.loadUserInfo();
     
     // 加载用户统计数据
-    this.loadUserStats()
+    this.loadUserStats();
     
     // 加载用户发布的盲盒
-    this.loadUserBoxes()
+    this.loadUserBoxes();
     
     // 加载用户的捐赠记录
-    this.loadUserDonations()
+    this.loadUserDonations();
   },
 
   // 加载用户信息
@@ -42,15 +42,15 @@ Page({
         isCertified: true,
         isRider: true,
         isMerchant: false
-      }
+      };
       
-      this.setData({ userInfo })
+      this.setData({ userInfo });
       
       // 设置页面标题
       wx.setNavigationBarTitle({
         title: userInfo.name
-      })
-    }, 500)
+      });
+    }, 500);
   },
 
   // 加载用户统计数据
@@ -62,9 +62,9 @@ Page({
         sold: 8,
         bought: 5,
         score: 230
-      }
-      this.setData({ userStats })
-    }, 600)
+      };
+      this.setData({ userStats });
+    }, 600);
   },
 
   // 加载用户发布的盲盒
@@ -102,10 +102,10 @@ Page({
           comments: 1,
           status: 'selling'
         }
-      ]
-      this.setData({ userBoxes })
-      this.setData({ loading: false })
-    }, 700)
+      ];
+      this.setData({ userBoxes });
+      this.setData({ loading: false });
+    }, 700);
   },
 
   // 加载用户的捐赠记录
@@ -127,45 +127,47 @@ Page({
           time: '2024-01-10',
           status: 'completed'
         }
-      ]
-      this.setData({ userDonations })
-    }, 800)
+      ];
+      this.setData({ userDonations });
+    }, 800);
   },
 
   // 关注/取消关注
   toggleFollow() {
-    const isFollowing = !this.data.isFollowing
-    this.setData({ isFollowing })
+    const isFollowing = !this.data.isFollowing;
+    this.setData({ isFollowing });
     
     wx.showToast({
       title: isFollowing ? '已关注' : '已取消关注',
       icon: 'none',
       duration: 800
-    })
+    });
   },
 
   // 联系用户
   contactUser() {
-    if (!this.data.userInfo) return
+    if (!this.data.userInfo) {
+      return;
+    }
     
     wx.navigateTo({
       url: `../chat/chat?userId=${this.data.userInfo.id}&userName=${this.data.userInfo.name}&userAvatar=${this.data.userInfo.avatar}`
-    })
+    });
   },
 
   // 查看盲盒详情
   viewBoxDetail(e) {
-    const boxId = e.currentTarget.dataset.id
+    const boxId = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: `../box-detail/box-detail?id=${boxId}`
-    })
+    });
   },
 
   // 查看捐赠详情
   viewDonationDetail(e) {
-    const donationId = e.currentTarget.dataset.id
+    const donationId = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: `../donationDetail/donationDetail?id=${donationId}`
-    })
+    });
   }
-})
+});

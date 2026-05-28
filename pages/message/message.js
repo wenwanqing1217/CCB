@@ -80,7 +80,7 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
         selected: 3
-      })
+      });
     }
   },
 
@@ -92,8 +92,8 @@ Page({
       interact: '互动消息',
       love: '爱心动态',
       chat: '私信'
-    }
-    return names[type] || '系统通知'
+    };
+    return names[type] || '系统通知';
   },
 
   getNotificationIcon(type) {
@@ -104,19 +104,27 @@ Page({
       interact: '💬',
       love: '❤️',
       chat: '💬'
-    }
-    return icons[type] || '📢'
+    };
+    return icons[type] || '📢';
   },
 
   formatMessageTime(value) {
-    if (!value) return ''
-    const date = new Date(value)
-    const now = new Date()
-    const diff = now - date
-    if (diff < 3600000) return `${Math.max(1, Math.floor(diff / 60000))}分钟前`
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
-    if (diff < 604800000) return `${Math.floor(diff / 86400000)}天前`
-    return `${date.getMonth() + 1}月${date.getDate()}日`
+    if (!value) {
+      return '';
+    }
+    const date = new Date(value);
+    const now = new Date();
+    const diff = now - date;
+    if (diff < 3600000) {
+      return `${Math.max(1, Math.floor(diff / 60000))}分钟前`;
+    }
+    if (diff < 86400000) {
+      return `${Math.floor(diff / 3600000)}小时前`;
+    }
+    if (diff < 604800000) {
+      return `${Math.floor(diff / 86400000)}天前`;
+    }
+    return `${date.getMonth() + 1}月${date.getDate()}日`;
   },
 
   // 返回上一页
@@ -124,15 +132,15 @@ Page({
     console.log('返回上一页');
     wx.navigateBack({
       delta: 1,
-      success: function(res) {
+      success: function (res) {
         console.log('返回成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('返回失败:', err);
         // 如果返回失败，跳转到首页
         wx.switchTab({ 
           url: '../index/index',
-          success: function() {
+          success: function () {
             console.log('跳转到首页成功');
           }
         });
@@ -146,10 +154,10 @@ Page({
     this.setData({ systemUnread: 0 });
     wx.navigateTo({
       url: '/pages/system-message/system-message',
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到系统消息页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到系统消息页面失败:', err);
         wx.showToast({
           title: '系统消息页面正在开发中',
@@ -166,10 +174,10 @@ Page({
     this.setData({ orderUnread: 0 });
     wx.navigateTo({
       url: '/pages/order-message/order-message',
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到订单消息页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到订单消息页面失败:', err);
         wx.showToast({
           title: '订单消息页面正在开发中',
@@ -186,10 +194,10 @@ Page({
     this.setData({ orderUnread: 0 });
     wx.navigateTo({
       url: '/pages/logistics-detail/logistics-detail',
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到物流详情页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到物流详情页面失败:', err);
         wx.showToast({
           title: '跳转失败，请稍后重试',
@@ -217,10 +225,10 @@ Page({
     this.setData({ loveUnread: 0 });
     wx.switchTab({
       url: '../love/love',
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到爱心页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到爱心页面失败:', err);
         wx.showToast({
           title: '爱心页面正在开发中',
@@ -236,10 +244,10 @@ Page({
     console.log('跳转到艾米助手');
     wx.navigateTo({
       url: '../ai/ai',
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到艾米助手成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到艾米助手失败:', err);
         wx.showToast({
           title: '艾米助手页面正在开发中',
@@ -255,10 +263,10 @@ Page({
     console.log('跳转到订单详情:', orderId);
     wx.navigateTo({
       url: `../order-detail/order-detail?id=${orderId}`,
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到订单详情页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到订单详情页面失败:', err);
         wx.showToast({
           title: '订单详情页面正在开发中',
@@ -274,10 +282,10 @@ Page({
     console.log('跳转到物流详情:', orderId);
     wx.navigateTo({
       url: `../logistics-detail/logistics-detail?id=${orderId}`,
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到物流详情页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到物流详情页面失败:', err);
         wx.showToast({
           title: '跳转失败，请稍后重试',
@@ -306,10 +314,15 @@ Page({
       
       // 更新对应分类的未读数
       let { systemUnread, orderUnread, interactUnread, loveUnread } = this.data;
-      if (item.type === 'system') systemUnread = Math.max(0, systemUnread - 1);
-      else if (item.type === 'order' || item.type === 'logistics') orderUnread = Math.max(0, orderUnread - 1);
-      else if (item.type === 'interact') interactUnread = Math.max(0, interactUnread - 1);
-      else if (item.type === 'chat') loveUnread = Math.max(0, loveUnread - 1);
+      if (item.type === 'system') {
+        systemUnread = Math.max(0, systemUnread - 1);
+      } else if (item.type === 'order' || item.type === 'logistics') {
+        orderUnread = Math.max(0, orderUnread - 1);
+      } else if (item.type === 'interact') {
+        interactUnread = Math.max(0, interactUnread - 1);
+      } else if (item.type === 'chat') {
+        loveUnread = Math.max(0, loveUnread - 1);
+      }
       
       this.setData({ 
         recentMessages,
@@ -354,10 +367,10 @@ Page({
         // 跳转到聊天页面
         wx.navigateTo({
           url: `../chat/chat?userId=${item.id}&userName=${item.name}`,
-          success: function(res) {
+          success: function (res) {
             console.log('跳转到聊天页面成功');
           },
-          fail: function(err) {
+          fail: function (err) {
             console.error('跳转到聊天页面失败:', err);
             wx.showToast({
               title: '聊天页面正在开发中',
@@ -421,7 +434,7 @@ Page({
         if (res.confirm) {
           console.log('用户确认清除已读');
           const recentMessages = this.data.recentMessages.filter(msg => msg.unread);
-          this.setData({ recentMessages }, function() {
+          this.setData({ recentMessages }, function () {
             console.log('清除已读消息成功');
             wx.showToast({
               title: '已清除已读消息',

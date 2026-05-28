@@ -19,7 +19,7 @@ const mockDonations = [
     statusText: '待处理',
     createTime: '2024-01-18'
   }
-]
+];
 
 Page({
   data: {
@@ -33,11 +33,11 @@ Page({
   },
 
   onLoad() {
-    this.loadDonations()
+    this.loadDonations();
   },
 
   onShow() {
-    this.loadDonations()
+    this.loadDonations();
   },
 
   loadDonations() {
@@ -46,31 +46,31 @@ Page({
       data: { type: this.data.activeTab },
       success: res => {
         if (res.result && res.result.length > 0) {
-          this.setData({ donations: res.result })
+          this.setData({ donations: res.result });
         } else {
-          this.useLocalData()
+          this.useLocalData();
         }
       },
       fail: () => {
-        this.useLocalData()
+        this.useLocalData();
       }
-    })
+    });
   },
 
   useLocalData() {
-    this.setData({ donations: mockDonations })
+    this.setData({ donations: mockDonations });
   },
 
   setTab(e) {
-    const tab = e.currentTarget.dataset.tab
-    this.setData({ activeTab: tab })
-    this.loadDonations()
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({ activeTab: tab });
+    this.loadDonations();
   },
 
   navigateToDetail(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: `../box-detail/box-detail?id=${id}`
-    })
+    });
   }
-})
+});

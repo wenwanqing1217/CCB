@@ -8,7 +8,7 @@ Page({
   },
 
   onLoad(options) {
-    this.loadDetail(options.id)
+    this.loadDetail(options.id);
   },
 
   loadDetail(id) {
@@ -17,15 +17,15 @@ Page({
       data: { id },
       success: res => {
         if (res.result) {
-          this.setData({ item: res.result })
+          this.setData({ item: res.result });
         } else {
-          this.useMockData()
+          this.useMockData();
         }
       },
       fail: () => {
-        this.useMockData()
+        this.useMockData();
       }
-    })
+    });
   },
 
   useMockData() {
@@ -51,57 +51,59 @@ Page({
       matchedItems: [
         { _id: '2', wantItem: '机械键盘', haveItem: '蓝牙耳机', matchRate: 95 }
       ]
-    })
+    });
   },
 
   followUser() {
-    this.setData({ isFollowing: !this.data.isFollowing })
+    this.setData({ isFollowing: !this.data.isFollowing });
     wx.showToast({
       title: this.data.isFollowing ? '关注成功' : '取消关注',
       icon: 'success'
-    })
+    });
   },
 
   toggleFavorite() {
-    this.setData({ isFavorite: !this.data.isFavorite })
+    this.setData({ isFavorite: !this.data.isFavorite });
     wx.showToast({
       title: this.data.isFavorite ? '收藏成功' : '取消收藏',
       icon: 'success'
-    })
+    });
   },
 
   previewImage(e) {
-    const index = e.currentTarget.dataset.index
+    const index = e.currentTarget.dataset.index;
     wx.previewImage({
       current: this.data.item.images[index],
       urls: this.data.item.images
-    })
+    });
   },
 
   navigateToChat() {
-    wx.navigateTo({ url: '../chat/chat' })
+    wx.navigateTo({ url: '../chat/chat' });
   },
 
   navigateToDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `../exchangeDetail/exchangeDetail?id=${id}` })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `../exchangeDetail/exchangeDetail?id=${id}` });
   },
 
   applyExchange() {
-    if (this.data.item.status !== 'pending') return
+    if (this.data.item.status !== 'pending') {
+      return;
+    }
 
     wx.showModal({
       title: '申请交换',
       content: '确定要申请这个交换吗？',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '申请中..' })
+          wx.showLoading({ title: '申请中..' });
           setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({ title: '申请成功', icon: 'success' })
-          }, 800)
+            wx.hideLoading();
+            wx.showToast({ title: '申请成功', icon: 'success' });
+          }, 800);
         }
       }
-    })
+    });
   }
-})
+});

@@ -51,113 +51,113 @@ Page({
         id: this.data.id
       }
     })
-    .then(res => {
-      console.log('云函数调用结果:', res);
+      .then(res => {
+        console.log('云函数调用结果:', res);
       
-      if (res.result.success) {
-        const { order, logisticsTimeline } = res.result.data;
+        if (res.result.success) {
+          const { order, logisticsTimeline } = res.result.data;
         
-        // 生成地图标记和路线数据
-        const fromLocation = { latitude: 39.910000, longitude: 116.395000 };
-        const toLocation = { latitude: 39.908000, longitude: 116.400000 };
-        const riderLocation = { 
-          latitude: order.rider?.latitude || 39.90923, 
-          longitude: order.rider?.longitude || 116.397428 
-        };
+          // 生成地图标记和路线数据
+          const fromLocation = { latitude: 39.910000, longitude: 116.395000 };
+          const toLocation = { latitude: 39.908000, longitude: 116.400000 };
+          const riderLocation = { 
+            latitude: order.rider?.latitude || 39.90923, 
+            longitude: order.rider?.longitude || 116.397428 
+          };
 
-        const markers = [
-          {
-            id: 1,
-            latitude: fromLocation.latitude,
-            longitude: fromLocation.longitude,
-            iconPath: '/images/location-start.png',
-            width: 30,
-            height: 30,
-            title: order.fromDorm || '中园公寓',
-            callout: {
-              content: order.fromDorm || '中园公寓',
-              color: '#ffffff',
-              fontSize: 14,
-              borderRadius: 4,
-              bgColor: 'rgba(124, 58, 237, 0.9)',
-              display: 'ALWAYS'
+          const markers = [
+            {
+              id: 1,
+              latitude: fromLocation.latitude,
+              longitude: fromLocation.longitude,
+              iconPath: '/images/location-start.png',
+              width: 30,
+              height: 30,
+              title: order.fromDorm || '中园公寓',
+              callout: {
+                content: order.fromDorm || '中园公寓',
+                color: '#ffffff',
+                fontSize: 14,
+                borderRadius: 4,
+                bgColor: 'rgba(124, 58, 237, 0.9)',
+                display: 'ALWAYS'
+              }
+            },
+            {
+              id: 2,
+              latitude: toLocation.latitude,
+              longitude: toLocation.longitude,
+              iconPath: '/images/location-end.png',
+              width: 30,
+              height: 30,
+              title: order.toDorm || '苏园居',
+              callout: {
+                content: order.toDorm || '苏园居',
+                color: '#ffffff',
+                fontSize: 14,
+                borderRadius: 4,
+                bgColor: 'rgba(34, 197, 94, 0.9)',
+                display: 'ALWAYS'
+              }
+            },
+            {
+              id: 3,
+              latitude: riderLocation.latitude,
+              longitude: riderLocation.longitude,
+              iconPath: '/images/rider.png',
+              width: 40,
+              height: 40,
+              title: order.rider?.name || '骑手',
+              rotate: 45,
+              callout: {
+                content: (order.rider?.name || '骑手') + '\n距离 ' + (order.distance || '200') + ' 米',
+                color: '#ffffff',
+                fontSize: 14,
+                borderRadius: 4,
+                bgColor: 'rgba(124, 58, 237, 0.9)',
+                display: 'ALWAYS'
+              }
             }
-          },
-          {
-            id: 2,
-            latitude: toLocation.latitude,
-            longitude: toLocation.longitude,
-            iconPath: '/images/location-end.png',
-            width: 30,
-            height: 30,
-            title: order.toDorm || '苏园居',
-            callout: {
-              content: order.toDorm || '苏园居',
-              color: '#ffffff',
-              fontSize: 14,
-              borderRadius: 4,
-              bgColor: 'rgba(34, 197, 94, 0.9)',
-              display: 'ALWAYS'
-            }
-          },
-          {
-            id: 3,
-            latitude: riderLocation.latitude,
-            longitude: riderLocation.longitude,
-            iconPath: '/images/rider.png',
-            width: 40,
-            height: 40,
-            title: order.rider?.name || '骑手',
-            rotate: 45,
-            callout: {
-              content: (order.rider?.name || '骑手') + '\n距离 ' + (order.distance || '200') + ' 米',
-              color: '#ffffff',
-              fontSize: 14,
-              borderRadius: 4,
-              bgColor: 'rgba(124, 58, 237, 0.9)',
-              display: 'ALWAYS'
-            }
-          }
-        ];
+          ];
 
-        const polyline = [
-          {
-            points: [fromLocation, riderLocation, toLocation],
-            color: '#7c3aed',
-            width: 4,
-            dottedLine: false
-          }
-        ];
+          const polyline = [
+            {
+              points: [fromLocation, riderLocation, toLocation],
+              color: '#7c3aed',
+              width: 4,
+              dottedLine: false
+            }
+          ];
 
-        this.setData({
-          order: order,
-          logisticsTimeline: logisticsTimeline,
-          markers: markers,
-          polyline: polyline,
-          loading: false
-        });
-      } else {
-        console.error('获取订单详情失败:', res.result.message);
+          this.setData({
+            order: order,
+            logisticsTimeline: logisticsTimeline,
+            markers: markers,
+            polyline: polyline,
+            loading: false
+          });
+        } else {
+          console.error('获取订单详情失败:', res.result.message);
+          wx.showToast({
+            title: res.result.message || '获取订单详情失败',
+            icon: 'none',
+            duration: 1500
+          });
+          this.setData({ loading: false });
+        }
+      })
+      .catch(err => {
+        console.error('云函数调用失败:', err);
         wx.showToast({
-          title: res.result.message || '获取订单详情失败',
+          title: '网络错误，请稍后重试',
           icon: 'none',
           duration: 1500
         });
         this.setData({ loading: false });
-      }
-    })
-    .catch(err => {
-      console.error('云函数调用失败:', err);
-      wx.showToast({
-        title: '网络错误，请稍后重试',
-        icon: 'none',
-        duration: 1500
-      });
-      this.setData({ loading: false });
       
-      // 失败时使用模拟数据
-      this.loadMockData();
-    });
+        // 失败时使用模拟数据
+        this.loadMockData();
+      });
   },
 
   // 加载模拟数据（备用）
@@ -311,10 +311,10 @@ Page({
     console.log('返回上一页');
     wx.navigateBack({
       delta: 1,
-      success: function(res) {
+      success: function (res) {
         console.log('返回成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('返回失败:', err);
       }
     });
@@ -326,10 +326,10 @@ Page({
     console.log('拨打电话:', phone);
     wx.makePhoneCall({
       phoneNumber: phone,
-      success: function(res) {
+      success: function (res) {
         console.log('拨打电话成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('拨打电话失败:', err);
         wx.showToast({
           title: '拨打电话失败',
@@ -346,10 +346,10 @@ Page({
     console.log('联系骑手:', phone);
     wx.makePhoneCall({
       phoneNumber: phone,
-      success: function(res) {
+      success: function (res) {
         console.log('联系骑手成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('联系骑手失败:', err);
         wx.showToast({
           title: '联系骑手失败',
@@ -409,10 +409,10 @@ Page({
     console.log('再次购买');
     wx.navigateTo({
       url: '../box-detail/box-detail?id=1',
-      success: function(res) {
+      success: function (res) {
         console.log('跳转到商品详情页面成功');
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('跳转到商品详情页面失败:', err);
         wx.showToast({
           title: '跳转失败',
@@ -429,14 +429,14 @@ Page({
     console.log('复制地址:', address);
     wx.setClipboardData({
       data: address,
-      success: function() {
+      success: function () {
         wx.showToast({
           title: '地址已复制',
           icon: 'success',
           duration: 1500
         });
       },
-      fail: function(err) {
+      fail: function (err) {
         console.error('复制地址失败:', err);
         wx.showToast({
           title: '复制失败',

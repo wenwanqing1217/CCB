@@ -1,5 +1,5 @@
-const cloud = require('../../../utils/cloud.js')
-const ui = require('../../../utils/ui.js')
+const cloud = require('../../../utils/cloud.js');
+const ui = require('../../../utils/ui.js');
 
 Page({
   data: {
@@ -15,22 +15,22 @@ Page({
   },
 
   onLoad() {
-    this.loadDeliveries()
-    this.startAutoRefresh()
+    this.loadDeliveries();
+    this.startAutoRefresh();
   },
 
   onShow() {
     if (this.data.isAutoRefresh) {
-      this.startAutoRefresh()
+      this.startAutoRefresh();
     }
   },
 
   onHide() {
-    this.stopAutoRefresh()
+    this.stopAutoRefresh();
   },
 
   onUnload() {
-    this.stopAutoRefresh()
+    this.stopAutoRefresh();
   },
 
   async loadDeliveries() {
@@ -46,18 +46,18 @@ Page({
           data: { action: 'getDeliveryStats' },
           showLoading: false
         })
-      ])
+      ]);
 
       this.setData({
         deliveries: deliveriesResult?.success ? deliveriesResult.data : this.getMockDeliveries(),
         stats: statsResult?.success ? statsResult.data : this.getMockStats()
-      })
+      });
     } catch (error) {
-      console.error('加载配送数据失败:', error)
+      console.error('加载配送数据失败:', error);
       this.setData({
         deliveries: this.getMockDeliveries(),
         stats: this.getMockStats()
-      })
+      });
     }
   },
 
@@ -102,7 +102,7 @@ Page({
         estimatedTime: '约10分钟',
         updateTime: '3分钟前'
       }
-    ]
+    ];
   },
 
   getMockStats() {
@@ -111,62 +111,64 @@ Page({
       pending: 2,
       delivering: 6,
       completed: 4
-    }
+    };
   },
 
   startAutoRefresh() {
-    if (this.data.refreshTimer) return
+    if (this.data.refreshTimer) {
+      return;
+    }
     
     this.data.refreshTimer = setInterval(() => {
-      this.loadDeliveries()
-    }, 30000)
+      this.loadDeliveries();
+    }, 30000);
   },
 
   stopAutoRefresh() {
     if (this.data.refreshTimer) {
-      clearInterval(this.data.refreshTimer)
-      this.data.refreshTimer = null
+      clearInterval(this.data.refreshTimer);
+      this.data.refreshTimer = null;
     }
   },
 
   toggleAutoRefresh() {
-    this.setData({ isAutoRefresh: !this.data.isAutoRefresh })
+    this.setData({ isAutoRefresh: !this.data.isAutoRefresh });
     
     if (this.data.isAutoRefresh) {
-      ui.loadingStates.showToast('已开启自动刷新', 'none')
-      this.startAutoRefresh()
+      ui.loadingStates.showToast('已开启自动刷新', 'none');
+      this.startAutoRefresh();
     } else {
-      ui.loadingStates.showToast('已关闭自动刷新', 'none')
-      this.stopAutoRefresh()
+      ui.loadingStates.showToast('已关闭自动刷新', 'none');
+      this.stopAutoRefresh();
     }
   },
 
   refreshData() {
-    ui.loadingStates.showLoading('刷新中...')
-    this.loadDeliveries()
-    ui.loadingStates.hideLoading()
+    ui.loadingStates.showLoading('刷新中...');
+    this.loadDeliveries();
+    ui.loadingStates.hideLoading();
   },
 
   viewDeliveryDetail(e) {
-    const orderId = e.currentTarget.dataset.orderId || e.currentTarget.dataset.id
+    const orderId = e.currentTarget.dataset.orderId || e.currentTarget.dataset.id;
     if (!orderId) {
-      ui.loadingStates.showToast('订单信息缺失', 'none')
-      return
+      ui.loadingStates.showToast('订单信息缺失', 'none');
+      return;
     }
-    wx.navigateTo({ url: `/pages/order-detail/order-detail?id=${orderId}` })
+    wx.navigateTo({ url: `/pages/order-detail/order-detail?id=${orderId}` });
   },
 
   async contactRider(e) {
-    const phone = e.currentTarget.dataset.phone
+    const phone = e.currentTarget.dataset.phone;
     wx.makePhoneCall({
       phoneNumber: phone.replace(/\*/g, '0'),
       fail: () => {
-        ui.loadingStates.showToast('拨打电话失败', 'none')
+        ui.loadingStates.showToast('拨打电话失败', 'none');
       }
-    })
+    });
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   }
-})
+});

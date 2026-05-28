@@ -1,5 +1,5 @@
-const cloud = require('../../../utils/cloud.js')
-const ui = require('../../../utils/ui.js')
+const cloud = require('../../../utils/cloud.js');
+const ui = require('../../../utils/ui.js');
 
 Page({
   data: {
@@ -14,35 +14,35 @@ Page({
   },
 
   onLoad() {
-    this.loadRiders()
+    this.loadRiders();
   },
 
   onPullDownRefresh() {
-    this.loadRiders()
+    this.loadRiders();
   },
 
   async loadRiders() {
-    this.setData({ loading: true })
+    this.setData({ loading: true });
 
     try {
       const result = await cloud.callCloudFunction({
         name: 'deliveryService',
         data: { action: 'getRiders', status: this.data.onlineFilter },
         showLoading: false
-      })
+      });
 
       this.setData({
         riders: result?.success ? result.data : this.getMockRiders(),
         loading: false
-      })
+      });
     } catch (error) {
-      console.error('加载骑手失败:', error)
+      console.error('加载骑手失败:', error);
       this.setData({
         riders: this.getMockRiders(),
         loading: false
-      })
+      });
     } finally {
-      wx.stopPullDownRefresh()
+      wx.stopPullDownRefresh();
     }
   },
 
@@ -84,25 +84,25 @@ Page({
         rating: 4.9,
         earnings: 1404
       }
-    ]
+    ];
   },
 
   filterByStatus(e) {
-    const status = e.currentTarget.dataset.status
-    this.setData({ onlineFilter: status }, () => this.loadRiders())
+    const status = e.currentTarget.dataset.status;
+    this.setData({ onlineFilter: status }, () => this.loadRiders());
   },
 
   viewRiderDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/pages/user-profile/user-profile?userId=${id}` })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `/pages/user-profile/user-profile?userId=${id}` });
   },
 
   async suspendRider(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     const confirmed = await ui.loadingStates.showModal({
       title: '暂停骑手',
       content: '确定要暂停此骑手的服务吗？'
-    })
+    });
 
     if (confirmed) {
       try {
@@ -110,41 +110,41 @@ Page({
           name: 'deliveryService',
           data: { action: 'suspendRider', riderId: id },
           loadingTitle: '处理中...'
-        })
+        });
         if (result?.success) {
-          ui.loadingStates.showSuccess('操作成功')
-          this.loadRiders()
+          ui.loadingStates.showSuccess('操作成功');
+          this.loadRiders();
         } else {
-          ui.loadingStates.showError('操作失败')
+          ui.loadingStates.showError('操作失败');
         }
       } catch (error) {
-        console.error('暂停骑手失败:', error)
-        ui.loadingStates.showError('操作失败')
+        console.error('暂停骑手失败:', error);
+        ui.loadingStates.showError('操作失败');
       }
     }
   },
 
   async resumeRider(e) {
-    const id = e.currentTarget.dataset.id
+    const id = e.currentTarget.dataset.id;
     try {
       const result = await cloud.callCloudFunction({
         name: 'deliveryService',
         data: { action: 'resumeRider', riderId: id },
         loadingTitle: '处理中...'
-      })
+      });
       if (result?.success) {
-        ui.loadingStates.showSuccess('操作成功')
-        this.loadRiders()
+        ui.loadingStates.showSuccess('操作成功');
+        this.loadRiders();
       } else {
-        ui.loadingStates.showError('操作失败')
+        ui.loadingStates.showError('操作失败');
       }
     } catch (error) {
-      console.error('恢复骑手失败:', error)
-      ui.loadingStates.showError('操作失败')
+      console.error('恢复骑手失败:', error);
+      ui.loadingStates.showError('操作失败');
     }
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   }
-})
+});

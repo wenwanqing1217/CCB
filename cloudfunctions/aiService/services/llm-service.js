@@ -28,12 +28,12 @@ class LLMService {
         messages: messages,
         max_tokens: options.maxTokens || this.config.maxTokens,
         temperature: options.temperature ?? this.config.temperature,
-        top_p: this.config.topP,
+        top_p: this.config.topP
       };
 
       logger.info('LLM请求开始', {
         model: this.config.model,
-        messageCount: messages.length,
+        messageCount: messages.length
       });
 
       // 发起请求
@@ -45,23 +45,23 @@ class LLMService {
       const costTime = Date.now() - startTime;
       logger.info('LLM请求成功', {
         costTime,
-        responseLength: result.length,
+        responseLength: result.length
       });
 
       return {
         success: true,
-        data: result,
+        data: result
       };
     } catch (error) {
       const costTime = Date.now() - startTime;
       logger.error('LLM请求失败', {
         error: error.message,
-        costTime,
+        costTime
       });
 
       return {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -81,7 +81,7 @@ class LLMService {
     try {
       const res = await cloud.openapi.requestSubscribeMessage({
         touser: 'test',
-        templateId: 'test',
+        templateId: 'test'
       });
       // 如果云开发支持，替换为实际请求
     } catch (e) {
@@ -109,9 +109,9 @@ class LLMService {
       choices: [{
         message: {
           role: 'assistant',
-          content: '这是模拟回复，实际使用时需要配置真实的豆包API。',
-        },
-      }],
+          content: '这是模拟回复，实际使用时需要配置真实的豆包API。'
+        }
+      }]
     };
   }
 
@@ -131,7 +131,7 @@ class LLMService {
    */
   buildMessages(systemPrompt, history, userQuestion) {
     const messages = [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: systemPrompt }
     ];
 
     // 添加历史对话（限制数量）

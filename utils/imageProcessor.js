@@ -226,8 +226,12 @@ class ImageProcessor {
   }
 
   getWebpUrl(url) {
-    if (!url) return url;
-    if (url.includes('.webp')) return url;
+    if (!url) {
+      return url;
+    }
+    if (url.includes('.webp')) {
+      return url;
+    }
     if (url.includes('cloud://')) {
       return url.replace(/\.(jpg|jpeg|png|gif)$/i, '.webp');
     }
@@ -344,7 +348,9 @@ class ImageProcessor {
   }
 
   isCached(url) {
-    if (this.imageCache.has(url)) return true;
+    if (this.imageCache.has(url)) {
+      return true;
+    }
     const webpUrl = this.getWebpUrl(url);
     return this.imageCache.has(webpUrl);
   }

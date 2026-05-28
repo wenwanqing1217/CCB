@@ -65,7 +65,9 @@ Component({
       this.setData({ observer });
     },
     loadImage() {
-      if (this.data.loaded || this.data.loading) return;
+      if (this.data.loaded || this.data.loading) {
+        return;
+      }
       
       this.setData({ loading: true, error: false });
       

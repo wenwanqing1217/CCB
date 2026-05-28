@@ -23,7 +23,9 @@ class LazyLoad {
    * @returns {IntersectionObserver|null}
    */
   createObserver(options = {}) {
-    if (!('IntersectionObserver' in wx)) return null;
+    if (!('IntersectionObserver' in wx)) {
+      return null;
+    }
     
     const mergedOptions = { ...this.defaultOptions, ...options };
     const observer = wx.createIntersectionObserver(null, mergedOptions);
@@ -45,7 +47,9 @@ class LazyLoad {
     }
 
     const observer = this.createObserver(options);
-    if (!observer) return;
+    if (!observer) {
+      return;
+    }
 
     observer.observe(imageSelector, (res) => {
       if (res.intersectionRatio > 0) {
@@ -74,7 +78,9 @@ class LazyLoad {
     }
 
     const observer = this.createObserver({ ...options, observeAll: true });
-    if (!observer) return;
+    if (!observer) {
+      return;
+    }
 
     const selectors = images.map((_, index) => `.lazy-image-${index}`);
     
@@ -153,7 +159,7 @@ class LazyLoad {
   autoDestroy(pageContext) {
     if (pageContext && typeof pageContext.onUnload === 'function') {
       const originalOnUnload = pageContext.onUnload.bind(pageContext);
-      pageContext.onUnload = function() {
+      pageContext.onUnload = function () {
         originalOnUnload();
         this.destroy();
       }.bind(this);

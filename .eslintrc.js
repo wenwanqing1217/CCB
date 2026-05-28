@@ -6,8 +6,18 @@ module.exports = {
   root: true,
   env: {
     es2021: true,
-    node: true,
-    wx: true
+    node: true
+  },
+  globals: {
+    wx: 'readonly',
+    getApp: 'readonly',
+    getCurrentPages: 'readonly',
+    requestAnimationFrame: 'readonly',
+    Page: 'readonly',
+    Component: 'readonly',
+    Image: 'readonly',
+    __wxConfig: 'readonly',
+    console: 'readonly'
   },
   extends: [
     'eslint:recommended'

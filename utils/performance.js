@@ -11,21 +11,21 @@ export async function compressImage(filePath, options = {}) {
     quality = 80,
     maxWidth = 800,
     maxHeight = 800
-  } = options
+  } = options;
 
   return new Promise((resolve, reject) => {
     wx.compressImage({
       src: filePath,
       quality,
       success: (res) => {
-        resolve(res.tempFilePath)
+        resolve(res.tempFilePath);
       },
       fail: (err) => {
-        console.warn('图片压缩失败，使用原图片:', err)
-        resolve(filePath)
+        console.warn('图片压缩失败，使用原图片:', err);
+        resolve(filePath);
       }
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -35,8 +35,8 @@ export async function compressImage(filePath, options = {}) {
  * @returns {string[]} - 压缩后的路径数组
  */
 export async function compressImages(filePaths, options = {}) {
-  const promises = filePaths.map(path => compressImage(path, options))
-  return Promise.all(promises)
+  const promises = filePaths.map(path => compressImage(path, options));
+  return Promise.all(promises);
 }
 
 /**
@@ -50,14 +50,14 @@ export const smartCache = {
    */
   get(key) {
     try {
-      const cache = wx.getStorageSync(key)
+      const cache = wx.getStorageSync(key);
       if (cache && cache.expire > Date.now()) {
-        return cache.data
+        return cache.data;
       }
-      return null
+      return null;
     } catch (e) {
-      console.warn('获取缓存失败:', e)
-      return null
+      console.warn('获取缓存失败:', e);
+      return null;
     }
   },
 
@@ -72,9 +72,9 @@ export const smartCache = {
       wx.setStorageSync(key, {
         data,
         expire: Date.now() + expireMinutes * 60 * 1000
-      })
+      });
     } catch (e) {
-      console.warn('设置缓存失败:', e)
+      console.warn('设置缓存失败:', e);
     }
   },
 
@@ -84,9 +84,9 @@ export const smartCache = {
    */
   remove(key) {
     try {
-      wx.removeStorageSync(key)
+      wx.removeStorageSync(key);
     } catch (e) {
-      console.warn('删除缓存失败:', e)
+      console.warn('删除缓存失败:', e);
     }
   },
 
@@ -95,9 +95,9 @@ export const smartCache = {
    */
   clear() {
     try {
-      wx.clearStorageSync()
+      wx.clearStorageSync();
     } catch (e) {
-      console.warn('清空缓存失败:', e)
+      console.warn('清空缓存失败:', e);
     }
   },
 
@@ -107,13 +107,13 @@ export const smartCache = {
    */
   getInfo() {
     try {
-      return wx.getStorageInfoSync()
+      return wx.getStorageInfoSync();
     } catch (e) {
-      console.warn('获取缓存信息失败:', e)
-      return null
+      console.warn('获取缓存信息失败:', e);
+      return null;
     }
   }
-}
+};
 
 /**
  * 请求缓存装饰器
@@ -121,25 +121,25 @@ export const smartCache = {
  * @returns {function} - 装饰后的函数
  */
 export function cacheable(expireMinutes = 30) {
-  return function(target, propertyKey, descriptor) {
-    const originalMethod = descriptor.value
+  return function (target, propertyKey, descriptor) {
+    const originalMethod = descriptor.value;
 
-    descriptor.value = async function(...args) {
-      const cacheKey = `${propertyKey}_${JSON.stringify(args)}`
-      const cached = smartCache.get(cacheKey)
+    descriptor.value = async function (...args) {
+      const cacheKey = `${propertyKey}_${JSON.stringify(args)}`;
+      const cached = smartCache.get(cacheKey);
 
       if (cached !== null) {
-        console.log(`[缓存命中] ${cacheKey}`)
-        return cached
+        console.log(`[缓存命中] ${cacheKey}`);
+        return cached;
       }
 
-      const result = await originalMethod.apply(this, args)
-      smartCache.set(cacheKey, result, expireMinutes)
-      return result
-    }
+      const result = await originalMethod.apply(this, args);
+      smartCache.set(cacheKey, result, expireMinutes);
+      return result;
+    };
 
-    return descriptor
-  }
+    return descriptor;
+  };
 }
 
 /**
@@ -149,11 +149,11 @@ export function cacheable(expireMinutes = 30) {
  * @returns {function} - 防抖后的函数
  */
 export function debounce(func, wait = 300) {
-  let timeout = null
-  return function(...args) {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => func.apply(this, args), wait)
-  }
+  let timeout = null;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
 }
 
 /**
@@ -163,14 +163,14 @@ export function debounce(func, wait = 300) {
  * @returns {function} - 节流后的函数
  */
 export function throttle(func, limit = 300) {
-  let inThrottle = false
-  return function(...args) {
+  let inThrottle = false;
+  return function (...args) {
     if (!inThrottle) {
-      func.apply(this, args)
-      inThrottle = true
-      setTimeout(() => (inThrottle = false), limit)
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
     }
-  }
+  };
 }
 
 /**
@@ -182,26 +182,26 @@ export function lazyLoadImages(selector = '.lazy-image', options = {}) {
   const {
     placeholder = '/images/placeholder.png',
     threshold = 100
-  } = options
+  } = options;
 
   const observer = wx.createIntersectionObserver({
     thresholds: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-  })
+  });
 
   observer
     .relativeToViewport({ bottom: threshold })
     .observe(selector, (res) => {
       if (res.intersectionRatio > 0) {
-        const target = res.dataset.target
+        const target = res.dataset.target;
         if (target && !target.dataset.loaded) {
-          target.dataset.loaded = true
-          const src = target.dataset.src
+          target.dataset.loaded = true;
+          const src = target.dataset.src;
           if (src) {
-            target.src = src
+            target.src = src;
           }
         }
       }
-    })
+    });
 }
 
 /**
@@ -215,7 +215,7 @@ export const performanceMonitor = {
    * @param {string} name - 计时器名称
    */
   start(name) {
-    this.timers[name] = Date.now()
+    this.timers[name] = Date.now();
   },
 
   /**
@@ -224,19 +224,21 @@ export const performanceMonitor = {
    * @returns {number} - 耗时（毫秒）
    */
   end(name) {
-    if (!this.timers[name]) return 0
-    const elapsed = Date.now() - this.timers[name]
-    console.log(`[性能监控] ${name}: ${elapsed}ms`)
-    delete this.timers[name]
-    return elapsed
+    if (!this.timers[name]) {
+      return 0;
+    }
+    const elapsed = Date.now() - this.timers[name];
+    console.log(`[性能监控] ${name}: ${elapsed}ms`);
+    delete this.timers[name];
+    return elapsed;
   },
 
   /**
    * 记录内存使用
    */
   logMemory() {
-    const info = wx.getStorageInfoSync()
-    console.log(`[内存使用] 当前: ${info.currentSize}KB, 限制: ${info.limitSize}KB`)
+    const info = wx.getStorageInfoSync();
+    console.log(`[内存使用] 当前: ${info.currentSize}KB, 限制: ${info.limitSize}KB`);
   },
 
   /**
@@ -252,12 +254,12 @@ export const performanceMonitor = {
           ...data,
           timestamp: Date.now()
         }
-      })
+      });
     } catch (e) {
-      console.warn('性能上报失败:', e)
+      console.warn('性能上报失败:', e);
     }
   }
-}
+};
 
 /**
  * 预加载资源
@@ -266,13 +268,13 @@ export const performanceMonitor = {
 export async function preloadResources(urls) {
   const promises = urls.map(url => {
     return new Promise((resolve) => {
-      const img = new Image()
-      img.onload = () => resolve(url)
-      img.onerror = () => resolve(url)
-      img.src = url
-    })
-  })
-  await Promise.all(promises)
+      const img = new Image();
+      img.onload = () => resolve(url);
+      img.onerror = () => resolve(url);
+      img.src = url;
+    });
+  });
+  await Promise.all(promises);
 }
 
 /**
@@ -281,14 +283,14 @@ export async function preloadResources(urls) {
  * @returns {string} - JSON字符串
  */
 export function safeStringify(obj) {
-  const seen = new Set()
+  const seen = new Set();
   return JSON.stringify(obj, (key, value) => {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {
-        return '[Circular]'
+        return '[Circular]';
       }
-      seen.add(value)
+      seen.add(value);
     }
-    return value
-  })
+    return value;
+  });
 }

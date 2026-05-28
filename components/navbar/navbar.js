@@ -14,7 +14,7 @@ Component({
     }
   },
   methods: {
-    goBack: function() {
+    goBack: function () {
       wx.navigateBack({
         delta: 1
       });

@@ -26,29 +26,29 @@ Component({
 
   lifetimes: {
     attached() {
-      this.setData({ visible: this.properties.loading })
+      this.setData({ visible: this.properties.loading });
     }
   },
 
   observers: {
     loading: function (newVal) {
-      this.setData({ visible: newVal })
+      this.setData({ visible: newVal });
     }
   },
 
   methods: {
     show() {
-      this.setData({ visible: true })
-      this.triggerEvent('show')
+      this.setData({ visible: true });
+      this.triggerEvent('show');
     },
 
     hide() {
-      this.setData({ visible: false })
-      this.triggerEvent('hide')
+      this.setData({ visible: false });
+      this.triggerEvent('hide');
     },
 
     toggle() {
-      this.setData({ visible: !this.data.visible })
+      this.setData({ visible: !this.data.visible });
     }
   }
-})
+});

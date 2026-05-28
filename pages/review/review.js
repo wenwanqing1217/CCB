@@ -15,7 +15,7 @@ Page({
   },
 
   onLoad(options) {
-    this.loadOrder(options.orderId)
+    this.loadOrder(options.orderId);
   },
 
   loadOrder(orderId) {
@@ -25,67 +25,69 @@ Page({
         title: '盲盒',
         price: 9.9
       }
-    })
+    });
   },
 
   setRating(e) {
-    const rating = e.currentTarget.dataset.rating
-    const texts = ['', '很差', '较差', '一般', '满意', '非常满意']
+    const rating = e.currentTarget.dataset.rating;
+    const texts = ['', '很差', '较差', '一般', '满意', '非常满意'];
     this.setData({
       rating,
       ratingText: texts[rating]
-    })
-    this.checkCanSubmit()
+    });
+    this.checkCanSubmit();
   },
 
   toggleTag(e) {
-    const index = e.currentTarget.dataset.index
-    const tags = this.data.tags
-    tags[index].selected = !tags[index].selected
-    this.setData({ tags })
+    const index = e.currentTarget.dataset.index;
+    const tags = this.data.tags;
+    tags[index].selected = !tags[index].selected;
+    this.setData({ tags });
   },
 
   onContentInput(e) {
-    this.setData({ content: e.detail.value })
-    this.checkCanSubmit()
+    this.setData({ content: e.detail.value });
+    this.checkCanSubmit();
   },
 
   addImage() {
-    const that = this
+    const that = this;
     wx.chooseMedia({
       count: 9 - that.data.images.length,
       mediaType: ['image'],
       success: res => {
-        const newImages = res.tempFiles.map(file => file.tempFilePath)
+        const newImages = res.tempFiles.map(file => file.tempFilePath);
         that.setData({
           images: [...that.data.images, ...newImages]
-        })
+        });
       }
-    })
+    });
   },
 
   removeImage(e) {
-    const index = e.currentTarget.dataset.index
-    const images = this.data.images.filter((_, i) => i !== index)
-    this.setData({ images })
+    const index = e.currentTarget.dataset.index;
+    const images = this.data.images.filter((_, i) => i !== index);
+    this.setData({ images });
   },
 
   checkCanSubmit() {
-    const canSubmit = this.data.rating > 0
-    this.setData({ canSubmit })
+    const canSubmit = this.data.rating > 0;
+    this.setData({ canSubmit });
   },
 
   submitReview() {
-    if (!this.data.canSubmit) return
+    if (!this.data.canSubmit) {
+      return;
+    }
 
-    wx.showLoading({ title: '提交中..' })
+    wx.showLoading({ title: '提交中..' });
 
     setTimeout(() => {
-      wx.hideLoading()
-      wx.showToast({ title: '评价成功', icon: 'success' })
+      wx.hideLoading();
+      wx.showToast({ title: '评价成功', icon: 'success' });
       setTimeout(() => {
-        wx.navigateBack()
-      }, 1500)
-    }, 800)
+        wx.navigateBack();
+      }, 1500);
+    }, 800);
   }
-})
+});

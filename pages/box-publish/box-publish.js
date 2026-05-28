@@ -1,6 +1,6 @@
-const { toast } = require('../../utils/index.js')
-const { MAIN_DORMS } = require('../../utils/campusData.js')
-const imageProcessor = require('../../utils/imageProcessor.js')
+const { toast } = require('../../utils/index.js');
+const { MAIN_DORMS } = require('../../utils/campusData.js');
+const imageProcessor = require('../../utils/imageProcessor.js');
 
 Page({
   data: {
@@ -51,7 +51,7 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
         selected: 2
-      })
+      });
     }
   },
 
@@ -161,7 +161,9 @@ Page({
   },
 
   async uploadImages() {
-    if (!this.data.images.length) return [];
+    if (!this.data.images.length) {
+      return [];
+    }
     try {
       // 使用图片处理工具压缩并上传图片
       const imageIds = await imageProcessor.compressAndUpload(

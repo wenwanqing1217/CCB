@@ -11,43 +11,45 @@ Page({
   },
 
   onLoad() {
-    this.loadHistory()
+    this.loadHistory();
   },
 
   loadHistory() {
-    const history = wx.getStorageSync('searchHistory') || []
-    this.setData({ historyList: history })
+    const history = wx.getStorageSync('searchHistory') || [];
+    this.setData({ historyList: history });
   },
 
   onInput(e) {
-    this.setData({ keyword: e.detail.value })
+    this.setData({ keyword: e.detail.value });
   },
 
   clearKeyword() {
-    this.setData({ keyword: '', hasSearched: false, results: [], users: [] })
+    this.setData({ keyword: '', hasSearched: false, results: [], users: [] });
   },
 
   doSearch() {
-    if (!this.data.keyword.trim()) return
+    if (!this.data.keyword.trim()) {
+      return;
+    }
     
-    this.setData({ hasSearched: true, loading: true })
+    this.setData({ hasSearched: true, loading: true });
     
-    this.saveHistory(this.data.keyword)
+    this.saveHistory(this.data.keyword);
     
     wx.cloud.callFunction({
       name: 'searchItems',
       data: { keyword: this.data.keyword },
       success: res => {
         if (res.result) {
-          this.setData({ results: res.result.boxes || [], users: res.result.users || [], loading: false })
+          this.setData({ results: res.result.boxes || [], users: res.result.users || [], loading: false });
         } else {
-          this.useMockData()
+          this.useMockData();
         }
       },
       fail: () => {
-        this.useMockData()
+        this.useMockData();
       }
-    })
+    });
   },
 
   useMockData() {
@@ -60,43 +62,43 @@ Page({
         { _id: '1', nickName: '小明', avatar: 'https://img.zcool.cn/community/01c7a57e4a6fa0000018c1b6e8f91a.jpg@1280w_1l_2o_100sh.jpg', school: '北京大学' }
       ],
       loading: false
-    })
+    });
   },
 
   saveHistory(keyword) {
-    let history = this.data.historyList.filter(item => item !== keyword)
-    history.unshift(keyword)
-    history = history.slice(0, 10)
-    this.setData({ historyList: history })
-    wx.setStorageSync('searchHistory', history)
+    let history = this.data.historyList.filter(item => item !== keyword);
+    history.unshift(keyword);
+    history = history.slice(0, 10);
+    this.setData({ historyList: history });
+    wx.setStorageSync('searchHistory', history);
   },
 
   searchHistory(e) {
-    const keyword = e.currentTarget.dataset.keyword
-    this.setData({ keyword })
-    this.doSearch()
+    const keyword = e.currentTarget.dataset.keyword;
+    this.setData({ keyword });
+    this.doSearch();
   },
 
   clearHistory() {
-    wx.removeStorageSync('searchHistory')
-    this.setData({ historyList: [] })
+    wx.removeStorageSync('searchHistory');
+    this.setData({ historyList: [] });
   },
 
   setTab(e) {
-    this.setData({ activeTab: e.currentTarget.dataset.tab })
+    this.setData({ activeTab: e.currentTarget.dataset.tab });
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   },
 
   navigateToDetail(e) {
-    const { id } = e.currentTarget.dataset
-    wx.navigateTo({ url: `../box-detail/box-detail?id=${id}` })
+    const { id } = e.currentTarget.dataset;
+    wx.navigateTo({ url: `../box-detail/box-detail?id=${id}` });
   },
 
   navigateToUser(e) {
-    const id = e.currentTarget.dataset.id
-    wx.showToast({ title: '用户详情功能暂未开放', icon: 'none' })
+    const id = e.currentTarget.dataset.id;
+    wx.showToast({ title: '用户详情功能暂未开放', icon: 'none' });
   }
-})
+});

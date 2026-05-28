@@ -105,7 +105,7 @@ const mockBoxes = [
     likes: 48,
     comments: 12
   }
-]
+];
 
 Page({
   data: {
@@ -142,7 +142,9 @@ Page({
   },
 
   loadList(reset) {
-    if (this.data.loading) return;
+    if (this.data.loading) {
+      return;
+    }
     const page = reset ? 1 : this.data.page + 1;
     this.setData({ loading: true });
     
@@ -168,9 +170,15 @@ Page({
     const { type, campus } = this.data.filters;
     const { searchKeyword } = this.data;
     return boxes.filter(box => {
-      if (type && box.type !== type) return false;
-      if (campus && box.campus !== campus) return false;
-      if (searchKeyword && !box.title.includes(searchKeyword) && !box.desc.includes(searchKeyword)) return false;
+      if (type && box.type !== type) {
+        return false;
+      }
+      if (campus && box.campus !== campus) {
+        return false;
+      }
+      if (searchKeyword && !box.title.includes(searchKeyword) && !box.desc.includes(searchKeyword)) {
+        return false;
+      }
       return true;
     }).map(box => ({
       ...box,

@@ -153,7 +153,9 @@ class Logger {
    * @param {Object} log - 日志对象
    */
   logToConsole(level, log) {
-    if (!this.config.enableConsole) return;
+    if (!this.config.enableConsole) {
+      return;
+    }
 
     const prefix = `[${log.timestamp}] [${log.level}] [${log.page}]`;
     
@@ -233,7 +235,9 @@ class Logger {
    * @param {any} data - 附加数据
    */
   debug(message, data = null) {
-    if (!this.shouldLog(LOG_LEVELS.DEBUG)) return;
+    if (!this.shouldLog(LOG_LEVELS.DEBUG)) {
+      return;
+    }
     
     const log = this.formatLog(LOG_LEVELS.DEBUG, message, data);
     this.logToConsole(LOG_LEVELS.DEBUG, log);
@@ -246,7 +250,9 @@ class Logger {
    * @param {any} data - 附加数据
    */
   info(message, data = null) {
-    if (!this.shouldLog(LOG_LEVELS.INFO)) return;
+    if (!this.shouldLog(LOG_LEVELS.INFO)) {
+      return;
+    }
     
     const log = this.formatLog(LOG_LEVELS.INFO, message, data);
     this.logToConsole(LOG_LEVELS.INFO, log);
@@ -259,7 +265,9 @@ class Logger {
    * @param {any} data - 附加数据
    */
   warn(message, data = null) {
-    if (!this.shouldLog(LOG_LEVELS.WARN)) return;
+    if (!this.shouldLog(LOG_LEVELS.WARN)) {
+      return;
+    }
     
     const log = this.formatLog(LOG_LEVELS.WARN, message, data);
     this.logToConsole(LOG_LEVELS.WARN, log);
@@ -272,7 +280,9 @@ class Logger {
    * @param {any} data - 附加数据
    */
   error(message, data = null) {
-    if (!this.shouldLog(LOG_LEVELS.ERROR)) return;
+    if (!this.shouldLog(LOG_LEVELS.ERROR)) {
+      return;
+    }
     
     const log = this.formatLog(LOG_LEVELS.ERROR, message, data);
     this.logToConsole(LOG_LEVELS.ERROR, log);

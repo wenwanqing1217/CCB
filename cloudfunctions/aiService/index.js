@@ -20,7 +20,7 @@ const CONFIG = require('./config/model-config');
 const CHAT_PROMPT = require('./prompts/chat-prompt');
 
 cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV,
+  env: cloud.DYNAMIC_CURRENT_ENV
 });
 
 // 数据库
@@ -35,14 +35,14 @@ exports.main = async (event, context) => {
   logger.info('收到AI请求', {
     userId,
     questionLength: question?.length || 0,
-    historyLength: history?.length || 0,
+    historyLength: history?.length || 0
   });
 
   // 参数校验
   if (!question || typeof question !== 'string') {
     return {
       success: false,
-      error: '问题不能为空',
+      error: '问题不能为空'
     };
   }
 
@@ -61,7 +61,7 @@ exports.main = async (event, context) => {
       logger.error('AI调用失败', { error: result.error });
       return {
         success: false,
-        error: CHAT_PROMPT.fallbacks.error,
+        error: CHAT_PROMPT.fallbacks.error
       };
     }
 
@@ -71,13 +71,13 @@ exports.main = async (event, context) => {
     return {
       success: true,
       data: result.data,
-      suggestions: CHAT_PROMPT.suggestions,
+      suggestions: CHAT_PROMPT.suggestions
     };
   } catch (error) {
     logger.error('AI服务异常', { error: error.message });
     return {
       success: false,
-      error: CHAT_PROMPT.fallbacks.error,
+      error: CHAT_PROMPT.fallbacks.error
     };
   }
 };
@@ -93,8 +93,8 @@ async function logUserInteraction(userId, question, answer) {
         question,
         answer,
         timestamp: db.serverDate(),
-        model: CONFIG.model.model,
-      },
+        model: CONFIG.model.model
+      }
     });
   } catch (error) {
     logger.error('记录对话日志失败', { error: error.message });

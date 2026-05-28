@@ -69,7 +69,7 @@ const mockBox = {
       createTime: '1小时前'
     }
   ]
-}
+};
 
 Page({
   data: {
@@ -80,75 +80,75 @@ Page({
   },
 
   onLoad(options) {
-    const boxId = options.id
-    this.loadBoxDetail(boxId)
+    const boxId = options.id;
+    this.loadBoxDetail(boxId);
   },
 
   loadBoxDetail(boxId) {
-    this.setData({ loading: true })
+    this.setData({ loading: true });
     
     wx.cloud.callFunction({
       name: 'getBlindBoxDetail',
       data: { boxId },
       success: res => {
         if (res.result) {
-          this.setData({ box: res.result, loading: false })
+          this.setData({ box: res.result, loading: false });
         } else {
-          this.useLocalData()
+          this.useLocalData();
         }
       },
       fail: () => {
-        this.useLocalData()
+        this.useLocalData();
       }
-    })
+    });
   },
 
   useLocalData() {
-    this.setData({ box: mockBox, loading: false })
+    this.setData({ box: mockBox, loading: false });
   },
 
   onImageChange(e) {
-    this.setData({ currentImage: e.detail.current })
+    this.setData({ currentImage: e.detail.current });
   },
 
   previewImage(e) {
-    const current = e.currentTarget.dataset.src
+    const current = e.currentTarget.dataset.src;
     wx.previewImage({
       current,
       urls: this.data.box.images
-    })
+    });
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   },
 
   toggleFavorite() {
-    this.setData({ isFavorite: !this.data.isFavorite })
+    this.setData({ isFavorite: !this.data.isFavorite });
     wx.showToast({
       title: this.data.isFavorite ? '收藏成功' : '取消收藏',
       icon: 'success'
-    })
+    });
   },
 
   showComments() {
-    wx.showToast({ title: '评论功能开发中', icon: 'none' })
+    wx.showToast({ title: '评论功能开发中', icon: 'none' });
   },
 
   shareBox() {
     wx.showShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
-    })
+    });
   },
 
   onShareAppMessage() {
-    const box = this.data.box
+    const box = this.data.box;
     return {
       title: box.title,
       path: `/pages/blindBoxDetail/blindBoxDetail?id=${box._id}`,
       imageUrl: box.images[0]
-    }
+    };
   },
 
   openBox() {
@@ -157,68 +157,68 @@ Page({
       content: '确定要开启这个盲盒吗？开启后将无法退还',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '开启中..' })
+          wx.showLoading({ title: '开启中..' });
           
           setTimeout(() => {
-            wx.hideLoading()
+            wx.hideLoading();
             wx.showModal({
               title: '开启成功',
               content: '恭喜获得全新数码配件！',
               showCancel: false
-            })
-          }, 1500)
+            });
+          }, 1500);
         }
       }
-    })
+    });
   },
 
   buyBox() {
-    const box = this.data.box
+    const box = this.data.box;
     wx.showModal({
       title: '购买盲盒',
       content: `确认购买 ${box.title}\n价格: ${box.price}\n配送费: 1元\n总价: ${box.price + 1}元`,
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '购买中..' })
+          wx.showLoading({ title: '购买中..' });
           
           setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({ title: '购买成功', icon: 'success' })
+            wx.hideLoading();
+            wx.showToast({ title: '购买成功', icon: 'success' });
             
             setTimeout(() => {
-              wx.navigateTo({ url: '../order-list/order-list' })
-            }, 1500)
-          }, 1000)
+              wx.navigateTo({ url: '../order-list/order-list' });
+            }, 1500);
+          }, 1000);
         }
       }
-    })
+    });
   },
 
   contactSeller() {
-    wx.showToast({ title: '聊天功能开发中', icon: 'none' })
+    wx.showToast({ title: '聊天功能开发中', icon: 'none' });
   },
 
   viewSeller() {
-    wx.showToast({ title: '查看卖家信息功能暂未开放', icon: 'none' })
+    wx.showToast({ title: '查看卖家信息功能暂未开放', icon: 'none' });
   },
 
   // 点赞评论
   likeComment(e) {
-    const commentId = e.currentTarget.dataset.id
-    const box = this.data.box
+    const commentId = e.currentTarget.dataset.id;
+    const box = this.data.box;
     const updatedComments = box.comments.map(comment => {
       if (comment.id === commentId) {
         return {
           ...comment,
           likes: comment.likes + 1
-        }
+        };
       }
-      return comment
-    })
+      return comment;
+    });
     this.setData({
       'box.comments': updatedComments
-    })
-    wx.showToast({ title: '点赞成功', icon: 'success' })
+    });
+    wx.showToast({ title: '点赞成功', icon: 'success' });
   },
 
   // 添加评论
@@ -238,15 +238,15 @@ Page({
             content: res.content.trim(),
             createTime: '刚刚',
             likes: 0
-          }
-          const box = this.data.box
-          box.comments.unshift(newComment)
+          };
+          const box = this.data.box;
+          box.comments.unshift(newComment);
           this.setData({
             'box.comments': box.comments
-          })
-          wx.showToast({ title: '评论成功', icon: 'success' })
+          });
+          wx.showToast({ title: '评论成功', icon: 'success' });
         }
       }
-    })
+    });
   }
-})
+});

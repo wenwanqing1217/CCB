@@ -8,25 +8,27 @@ Page({
   },
 
   onLoad() {
-    this.loadCoinLogs()
+    this.loadCoinLogs();
   },
 
   onShow() {
     // 页面显示时刷新数据
-    this.setData({ page: 0, coinLogs: [], hasMore: true })
-    this.loadCoinLogs()
+    this.setData({ page: 0, coinLogs: [], hasMore: true });
+    this.loadCoinLogs();
   },
 
   loadCoinLogs() {
-    if (!this.data.hasMore || this.data.isLoading) return
+    if (!this.data.hasMore || this.data.isLoading) {
+      return;
+    }
 
-    this.setData({ isLoading: true })
+    this.setData({ isLoading: true });
 
-    const userInfo = wx.getStorageSync('userInfo')
+    const userInfo = wx.getStorageSync('userInfo');
     if (!userInfo || !userInfo.openid) {
-      this.setData({ isLoading: false })
-      wx.showToast({ title: '请先登录', icon: 'none' })
-      return
+      this.setData({ isLoading: false });
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
     }
 
     wx.cloud.callFunction({
@@ -41,30 +43,30 @@ Page({
       },
       success: (res) => {
         if (res.result && res.result.success) {
-          const logs = res.result.logs || []
-          const newLogs = this.data.page === 0 ? logs : [...this.data.coinLogs, ...logs]
+          const logs = res.result.logs || [];
+          const newLogs = this.data.page === 0 ? logs : [...this.data.coinLogs, ...logs];
           
           this.setData({
             coinLogs: newLogs,
             hasMore: logs.length === 20,
             isLoading: false
-          })
+          });
         } else {
-          this.setData({ isLoading: false, coinLogs: [], hasMore: false })
-          wx.showToast({ title: '获取记录失败', icon: 'none' })
+          this.setData({ isLoading: false, coinLogs: [], hasMore: false });
+          wx.showToast({ title: '获取记录失败', icon: 'none' });
         }
       },
       fail: () => {
-        this.setData({ isLoading: false, coinLogs: [], hasMore: false })
-        wx.showToast({ title: '获取记录失败', icon: 'none' })
+        this.setData({ isLoading: false, coinLogs: [], hasMore: false });
+        wx.showToast({ title: '获取记录失败', icon: 'none' });
       }
-    })
+    });
   },
 
   onReachBottom() {
     if (this.data.hasMore && !this.data.isLoading) {
-      this.setData({ page: this.data.page + 1 })
-      this.loadCoinLogs()
+      this.setData({ page: this.data.page + 1 });
+      this.loadCoinLogs();
     }
   },
 
@@ -76,8 +78,8 @@ Page({
       firstTrade: '💼',
       donate: '❤️',
       consume: '🎁'
-    }
-    return icons[type] || '📊'
+    };
+    return icons[type] || '📊';
   },
 
   getTypeColor(type) {
@@ -88,27 +90,27 @@ Page({
       firstTrade: '#f59e0b',
       donate: '#ef4444',
       consume: '#6b7280'
-    }
-    return colors[type] || '#6b7280'
+    };
+    return colors[type] || '#6b7280';
   },
 
   formatTime(date) {
-    const d = new Date(date)
-    const now = new Date()
-    const diff = now - d
+    const d = new Date(date);
+    const now = new Date();
+    const diff = now - d;
     
     if (diff < 3600000) {
-      return Math.floor(diff / 60000) + '分钟前'
+      return Math.floor(diff / 60000) + '分钟前';
     } else if (diff < 86400000) {
-      return Math.floor(diff / 3600000) + '小时前'
+      return Math.floor(diff / 3600000) + '小时前';
     } else if (diff < 604800000) {
-      return Math.floor(diff / 86400000) + '天前'
+      return Math.floor(diff / 86400000) + '天前';
     } else {
-      return `${d.getMonth() + 1}月${d.getDate()}日`
+      return `${d.getMonth() + 1}月${d.getDate()}日`;
     }
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   }
-})
+});

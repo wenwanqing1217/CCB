@@ -1,4 +1,4 @@
-const ui = require('../../utils/ui.js')
+const ui = require('../../utils/ui.js');
 
 Page({
   data: {
@@ -21,7 +21,9 @@ Page({
 
   // 时间格式化函数
   formatTime(timestamp) {
-    if (!timestamp) return '未知时间';
+    if (!timestamp) {
+      return '未知时间';
+    }
     const date = new Date(timestamp);
     
     // 格式化日期为年月日时分格式
@@ -41,16 +43,16 @@ Page({
 
   onShow() {
     if (this.data.isOnline) {
-      this.startLocationUpdate()
+      this.startLocationUpdate();
     }
   },
 
   onHide() {
-    this.stopLocationUpdate()
+    this.stopLocationUpdate();
   },
 
   onUnload() {
-    this.stopLocationUpdate()
+    this.stopLocationUpdate();
   },
 
   onPullDownRefresh() {
@@ -65,7 +67,9 @@ Page({
 
   switchTab(e) {
     const tab = e.currentTarget.dataset.tab;
-    if (tab === this.data.tab) return;
+    if (tab === this.data.tab) {
+      return;
+    }
     this.setData({ 
       tab, 
       page: 1, 
@@ -74,7 +78,9 @@ Page({
   },
 
   loadOrders(reset) {
-    if (this.data.loading) return;
+    if (this.data.loading) {
+      return;
+    }
     const page = reset ? 1 : this.data.page + 1;
     this.setData({ loading: true });
     
@@ -243,24 +249,24 @@ Page({
 
   // 切换在线状态
   async toggleOnline() {
-    const newStatus = !this.data.isOnline
+    const newStatus = !this.data.isOnline;
     
     if (newStatus) {
-      const hasPermission = await this.checkLocationPermission()
+      const hasPermission = await this.checkLocationPermission();
       if (!hasPermission) {
-        ui.loadingStates.showToast('请先开启位置权限', 'none')
-        return
+        ui.loadingStates.showToast('请先开启位置权限', 'none');
+        return;
       }
     }
 
-    this.setData({ isOnline: newStatus })
+    this.setData({ isOnline: newStatus });
     
     if (newStatus) {
-      ui.loadingStates.showSuccess('已上线')
-      this.startLocationUpdate()
+      ui.loadingStates.showSuccess('已上线');
+      this.startLocationUpdate();
     } else {
-      ui.loadingStates.showToast('已下线', 'none')
-      this.stopLocationUpdate()
+      ui.loadingStates.showToast('已下线', 'none');
+      this.stopLocationUpdate();
     }
 
     await wx.cloud.callFunction({
@@ -269,7 +275,7 @@ Page({
         action: 'setOnlineStatus',
         data: { isOnline: newStatus }
       }
-    })
+    });
   },
 
   // 检查位置权限
@@ -277,54 +283,56 @@ Page({
     return new Promise((resolve) => {
       wx.getSetting({
         success: (res) => {
-          const hasLocation = res.authSetting['scope.userLocation']
+          const hasLocation = res.authSetting['scope.userLocation'];
           if (hasLocation) {
-            resolve(true)
+            resolve(true);
           } else {
             wx.authorize({
               scope: 'scope.userLocation',
               success: () => resolve(true),
               fail: () => resolve(false)
-            })
+            });
           }
         },
         fail: () => resolve(false)
-      })
-    })
+      });
+    });
   },
 
   // 开始位置更新
   startLocationUpdate() {
-    if (this.data.locationUpdateTimer) return
+    if (this.data.locationUpdateTimer) {
+      return;
+    }
 
-    this.updateLocation()
+    this.updateLocation();
     
     this.data.locationUpdateTimer = setInterval(() => {
-      this.updateLocation()
-    }, 30000)
+      this.updateLocation();
+    }, 30000);
   },
 
   // 停止位置更新
   stopLocationUpdate() {
     if (this.data.locationUpdateTimer) {
-      clearInterval(this.data.locationUpdateTimer)
-      this.data.locationUpdateTimer = null
+      clearInterval(this.data.locationUpdateTimer);
+      this.data.locationUpdateTimer = null;
     }
   },
 
   // 更新位置
   async updateLocation() {
     try {
-      const location = await this.getLocation()
+      const location = await this.getLocation();
       await wx.cloud.callFunction({
         name: 'deliveryService',
         data: {
           action: 'updateLocation',
           data: { location }
         }
-      })
+      });
     } catch (error) {
-      console.error('更新位置失败:', error)
+      console.error('更新位置失败:', error);
     }
   },
 
@@ -335,8 +343,8 @@ Page({
         type: 'gcj02',
         success: resolve,
         fail: reject
-      })
-    })
+      });
+    });
   },
 
   // 加载骑手统计
@@ -345,33 +353,33 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'deliveryService',
         data: { action: 'getTodayStats' }
-      })
+      });
       if (result?.result?.success) {
-        this.setData({ riderStats: result.result.data })
+        this.setData({ riderStats: result.result.data });
       } else {
-        this.setData({ riderStats: { todayOrders: 3, todayEarnings: 27 } })
+        this.setData({ riderStats: { todayOrders: 3, todayEarnings: 27 } });
       }
     } catch (error) {
-      console.error('加载统计失败:', error)
-      this.setData({ riderStats: { todayOrders: 3, todayEarnings: 27 } })
+      console.error('加载统计失败:', error);
+      this.setData({ riderStats: { todayOrders: 3, todayEarnings: 27 } });
     }
   },
 
   // 查看订单详情
   viewOrderDetail(e) {
-    const orderId = e.currentTarget.dataset.orderId
-    wx.navigateTo({ url: `./order-detail/order-detail?id=${orderId}` })
+    const orderId = e.currentTarget.dataset.orderId;
+    wx.navigateTo({ url: `./order-detail/order-detail?id=${orderId}` });
   },
 
   // 查看统计面板
   viewStats() {
-    wx.navigateTo({ url: './stats/stats' })
+    wx.navigateTo({ url: './stats/stats' });
   },
 
   // 导航到取货地点
   navigateToPickup(e) {
-    const address = e.currentTarget.dataset.address
-    ui.loadingStates.showToast('正在打开地图...', 'none')
+    const address = e.currentTarget.dataset.address;
+    ui.loadingStates.showToast('正在打开地图...', 'none');
     
     wx.chooseLocation({
       success: (res) => {
@@ -381,8 +389,8 @@ Page({
           name: address,
           address: address,
           scale: 18
-        })
+        });
       }
-    })
+    });
   }
 });

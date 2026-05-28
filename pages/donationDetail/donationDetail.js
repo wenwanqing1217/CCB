@@ -8,7 +8,7 @@ Page({
   },
 
   onLoad(options) {
-    this.loadDetail(options.id)
+    this.loadDetail(options.id);
   },
 
   loadDetail(id) {
@@ -17,15 +17,15 @@ Page({
       data: { id },
       success: res => {
         if (res.result) {
-          this.setData({ item: res.result })
+          this.setData({ item: res.result });
         } else {
-          this.useMockData()
+          this.useMockData();
         }
       },
       fail: () => {
-        this.useMockData()
+        this.useMockData();
       }
-    })
+    });
   },
 
   useMockData() {
@@ -54,65 +54,67 @@ Page({
         { _id: '3', images: ['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop'], title: '台灯', location: '新柏居' },
         { _id: '4', images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=300&fit=crop'], title: '收纳盒', location: '清水居' }
       ]
-    })
+    });
   },
 
   followUser() {
-    this.setData({ isFollowing: !this.data.isFollowing })
+    this.setData({ isFollowing: !this.data.isFollowing });
     wx.showToast({
       title: this.data.isFollowing ? '已关注' : '已取消关注',
       icon: 'success'
-    })
+    });
   },
 
   toggleFavorite() {
-    this.setData({ isFavorite: !this.data.isFavorite })
+    this.setData({ isFavorite: !this.data.isFavorite });
     wx.showToast({
       title: this.data.isFavorite ? '已收藏' : '已取消收藏',
       icon: 'success'
-    })
+    });
   },
 
   previewImage(e) {
-    const index = e.currentTarget.dataset.index
+    const index = e.currentTarget.dataset.index;
     wx.previewImage({
       current: this.data.item.images[index],
       urls: this.data.item.images
-    })
+    });
   },
 
   navigateToChat() {
-    wx.navigateTo({ url: '../chat/chat' })
+    wx.navigateTo({ url: '../chat/chat' });
   },
 
   navigateToDonation() {
-    wx.navigateTo({ url: '../donation/donation' })
+    wx.navigateTo({ url: '../donation/donation' });
   },
 
   navigateToDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: '../donationDetail/donationDetail?id=' + id })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '../donationDetail/donationDetail?id=' + id });
   },
 
   claimDonation() {
-    if (this.data.item.status !== 'pending') return
+    if (this.data.item.status !== 'pending') {
+      return;
+    }
 
     wx.showModal({
       title: '认领物品',
       content: '确定要认领该物品吗？',
       success: (res) => {
         if (res.confirm) {
-          wx.showLoading({ title: '提交中...' })
+          wx.showLoading({ title: '提交中...' });
           setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({ title: '认领成功', icon: 'success' })
+            wx.hideLoading();
+            wx.showToast({ title: '认领成功', icon: 'success' });
             this.setData({
               'item.status': 'claimed',
               'item.statusText': '已认领'
-            })
-          }, 800)
+            });
+          }, 800);
         }
       }
-    })
+    });
   }
-})
+});

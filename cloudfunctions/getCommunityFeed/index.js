@@ -1,10 +1,10 @@
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
-const db = cloud.database()
+const db = cloud.database();
 
 exports.main = async (event, context) => {
   try {
@@ -75,17 +75,17 @@ exports.main = async (event, context) => {
         createdAt: new Date(Date.now() - 18000000).toISOString(),
         isLiked: true
       }
-    ]
+    ];
     
     return {
       success: true,
       data: communityFeed
-    }
+    };
   } catch (error) {
-    console.error('获取社区动态失败:', error)
+    console.error('获取社区动态失败:', error);
     return {
       success: false,
       error: error.message
-    }
+    };
   }
-}
+};

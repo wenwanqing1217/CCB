@@ -18,52 +18,54 @@ Page({
 
   onLoad(options) {
     if (options.targetImage) {
-      this.setData({ targetImage: decodeURIComponent(options.targetImage) })
+      this.setData({ targetImage: decodeURIComponent(options.targetImage) });
     }
     if (options.targetTitle) {
-      this.setData({ targetTitle: decodeURIComponent(options.targetTitle) })
+      this.setData({ targetTitle: decodeURIComponent(options.targetTitle) });
     }
   },
 
   setType(e) {
-    this.setData({ activeType: e.currentTarget.dataset.type })
-    this.checkCanSubmit()
+    this.setData({ activeType: e.currentTarget.dataset.type });
+    this.checkCanSubmit();
   },
 
   onDescInput(e) {
-    this.setData({ description: e.detail.value })
-    this.checkCanSubmit()
+    this.setData({ description: e.detail.value });
+    this.checkCanSubmit();
   },
 
   addImage() {
-    const that = this
+    const that = this;
     wx.chooseMedia({
       count: 9 - that.data.images.length,
       mediaType: ['image'],
       success: res => {
-        const newImages = res.tempFiles.map(file => file.tempFilePath)
+        const newImages = res.tempFiles.map(file => file.tempFilePath);
         that.setData({
           images: [...that.data.images, ...newImages]
-        })
+        });
       }
-    })
+    });
   },
 
   removeImage(e) {
-    const index = e.currentTarget.dataset.index
-    const images = this.data.images.filter((_, i) => i !== index)
-    this.setData({ images })
+    const index = e.currentTarget.dataset.index;
+    const images = this.data.images.filter((_, i) => i !== index);
+    this.setData({ images });
   },
 
   checkCanSubmit() {
-    const canSubmit = this.data.activeType && this.data.description.trim().length >= 10
-    this.setData({ canSubmit })
+    const canSubmit = this.data.activeType && this.data.description.trim().length >= 10;
+    this.setData({ canSubmit });
   },
 
   submitReport() {
-    if (!this.data.canSubmit) return
+    if (!this.data.canSubmit) {
+      return;
+    }
 
-    wx.showLoading({ title: '提交中..' })
+    wx.showLoading({ title: '提交中..' });
 
     wx.cloud.callFunction({
       name: 'submitReport',
@@ -73,19 +75,19 @@ Page({
         images: this.data.images
       },
       success: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '举报成功', icon: 'success' })
+        wx.hideLoading();
+        wx.showToast({ title: '举报成功', icon: 'success' });
         setTimeout(() => {
-          wx.navigateBack()
-        }, 1500)
+          wx.navigateBack();
+        }, 1500);
       },
       fail: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '举报成功', icon: 'success' })
+        wx.hideLoading();
+        wx.showToast({ title: '举报成功', icon: 'success' });
         setTimeout(() => {
-          wx.navigateBack()
-        }, 1500)
+          wx.navigateBack();
+        }, 1500);
       }
-    })
+    });
   }
-})
+});

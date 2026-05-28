@@ -1,5 +1,5 @@
-const cloud = require('../../../utils/cloud.js')
-const ui = require('../../../utils/ui.js')
+const cloud = require('../../../utils/cloud.js');
+const ui = require('../../../utils/ui.js');
 
 Page({
   data: {
@@ -21,13 +21,13 @@ Page({
 
   onLoad(options) {
     if (options.id) {
-      this.setData({ orderId: options.id })
-      this.loadOrderDetail(options.id)
+      this.setData({ orderId: options.id });
+      this.loadOrderDetail(options.id);
     }
   },
 
   async loadOrderDetail(orderId) {
-    ui.loadingStates.showLoading('加载中...')
+    ui.loadingStates.showLoading('加载中...');
     
     try {
       const [orderResult, deliveryResult] = await Promise.all([
@@ -39,27 +39,27 @@ Page({
           name: 'deliveryService',
           data: { action: 'getDelivery', orderId }
         })
-      ])
+      ]);
 
-      const order = orderResult?.success ? orderResult.data : this.getMockOrder()
-      const delivery = deliveryResult?.success ? deliveryResult.data : null
+      const order = orderResult?.success ? orderResult.data : this.getMockOrder();
+      const delivery = deliveryResult?.success ? deliveryResult.data : null;
 
       this.setData({
         order,
         delivery,
         currentStep: this.getStepIndex(order.status)
-      })
+      });
 
-      this.updateStatusInfo(order.status)
+      this.updateStatusInfo(order.status);
     } catch (error) {
-      console.error('加载订单详情失败:', error)
+      console.error('加载订单详情失败:', error);
       this.setData({
         order: this.getMockOrder(),
         currentStep: 2
-      })
-      this.updateStatusInfo('delivering')
+      });
+      this.updateStatusInfo('delivering');
     } finally {
-      ui.loadingStates.hideLoading()
+      ui.loadingStates.hideLoading();
     }
   },
 
@@ -71,8 +71,8 @@ Page({
       'picked': 2,
       'delivering': 3,
       'completed': 4
-    }
-    return statusMap[status] || 0
+    };
+    return statusMap[status] || 0;
   },
 
   updateStatusInfo(status) {
@@ -83,48 +83,48 @@ Page({
       'picked': { text: '已取货', color: '#34A853' },
       'delivering': { text: '配送中', color: '#FBBC05' },
       'completed': { text: '已完成', color: '#34A853' }
-    }
+    };
     
-    const config = statusConfig[status] || { text: '未知状态', color: '#999999' }
+    const config = statusConfig[status] || { text: '未知状态', color: '#999999' };
     this.setData({
       statusText: config.text,
       statusColor: config.color
-    })
+    });
   },
 
   showContactModal() {
-    this.setData({ showContactModal: true })
+    this.setData({ showContactModal: true });
   },
 
   hideContactModal() {
-    this.setData({ showContactModal: false })
+    this.setData({ showContactModal: false });
   },
 
   makePhoneCall() {
-    const phone = this.data.order?.contact?.phone || '13800138000'
+    const phone = this.data.order?.contact?.phone || '13800138000';
     wx.makePhoneCall({
       phoneNumber: phone,
       fail: () => {
-        ui.loadingStates.showToast('拨打电话失败', 'none')
+        ui.loadingStates.showToast('拨打电话失败', 'none');
       }
-    })
-    this.hideContactModal()
+    });
+    this.hideContactModal();
   },
 
   copyPhone() {
-    const phone = this.data.order?.contact?.phone || ''
+    const phone = this.data.order?.contact?.phone || '';
     wx.setClipboardData({
       data: phone,
       success: () => {
-        ui.loadingStates.showToast('已复制', 'success')
+        ui.loadingStates.showToast('已复制', 'success');
       }
-    })
-    this.hideContactModal()
+    });
+    this.hideContactModal();
   },
 
   navigateToPickup() {
-    const address = this.data.order?.pickupAddress || this.data.order?.address || '校园内'
-    ui.loadingStates.showToast('正在打开地图...', 'none')
+    const address = this.data.order?.pickupAddress || this.data.order?.address || '校园内';
+    ui.loadingStates.showToast('正在打开地图...', 'none');
     
     wx.chooseLocation({
       success: (res) => {
@@ -134,17 +134,17 @@ Page({
           name: address,
           address: address,
           scale: 18
-        })
+        });
       },
       fail: () => {
-        ui.loadingStates.showToast('打开地图失败', 'none')
+        ui.loadingStates.showToast('打开地图失败', 'none');
       }
-    })
+    });
   },
 
   navigateToDelivery() {
-    const address = this.data.order?.deliveryAddress || this.data.order?.address || '校园内'
-    ui.loadingStates.showToast('正在打开地图...', 'none')
+    const address = this.data.order?.deliveryAddress || this.data.order?.address || '校园内';
+    ui.loadingStates.showToast('正在打开地图...', 'none');
     
     wx.chooseLocation({
       success: (res) => {
@@ -154,23 +154,25 @@ Page({
           name: address,
           address: address,
           scale: 18
-        })
+        });
       },
       fail: () => {
-        ui.loadingStates.showToast('打开地图失败', 'none')
+        ui.loadingStates.showToast('打开地图失败', 'none');
       }
-    })
+    });
   },
 
   async updateStatus(status) {
     const confirmed = await ui.loadingStates.showModal({
       title: '确认操作',
       content: this.getStatusConfirmText(status)
-    })
+    });
 
-    if (!confirmed) return
+    if (!confirmed) {
+      return;
+    }
 
-    ui.loadingStates.showLoading('处理中...')
+    ui.loadingStates.showLoading('处理中...');
 
     try {
       const result = await cloud.callCloudFunction({
@@ -182,19 +184,19 @@ Page({
             status
           }
         }
-      })
+      });
 
       if (result?.success) {
-        ui.loadingStates.showSuccess('操作成功')
-        this.loadOrderDetail(this.data.orderId)
+        ui.loadingStates.showSuccess('操作成功');
+        this.loadOrderDetail(this.data.orderId);
       } else {
-        ui.loadingStates.showError('操作失败')
+        ui.loadingStates.showError('操作失败');
       }
     } catch (error) {
-      console.error('更新状态失败:', error)
-      ui.loadingStates.showError('操作失败')
+      console.error('更新状态失败:', error);
+      ui.loadingStates.showError('操作失败');
     } finally {
-      ui.loadingStates.hideLoading()
+      ui.loadingStates.hideLoading();
     }
   },
 
@@ -203,20 +205,20 @@ Page({
       'picked': '确认已取到盲盒？',
       'delivering': '确认开始配送？',
       'completed': '确认订单已送达？'
-    }
-    return textMap[status] || '确认此操作？'
+    };
+    return textMap[status] || '确认此操作？';
   },
 
   confirmPickup() {
-    this.updateStatus('picked')
+    this.updateStatus('picked');
   },
 
   startDelivery() {
-    this.updateStatus('delivering')
+    this.updateStatus('delivering');
   },
 
   confirmDelivery() {
-    this.updateStatus('completed')
+    this.updateStatus('completed');
   },
 
   getMockOrder() {
@@ -243,10 +245,10 @@ Page({
         nickName: '用户A',
         avatar: ''
       }
-    }
+    };
   },
 
   goBack() {
-    wx.navigateBack()
+    wx.navigateBack();
   }
-})
+});
