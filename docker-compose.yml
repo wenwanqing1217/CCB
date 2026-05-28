@@ -5,154 +5,126 @@ services:
     image: mysql:8.0
     container_name: campus-blindbox-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123456
-      MYSQL_DATABASE: campus_blindbox
-      MYSQL_USER: blindbox
-      MYSQL_PASSWORD: blindbox123456
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123456}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-campus_blindbox}
+      MYSQL_USER: ${MYSQL_USER:-blindbox}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-blindbox123456}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
     networks:
       - campus-blindbox-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
     container_name: campus-blindbox-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - campus-blindbox-network
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     image: mongo:6
     container_name: campus-blindbox-mongo
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root123456
-      MONGO_INITDB_DATABASE: campus_blindbox
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-root123456}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-campus_blindbox}
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT:-27017}:27017"
     volumes:
       - mongo_data:/data/db
+      - ./docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     networks:
       - campus-blindbox-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test -u root -p root123456 --authenticationDatabase admin
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rocketmq-namesrv:
     image: apache/rocketmq:5.1.4
     container_name: campus-blindbox-rocketmq-namesrv
     ports:
-      - "9876:9876"
-    command: sh mqnamesrv
+      - "${ROCKETMQ_NAMESRV_PORT:-9876}:9876"
+    volumes:
+      - rocketmq_namesrv_data:/home/rocketmq/namesrv/logs
     networks:
       - campus-blindbox-network
+    command: sh mqnamesrv
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9876"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   rocketmq-broker:
     image: apache/rocketmq:5.1.4
     container_name: campus-blindbox-rocketmq-broker
     ports:
-      - "10909:10909"
-      - "10911:10911"
-    environment:
-      NAMESRV_ADDR: rocketmq-namesrv:9876
-    command: sh mqbroker -n rocketmq-namesrv:9876
+      - "${ROCKETMQ_BROKER_PORT:-10911}:10911"
+      - "${ROCKETMQ_PROXY_PORT:-8081}:8081"
+    volumes:
+      - rocketmq_broker_data:/home/rocketmq/broker/logs
+      - rocketmq_broker_store:/home/rocketmq/broker/store
+      - ./docker/rocketmq/broker.conf:/home/rocketmq/rocketmq-5.1.4/conf/broker.conf
+    networks:
+      - campus-blindbox-network
     depends_on:
       - rocketmq-namesrv
-    volumes:
-      - rocketmq_data:/home/rocketmq/logs
-      - rocketmq_data:/home/rocketmq/store
-    networks:
-      - campus-blindbox-network
+    command: sh mqbroker -n rocketmq-namesrv:9876 -c /home/rocketmq/rocketmq-5.1.4/conf/broker.conf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  elasticsearch:
-    image: elasticsearch:8.11.0
-    container_name: campus-blindbox-es
+  minio:
+    image: minio/minio:latest
+    container_name: campus-blindbox-minio
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-minioadmin123}
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - minio_data:/data
     networks:
       - campus-blindbox-network
-
-  kibana:
-    image: kibana:8.11.0
-    container_name: campus-blindbox-kibana
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    networks:
-      - campus-blindbox-network
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: campus-blindbox-prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    networks:
-      - campus-blindbox-network
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: campus-blindbox-grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-    depends_on:
-      - prometheus
-    networks:
-      - campus-blindbox-network
-
-  skywalking-oap:
-    image: apache/skywalking-oap-server:9.5.0
-    container_name: campus-blindbox-skywalking-oap
-    ports:
-      - "11800:11800"
-      - "12800:12800"
-    environment:
-      - SW_STORAGE=h2
-    networks:
-      - campus-blindbox-network
-
-  skywalking-ui:
-    image: apache/skywalking-ui:9.5.0
-    container_name: campus-blindbox-skywalking-ui
-    ports:
-      - "8080:8080"
-    environment:
-      - SW_OAP_ADDRESS=http://skywalking-oap:12800
-    depends_on:
-      - skywalking-oap
-    networks:
-      - campus-blindbox-network
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
 volumes:
   mysql_data:
   redis_data:
   mongo_data:
-  rocketmq_data:
-  es_data:
-  prometheus_data:
-  grafana_data:
+  rocketmq_namesrv_data:
+  rocketmq_broker_data:
+  rocketmq_broker_store:
+  minio_data:
 
 networks:
   campus-blindbox-network:
     driver: bridge
-
-# ==========================================
-# 微服务配置（可选启动）
-# 使用方式：docker-compose -f docker-compose.yml -f docker-compose.microservices.yml up -d
-# ==========================================

@@ -1,7 +1,7 @@
 /**
  * 配送服务云函数
  * 负责配送抢单、状态更新、订单查询、顺路推荐等操作
- * 
+ *
  * 对应论文4.3章节 - 数据库设计
  * 配送集合结构（4.3.4）：
  * {
@@ -16,20 +16,15 @@
  * }
  */
 const cloud = require('wx-server-sdk')
+const { bizError, Validators, ErrorCodes } = require('../common/errors.js')
+
 cloud.init()
 const db = cloud.database()
-const deliveriesCollection = db.collection('deliveries') // 对应论文4.3.4 配送集合
+const _ = db.command
+const deliveriesCollection = db.collection('deliveries')
 const ordersCollection = db.collection('orders')
 const ridersCollection = db.collection('riders')
 
-// 权重系数配置
-const WEIGHTS = {
-  distance: 0.5,    // 距离权重
-  time: 0.3,        // 时间权重
-  routeQuality: 0.2 // 路线质量权重
-}
-
-// 最大允许配送时间（分钟）
 const MAX_DELIVERY_TIME = 30
 
 exports.main = async (event, context) => {
@@ -57,7 +52,35 @@ exports.main = async (event, context) => {
     }
   } catch (error) {
     console.error('deliveryService 错误:', error)
+    if (error.code) {
+      return error.toJSON ? error.toJSON() : { success: false, message: error.message }
+    }
     return { success: false, message: '服务器错误' }
+  }
+}
+
+/**
+ * 校验抢单参数
+ */
+function validateGrabInput({ orderId, riderOpenid, riderInfo }) {
+  Validators.isNonEmptyString(orderId, 'orderId')
+  Validators.isOpenid(riderOpenid, 'riderOpenid')
+  if (!riderInfo || typeof riderInfo !== 'object') {
+    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'riderInfo', message: '骑手信息无效' }])
+  }
+}
+
+/**
+ * 校验状态更新参数
+ */
+function validateUpdateStatusInput({ orderId, status, riderOpenid }) {
+  Validators.isNonEmptyString(orderId, 'orderId')
+  Validators.isNonEmptyString(status, 'status')
+  Validators.isOpenid(riderOpenid, 'riderOpenid')
+
+  const validStatuses = ['pending', 'grabbed', 'delivering', 'completed', 'cancelled']
+  if (!validStatuses.includes(status)) {
+    throw bizError('DELIVERY.STATUS_TRANSITION_INVALID')
   }
 }
 
@@ -65,127 +88,146 @@ exports.main = async (event, context) => {
 // 使用原子性更新防止并发超卖
 async function handleGrabOrder(data) {
   const { orderId, riderOpenid, riderInfo } = data
-  try {
-    // 原子性更新：只有订单状态为 pending 时才能抢
-    const updateResult = await ordersCollection.doc(orderId).update({
-      data: {
-        status: 'grabbed',
-        riderOpenid: riderOpenid,
-        riderInfo: riderInfo,
-        updatedAt: new Date()
-      }
-    })
-    
-    // 检查是否更新成功（affectedDocs 为 0 表示订单不是 pending 状态）
-    if (updateResult.stats.updated === 0) {
-      return { success: false, message: '订单不存在或已被抢' }
-    }
-    
-    // 创建配送记录
-    const newDelivery = {
-      orderId,
-      riderOpenid,
-      riderInfo,
-      status: 'pending',
-      createdAt: new Date(),
+
+  validateGrabInput(data)
+
+  const order = await ordersCollection.doc(orderId).get()
+  if (!order.data) {
+    throw bizError('DELIVERY.NOT_FOUND')
+  }
+
+  if (order.data.status !== 'pending') {
+    throw bizError('DELIVERY.ALREADY_GRABBED')
+  }
+
+  if (order.data.riderOpenid === riderOpenid) {
+    throw bizError('DELIVERY.RIDER_CANNOT_GRAB_OWN')
+  }
+
+  const updateResult = await ordersCollection.doc(orderId).update({
+    data: {
+      status: 'grabbed',
+      riderOpenid: riderOpenid,
+      riderInfo: riderInfo,
       updatedAt: new Date()
     }
-    await deliveriesCollection.add({ data: newDelivery })
-    
-    return { success: true, message: '抢单成功' }
-  } catch (error) {
-    console.error('抢单失败:', error)
-    return { success: false, message: '抢单失败: ' + error.message }
+  })
+
+  if (updateResult.stats.updated === 0) {
+    throw bizError('DELIVERY.ALREADY_GRABBED')
   }
+
+  const newDelivery = {
+    orderId,
+    riderOpenid,
+    riderInfo,
+    status: 'pending',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+  await deliveriesCollection.add({ data: newDelivery })
+
+  return { success: true, message: '抢单成功' }
 }
 
 // 处理更新配送状态
 async function handleUpdateStatus(data) {
   const { deliveryId, status } = data
-  try {
-    const delivery = await deliveriesCollection.doc(deliveryId).get()
-    if (!delivery.data) {
-      return { success: false, message: '配送记录不存在' }
-    }
-    await deliveriesCollection.doc(deliveryId).update({
-      data: { status, updatedAt: new Date() }
-    })
-    await ordersCollection.doc(delivery.data.orderId).update({
-      data: { status, updatedAt: new Date() }
-    })
-    return { success: true, message: '配送状态更新成功' }
-  } catch (error) {
-    console.error('更新配送状态失败:', error)
-    return { success: false, message: '更新失败: ' + error.message }
+
+  validateUpdateStatusInput({ orderId: deliveryId, status, riderOpenid: data.riderOpenid })
+
+  const delivery = await deliveriesCollection.doc(deliveryId).get()
+  if (!delivery.data) {
+    throw bizError('DELIVERY.NOT_FOUND')
   }
+
+  const validTransitions = {
+    pending: ['grabbed', 'cancelled'],
+    grabbed: ['delivering', 'cancelled'],
+    delivering: ['completed', 'cancelled'],
+    completed: [],
+    cancelled: []
+  }
+
+  if (!validTransitions[delivery.data.status]?.includes(status)) {
+    throw bizError('DELIVERY.STATUS_TRANSITION_INVALID')
+  }
+
+  await deliveriesCollection.doc(deliveryId).update({
+    data: { status, updatedAt: new Date() }
+  })
+  await ordersCollection.doc(delivery.data.orderId).update({
+    data: { status, updatedAt: new Date() }
+  })
+
+  return { success: true, message: '配送状态更新成功' }
 }
 
 // 获取配送员的订单列表
 async function handleGetRiderOrders(data) {
   const { riderOpenid, page = 1, limit = 10 } = data
-  try {
-    const total = await deliveriesCollection.where({ riderOpenid }).count()
-    const deliveries = await deliveriesCollection
-      .where({ riderOpenid })
-      .orderBy('createdAt', 'desc')
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .get()
-    const deliveriesWithOrder = await Promise.all(
-      deliveries.data.map(async (delivery) => {
-        const order = await ordersCollection.doc(delivery.orderId).get()
-        return { ...delivery, order: order.data }
-      })
-    )
-    return { success: true, deliveries: deliveriesWithOrder, total: total.total, page, limit }
-  } catch (error) {
-    console.error('获取配送员订单列表失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
-  }
+  Validators.isOpenid(riderOpenid, 'riderOpenid')
+  Validators.isInRange(page, 'page', 1, 1000)
+  Validators.isInRange(limit, 'limit', 1, 50)
+
+  const total = await deliveriesCollection.where({ riderOpenid }).count()
+  const deliveries = await deliveriesCollection
+    .where({ riderOpenid })
+    .orderBy('createdAt', 'desc')
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .get()
+
+  const deliveriesWithOrder = await Promise.all(
+    deliveries.data.map(async (delivery) => {
+      const order = await ordersCollection.doc(delivery.orderId).get()
+      return { ...delivery, order: order.data }
+    })
+  )
+
+  return { success: true, deliveries: deliveriesWithOrder, total: total.total, page, limit }
 }
 
 // 获取待抢单列表
 async function handleGetPendingOrders(data) {
   const { page = 1, limit = 10 } = data
-  try {
-    const total = await ordersCollection.where({ status: 'pending' }).count()
-    const orders = await ordersCollection
-      .where({ status: 'pending' })
-      .orderBy('createdAt', 'desc')
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .get()
-    return { success: true, orders: orders.data, total: total.total, page, limit }
-  } catch (error) {
-    console.error('获取待抢单列表失败:', error)
-    return { success: false, message: '获取失败: ' + error.message }
-  }
+  Validators.isInRange(page, 'page', 1, 1000)
+  Validators.isInRange(limit, 'limit', 1, 50)
+
+  const total = await ordersCollection.where({ status: 'pending' }).count()
+  const orders = await ordersCollection
+    .where({ status: 'pending' })
+    .orderBy('createdAt', 'desc')
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .get()
+
+  return { success: true, orders: orders.data, total: total.total, page, limit }
 }
 
 // 获取顺路推荐订单（动态顺路匹配算法实现）
 async function handleGetRecommendedOrders(data) {
   const { riderOpenid, location, limit = 10 } = data
-  
-  if (!riderOpenid || !location) {
-    return { success: false, message: '骑手ID和位置信息不能为空' }
+
+  Validators.isOpenid(riderOpenid, 'riderOpenid')
+  if (!location || !location.latitude || !location.longitude) {
+    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'location', message: '位置信息无效' }])
   }
-  
-  try {
-    // 获取骑手信息和当前负载
-    const riderResult = await ridersCollection.where({ openid: riderOpenid }).get()
-    if (riderResult.data.length === 0) {
-      return { success: false, message: '骑手不存在' }
-    }
-    
-    const rider = riderResult.data[0]
-    const riderLoad = await getRiderCurrentLoad(riderOpenid)
-    
-    // 获取待抢订单
-    const pendingOrders = await ordersCollection
-      .where({ status: 'pending' })
-      .get()
-    
-    // 计算每个订单的匹配度
+  Validators.isInRange(limit, 'limit', 1, 20)
+
+  const riderResult = await ridersCollection.where({ openid: riderOpenid }).get()
+  if (riderResult.data.length === 0) {
+    throw bizError('DELIVERY.NOT_FOUND')
+  }
+
+  const rider = riderResult.data[0]
+  const riderLoad = await getRiderCurrentLoad(riderOpenid)
+
+  const pendingOrders = await ordersCollection
+    .where({ status: 'pending' })
+    .get()
+
+  const scoredOrders = []
     const ordersWithMatchScore = await Promise.all(
       pendingOrders.data.map(async (order) => {
         const matchScore = await calculateMatchScore(

@@ -1,0 +1,35 @@
+{
+  "name": "campus-blindbox-tests",
+  "version": "1.0.0",
+  "description": "校园盲盒单元测试配置",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:cloudfunctions": "jest cloudfunctions/",
+    "test:algorithms": "jest cloudfunctions/ --testPathPattern=algorithm",
+    "lint": "eslint cloudfunctions/"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "cloudfunctions/**/*.js",
+      "!cloudfunctions/**/node_modules/**",
+      "!cloudfunctions/**/wx-server-sdk/**"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js",
+      "**/__tests__/**/*.js"
+    ],
+    "moduleFileExtensions": ["js", "json"],
+    "setupFilesAfterEnv": ["./jest.setup.js"],
+    "testTimeout": 10000
+  },
+  "dependencies": {
+    "jest": "^29.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
