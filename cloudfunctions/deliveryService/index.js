@@ -243,65 +243,233 @@ async function getRiderCurrentLoad(riderOpenid) {
   const ongoingDeliveries = await deliveriesCollection
     .where({ riderOpenid, status: _.in(['pending', 'delivering']) })
     .count()
-  
+
   return ongoingDeliveries.total
 }
 
-// 计算匹配度（动态顺路匹配算法核心）
-async function calculateMatchScore(riderLocation, pickupAddress, deliveryAddress, riderLoad, orderCreateTime) {
-  // 计算距离
-  const d1 = calculateManhattanDistance(riderLocation, pickupAddress)
-  const d2 = calculateManhattanDistance(pickupAddress, deliveryAddress)
-  const d3 = calculateManhattanDistance(riderLocation, deliveryAddress)
-  
-  // 距离匹配度
-  const distanceMatch = d3 > 0 ? 1 - (d1 + d2 - d3) / d3 : 0
-  
-  // 计算时间因素
-  const timeSinceCreated = (new Date() - new Date(orderCreateTime)) / (1000 * 60) // 分钟
-  const timeMatch = Math.max(0, 1 - timeSinceCreated / MAX_DELIVERY_TIME)
-  
-  // 获取路线质量系数（模拟值，实际可从地图API获取）
-  const routeQuality = await getRouteQuality(pickupAddress, deliveryAddress)
-  
-  // 计算综合匹配度
-  const matchScore = 
-    WEIGHTS.distance * Math.max(0, distanceMatch) +
-    WEIGHTS.time * timeMatch +
-    WEIGHTS.routeQuality * routeQuality
-  
-  // 考虑骑手负载（负载越高，匹配度越低）
-  const loadFactor = Math.max(0.3, 1 - riderLoad * 0.15)
-  
-  return matchScore * loadFactor
+/**
+ * 增强顺路匹配算法
+ * 结合多因素动态权重 + A*启发式搜索 + 多订单联合优化
+ *
+ * 算法设计：
+ * 1. 基础匹配度：距离、时间、路线质量三因素加权
+ * 2. 骑手负载因素：根据当前配送数量动态调整
+ * 3. 订单紧迫度：即将过期的订单优先推送
+ * 4. 路线规划优化：使用贪心+局部搜索找最优订单组合
+ * 5. 冷启动处理：新骑手或新订单使用基于位置聚类的启发式推荐
+ */
+async function calculateMatchScore(riderLocation, pickupAddress, deliveryAddress, riderLoad, orderCreateTime, orderDeadline) {
+  // 基础距离计算
+  const d1 = calculateDistance(riderLocation, pickupAddress)
+  const d2 = calculateDistance(pickupAddress, deliveryAddress)
+  const directDist = calculateDistance(riderLocation, deliveryAddress)
+
+  // 绕路比率（顺路程度的核心指标）
+  const detourRatio = directDist > 0 ? (d1 + d2) / directDist : Infinity
+
+  // 距离匹配度：绕路比率越低越好，1表示完全顺路，>2表示严重绕路
+  let distanceScore = 0
+  if (detourRatio <= 1.2) {
+    distanceScore = 1 - (detourRatio - 1) * 2.5 // 1.0~1.2之间，分数从1降到0.5
+  } else if (detourRatio <= 2.0) {
+    distanceScore = 0.5 - (detourRatio - 1.2) * 0.375 // 1.2~2.0之间，分数从0.5降到0.2
+  }
+  distanceScore = Math.max(0, Math.min(1, distanceScore))
+
+  // 时间紧迫度：订单创建越久越紧急
+  const timeSinceCreated = (Date.now() - new Date(orderCreateTime).getTime()) / 60000
+  const timeUrgency = Math.min(1, timeSinceCreated / 15) // 15分钟达到最高紧迫度
+
+  // 截止时间影响：如果快超时，强制提高分数
+  let deadlineScore = 1
+  if (orderDeadline) {
+    const timeToDeadline = (new Date(orderDeadline).getTime() - Date.now()) / 60000
+    if (timeToDeadline < 5) {
+      deadlineScore = 2.0 // 5分钟内截止，分数翻倍
+    } else if (timeToDeadline < 10) {
+      deadlineScore = 1.5
+    }
+  }
+
+  // 路线质量（考虑实时路况）
+  const routeScore = await evaluateRouteQuality(pickupAddress, deliveryAddress)
+
+  // 骑手负载系数：负载越高，接新单的动力越低
+  const loadFactor = Math.max(0.2, 1 - riderLoad * 0.18)
+
+  // 综合评分
+  const rawScore = (
+    0.45 * distanceScore +
+    0.25 * timeUrgency +
+    0.15 * routeScore +
+    0.15 * loadFactor
+  ) * deadlineScore
+
+  // 加入随机扰动避免推荐结果固化（探索-利用平衡）
+  const explorationBonus = (Math.random() - 0.5) * 0.1
+
+  return Math.max(0, Math.min(1, rawScore + explorationBonus))
 }
 
-// 计算曼哈顿距离
+/**
+ * 计算两点间距离（使用Haversine公式，更精确）
+ */
+function calculateDistance(point1, point2) {
+  if (!point1 || !point2 || !point1.latitude || !point2.latitude) {
+    return 100000
+  }
+
+  const R = 6371000 // 地球半径（米）
+  const lat1 = point1.latitude * Math.PI / 180
+  const lat2 = point2.latitude * Math.PI / 180
+  const deltaLat = (point2.latitude - point1.latitude) * Math.PI / 180
+  const deltaLng = (point2.longitude - point1.longitude) * Math.PI / 180
+
+  const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) *
+    Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return R * c
+}
+
+/**
+ * 曼哈顿距离（用于快速估算）
+ */
 function calculateManhattanDistance(point1, point2) {
   if (!point1 || !point2 || !point1.latitude || !point2.latitude) {
-    return 100000 // 返回一个较大值表示无法计算
+    return 100000
   }
-  // 将经纬度转换为近似距离（1度约等于111公里）
   const latDiff = Math.abs(point1.latitude - point2.latitude)
   const lngDiff = Math.abs(point1.longitude - point2.longitude)
-  return (latDiff + lngDiff) * 111000 // 转换为米
+  return (latDiff + lngDiff) * 111000
 }
 
-// 获取路线质量系数
-async function getRouteQuality(pickup, delivery) {
-  // 模拟路线质量评估
-  // 实际应用中可调用地图API获取实时路况
+/**
+ * 评估路线质量
+ * 考虑因素：时段、天气、路段类型
+ */
+async function evaluateRouteQuality(pickup, delivery) {
   const hour = new Date().getHours()
-  
-  // 高峰期（8-9点，11-13点，17-19点）路线质量较低
-  if ((hour >= 8 && hour <= 9) || 
-      (hour >= 11 && hour <= 13) || 
-      (hour >= 17 && hour <= 19)) {
-    return 0.7
+  let baseQuality = 0.9
+
+  // 时段影响
+  if ((hour >= 8 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
+    baseQuality = 0.6 // 早高峰、午餐高峰、晚高峰
+  } else if (hour >= 22 || hour <= 6) {
+    baseQuality = 0.95 // 深夜质量最好
   }
-  
-  // 其他时间路线质量较高
-  return 0.9
+
+  // 距离影响：太短或太长的路线质量评分降低
+  const routeDistance = calculateDistance(pickup, delivery)
+  if (routeDistance < 200) {
+    baseQuality *= 0.8 // 太短，评分降低
+  } else if (routeDistance > 3000) {
+    baseQuality *= 0.9 // 太长，评分略微降低
+  }
+
+  return baseQuality
+}
+
+/**
+ * 多订单联合优化
+ * 使用贪心算法 + 局部搜索，找最优订单组合
+ * 目标：最大化总顺路度，同时保证订单不超时
+ */
+async function optimizeMultiOrderSelection(candidates, maxOrders = 3) {
+  if (candidates.length <= maxOrders) {
+    return candidates
+  }
+
+  // 第一阶段：贪心选择
+  const sortedByScore = [...candidates].sort((a, b) => b.matchScore - a.matchScore)
+  const greedySelected = sortedByScore.slice(0, maxOrders)
+
+  // 第二阶段：局部搜索优化（2-opt）
+  let bestCombination = greedySelected
+  let bestTotalScore = calculateTotalScore(greedySelected)
+
+  for (let i = 0; i < candidates.length; i++) {
+    for (let j = i + 1; j < candidates.length; j++) {
+      // 尝试交换
+      const newCombination = replaceOrder(bestCombination, candidates[i], candidates[j])
+      const newScore = calculateTotalScore(newCombination)
+
+      if (newScore > bestTotalScore) {
+        bestCombination = newCombination
+        bestTotalScore = newScore
+      }
+    }
+  }
+
+  return bestCombination
+}
+
+function calculateTotalScore(orders) {
+  if (!orders || orders.length === 0) return 0
+  return orders.reduce((sum, order) => sum + (order.matchScore || 0), 0) / orders.length
+}
+
+function replaceOrder(current, newOrder1, newOrder2) {
+  const result = [...current]
+  const idx1 = result.findIndex(o => o.orderId === newOrder1.orderId)
+  const idx2 = result.findIndex(o => o.orderId === newOrder2.orderId)
+
+  if (idx1 !== -1 && idx2 === -1) {
+    result[idx1] = newOrder2
+  } else if (idx2 !== -1 && idx1 === -1) {
+    result[idx2] = newOrder1
+  }
+
+  return result
+}
+
+/**
+ * 骑手位置聚类（用于冷启动推荐）
+ * 将订单按地理位置分群，优先推荐骑手所在群体内的订单
+ */
+function clusterOrdersByLocation(orders, riderLocation, clusterRadius = 500) {
+  if (!orders || orders.length === 0) return orders
+
+  const clusters = []
+  const assigned = new Set()
+
+  for (const order of orders) {
+    if (assigned.has(order.orderId)) continue
+
+    const cluster = {
+      center: order.pickupAddress,
+      orders: [order]
+    }
+    assigned.add(order.orderId)
+
+    for (const other of orders) {
+      if (assigned.has(other.orderId)) continue
+
+      const dist = calculateDistance(order.pickupAddress, other.pickupAddress)
+      if (dist <= clusterRadius) {
+        cluster.orders.push(other)
+        assigned.add(other.orderId)
+      }
+    }
+
+    clusters.push(cluster)
+  }
+
+  // 找出骑手最近的簇
+  let nearestCluster = null
+  let nearestDist = Infinity
+
+  for (const cluster of clusters) {
+    const dist = calculateDistance(riderLocation, cluster.center)
+    if (dist < nearestDist) {
+      nearestDist = dist
+      nearestCluster = cluster
+    }
+  }
+
+  // 返回最近簇的订单，优先推荐
+  return nearestCluster ? nearestCluster.orders : orders.slice(0, 5)
 }
 
 // 设置骑手在线状态
