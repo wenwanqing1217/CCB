@@ -37,13 +37,6 @@ exports.main = async (event, context) => {
   }
 };
 
-/**
- * 混合推荐算法
- * 结合三种推荐策略：
- * 1. 基于用户的协同过滤（UCF）- 找到相似用户喜欢的物品
- * 2. 基于物品的协同过滤（ICF）- 找到相似于用户历史喜好的物品
- * 3. 矩阵分解（SVD） - 降维后计算潜在因子相似度
- */
 async function hybridRecommend(data) {
   const { openid, limit = 10 } = data;
 
@@ -79,15 +72,6 @@ async function hybridRecommend(data) {
   };
 }
 
-/**
- * 基于用户的协同过滤（UCF）
- * 原理：找到与目标用户行为相似的用户群体，推荐这些用户喜欢的物品
- * 步骤：
- * 1. 构建用户-物品评分矩阵
- * 2. 计算用户之间的余弦相似度
- * 3. 找到最相似的K个用户
- * 4. 推荐这些用户喜欢但目标用户未接触的物品
- */
 async function getUserBasedCF(openid, limit) {
   // 1. 获取目标用户的历史行为
   const userActions = await db.collection('userActions')
@@ -144,11 +128,6 @@ async function getUserBasedCF(openid, limit) {
     .slice(0, limit);
 }
 
-/**
- * 基于物品的协同过滤（ICF）
- * 原理：基于用户历史喜好的物品，找到相似的物品推荐
- * 使用修正余弦相似度，考虑用户的评分偏好
- */
 async function getItemBasedCF(openid, limit) {
   // 1. 获取目标用户的正向行为（收藏、购买）
   const userActions = await db.collection('userActions')
@@ -210,16 +189,6 @@ async function getItemBasedCF(openid, limit) {
     .slice(0, limit);
 }
 
-/**
- * SVD矩阵分解推荐
- * 原理：将用户-物品评分矩阵分解为用户隐向量和物品隐向量
- * 通过隐向量计算用户对物品的评分
- *
- * 简化实现（微信云函数无法使用numpy等库）：
- * 1. 使用梯度下降法进行矩阵分解
- * 2. 随机初始化隐向量
- * 3. 迭代优化使重构误差最小
- */
 async function getSVDRecommend(openid, limit) {
   const actions = await db.collection('userActions')
     .where({ type: _.in(['view', 'collect', 'purchase']) })
@@ -255,9 +224,6 @@ async function getSVDRecommend(openid, limit) {
   return predictions.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
-/**
- * 构建用户-物品评分矩阵
- */
 function buildRatingMatrix(actions) {
   const userIds = [...new Set(actions.map(a => a.openid))];
   const boxIds = [...new Set(actions.map(a => a.boxId))];
@@ -273,9 +239,6 @@ function buildRatingMatrix(actions) {
   return { userIds, boxIds, ratings };
 }
 
-/**
- * 获取隐式评分
- */
 function getImplicitRating(actionType) {
   const ratingMap = {
     'purchase': 5,
@@ -285,9 +248,6 @@ function getImplicitRating(actionType) {
   return ratingMap[actionType] || 1;
 }
 
-/**
- * 随机梯度下降SVD分解
- */
 function performSGD(ratings, nUsers, nItems, k, iterations) {
   const learningRate = 0.01;
   const regularization = 0.02;
@@ -325,9 +285,6 @@ function performSGD(ratings, nUsers, nItems, k, iterations) {
   return { userFactors, itemFactors };
 }
 
-/**
- * 构建用户-物品交互矩阵
- */
 function buildUserItemMatrix(actions) {
   const matrix = {};
 
@@ -348,9 +305,6 @@ function buildUserItemMatrix(actions) {
   return matrix;
 }
 
-/**
- * 构建物品特征向量
- */
 function buildItemFeatures(boxes) {
   const features = {};
 
@@ -376,9 +330,6 @@ function buildItemFeatures(boxes) {
   return features;
 }
 
-/**
- * 余弦相似度
- */
 function cosineSimilarity(vec1, vec2) {
   const keys = new Set([...Object.keys(vec1), ...Object.keys(vec2).filter(k => !isNaN(parseFloat(vec2[k])))]);
   let dotProduct = 0;
@@ -398,16 +349,10 @@ function cosineSimilarity(vec1, vec2) {
   return denominator === 0 ? 0 : dotProduct / denominator;
 }
 
-/**
- * 点积
- */
 function dotProduct(vec1, vec2) {
   return vec1.reduce((sum, val, idx) => sum + val * (vec2[idx] || 0), 0);
 }
 
-/**
- * 加权融合多种推荐结果
- */
 function fuseRecommendations(ucf, icf, svd, weights) {
   const scoreMap = {};
 
@@ -428,9 +373,6 @@ function fuseRecommendations(ucf, icf, svd, weights) {
     .sort((a, b) => b.score - a.score);
 }
 
-/**
- * 根据评分获取物品详情
- */
 async function getBoxesByScores(scores) {
   const boxIds = scores.map(s => s.boxId);
 

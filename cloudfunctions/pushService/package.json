@@ -1,20 +1,14 @@
 {
-  "name": "pushService",
-  "version": "1.0.0",
-  "description": "推送服务云函数",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "push",
-    "notification",
-    "cloudfunction",
-    "wechat"
-  ],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "wx-server-sdk": "latest"
-  }
+    "version":  "1.0.0",
+    "license":  "ISC",
+    "dependencies":  {
+                         "wx-server-sdk":  "^3.0.0"
+                     },
+    "name":  "pushService",
+    "scripts":  {
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "description":  "pushService云函数",
+    "author":  "",
+    "main":  "index.js"
 }

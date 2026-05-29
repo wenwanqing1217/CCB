@@ -1,4 +1,4 @@
-.container {
+﻿.container {
   padding: 32rpx 24rpx;
   min-height: 100vh;
   background-color: #020208;
@@ -12,7 +12,8 @@
 .title {
   font-size: 40rpx;
   font-weight: 700;
-  color: #f8fafc;
+  color: #ffffff;
+  text-shadow: 0 0 20rpx rgba(147, 112, 219, 0.5);
   letter-spacing: 1rpx;
 }
 
@@ -26,23 +27,25 @@
 .dashboard-item {
   padding: 28rpx 16rpx;
   text-align: center;
-  background: linear-gradient(145deg, #111827 0%, #0f172a 100%);
-  border: 1rpx solid rgba(255, 182, 193, 0.08);
+  background: linear-gradient(135deg, rgba(12, 12, 28, 0.95) 0%, rgba(5, 5, 15, 0.98) 100%);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   border-radius: 24rpx;
-  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 20rpx rgba(147, 112, 219, 0.15);
 }
 
 .dashboard-label {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 12rpx;
 }
 
 .dashboard-value {
   font-size: 36rpx;
   font-weight: 700;
-  color: #38BDF8;
-  letter-spacing: -0.5rpx;
+  background: linear-gradient(135deg, #c8a2ff 0%, #ba55d3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .my-boxes {
@@ -52,9 +55,9 @@
 .section-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #f8fafc;
+  color: #ffffff;
+  text-shadow: 0 0 15rpx rgba(147, 112, 219, 0.4);
   margin-bottom: 20rpx;
-  letter-spacing: 0.5rpx;
 }
 
 .box-list {
@@ -66,7 +69,7 @@
 .box-card {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(145deg, #111827 0%, #0f172a 100%);
+  background: linear-gradient(145deg, rgba(12, 12, 28, 0.95) 0%, rgba(5, 5, 15, 0.98) 100%);
   border: 1rpx solid rgba(255, 182, 193, 0.08);
   border-radius: 24rpx;
   padding: 20rpx;
@@ -83,7 +86,7 @@
   height: 220rpx;
   border-radius: 20rpx;
   margin-bottom: 16rpx;
-  background: linear-gradient(145deg, #1f2937 0%, #111827 100%);
+  background: linear-gradient(145deg, #1f2937 0%, rgba(12, 12, 28, 0.95) 100%);
   border: 1rpx solid rgba(255, 182, 193, 0.06);
 }
 
@@ -98,7 +101,7 @@
 .box-price {
   font-size: 36rpx;
   font-weight: 700;
-  color: #38BDF8;
+  color: #c8a2ff;
   margin-bottom: 10rpx;
   letter-spacing: -0.5rpx;
 }
@@ -134,9 +137,11 @@
 
 .section-more {
   font-size: 24rpx;
-  color: #38BDF8;
+  color: #c8a2ff;
   font-weight: 500;
 }
+
+
 
 
 

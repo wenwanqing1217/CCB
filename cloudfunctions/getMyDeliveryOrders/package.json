@@ -1,9 +1,14 @@
 {
-  "name": "getMyDeliveryOrders",
-  "version": "1.0.0",
-  "description": "获取骑手配送订单",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
+    "version":  "1.0.0",
+    "license":  "ISC",
+    "dependencies":  {
+                         "wx-server-sdk":  "^3.0.0"
+                     },
+    "name":  "getMyDeliveryOrders",
+    "scripts":  {
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "description":  "getMyDeliveryOrders云函数",
+    "author":  "",
+    "main":  "index.js"
 }

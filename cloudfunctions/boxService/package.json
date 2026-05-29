@@ -1,10 +1,14 @@
 {
-  "name": "boxService",
-  "version": "1.0.0",
-  "description": "盲盒相关云函数（首页mock数据）",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "latest"
-  }
+    "version":  "1.0.0",
+    "license":  "ISC",
+    "dependencies":  {
+                         "wx-server-sdk":  "^3.0.0"
+                     },
+    "name":  "boxService",
+    "scripts":  {
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "description":  "boxService云函数",
+    "author":  "",
+    "main":  "index.js"
 }
-

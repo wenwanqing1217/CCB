@@ -171,7 +171,7 @@ function getOrderDorms(order, boxMap) {
 }
 
 function filterOrdersByWindow(orders, hours) {
-  if (hours == null) {
+  if (hours === null) {
     return orders;
   }
   const since = Date.now() - hours * 60 * 60 * 1000;
@@ -182,7 +182,7 @@ function filterOrdersByWindow(orders, hours) {
 }
 
 function filterBoxesByWindow(boxes, hours) {
-  if (hours == null) {
+  if (hours === null) {
     return boxes;
   }
   const since = Date.now() - hours * 60 * 60 * 1000;

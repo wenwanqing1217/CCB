@@ -1,19 +1,5 @@
 /**
- * 通知服务云函数
- * 负责消息推送、通知查询、已读标记等操作
- *
- * 对应论文4.3章节 - 数据库设计
- * 通知集合结构（4.3.5）：
- * {
- *   _id: String,           // 通知ID，系统自动生成
- *   openid: String,        // 用户openid
- *   title: String,         // 通知标题
- *   content: String,       // 通知内容
- *   type: String,          // 通知类型：system/order/delivery
- *   relatedId: String,     // 关联ID（订单ID等）
- *   read: Boolean,         // 是否已读
- *   createdAt: Date        // 创建时间
- * }
+ * notificationService
  */
 
 const cloud = require('wx-server-sdk');
@@ -25,14 +11,6 @@ cloud.init({
 const db = cloud.database();
 const _ = db.command;
 
-/**
- * 云函数入口函数
- * @param {Object} event - 事件参数
- * @param {string} event.action - 操作类型（sendNotification/getNotifications/markAsRead）
- * @param {Object} event.data - 操作数据
- * @param {Object} context - 上下文参数
- * @returns {Object} - 操作结果
- */
 exports.main = async (event, context) => {
   try {
     const { action, data } = event;
@@ -59,16 +37,6 @@ exports.main = async (event, context) => {
   }
 };
 
-/**
- * 发送通知
- * @param {Object} data - 通知数据
- * @param {string} data.openid - 用户openid
- * @param {string} data.title - 通知标题
- * @param {string} data.content - 通知内容
- * @param {string} data.type - 通知类型
- * @param {string} data.relatedId - 关联ID
- * @returns {Object} - 发送结果
- */
 async function sendNotification(data) {
   const { openid, title, content, type, relatedId } = data;
 
@@ -104,14 +72,6 @@ async function sendNotification(data) {
   };
 }
 
-/**
- * 获取通知列表
- * @param {Object} data - 查询参数
- * @param {string} data.openid - 用户openid
- * @param {number} data.limit - 返回数量
- * @param {number} data.offset - 偏移量
- * @returns {Object} - 通知列表
- */
 async function getNotifications(data) {
   const { openid, limit = 20, offset = 0 } = data;
 
@@ -142,12 +102,6 @@ async function getNotifications(data) {
   };
 }
 
-/**
- * 标记通知为已读
- * @param {Object} data - 更新参数
- * @param {string} data.notificationId - 通知ID
- * @returns {Object} - 更新结果
- */
 async function markAsRead(data) {
   const { notificationId } = data;
 

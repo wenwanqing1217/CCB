@@ -25,26 +25,11 @@
 }
 
 .title {
-  font-size: 36rpx;
-  font-weight: 800;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 0 15rpx rgba(147, 112, 219, 0.5);
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 20rpx rgba(147, 112, 219, 0.5);
   letter-spacing: 2rpx;
-  animation: titleGlow 3s ease-in-out infinite;
-}
-
-@keyframes titleGlow {
-  0%, 100% { 
-    filter: brightness(1);
-    text-shadow: 0 0 15rpx rgba(147, 112, 219, 0.5);
-  }
-  50% { 
-    filter: brightness(1.1);
-    text-shadow: 0 0 25rpx rgba(147, 112, 219, 0.8);
-  }
 }
 
 .subtitle {

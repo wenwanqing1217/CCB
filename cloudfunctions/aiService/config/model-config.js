@@ -9,7 +9,6 @@ module.exports = {
     provider: 'volcengine',  // 火山引擎
     model: 'doubao-pro-4k',  // 模型名称
     endpoint: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-    // endpoint: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',  // VOLC Engine Base URL
     maxTokens: 500,  // 最大回复token数
     temperature: 0.7,  // 创造性参数（0-1）
     topP: 0.9

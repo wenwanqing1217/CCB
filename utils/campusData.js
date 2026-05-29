@@ -142,8 +142,8 @@ function getDemoHotBoxes() {
     title: titles[i],
     price: prices[i],
     images: [`https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=blind%20box%20${i}&image_size=square`],
-    from_dorm: from,
-    to_dorm: to,
+    fromDorm: from,
+    toDorm: to,
     stock: 30,
     sales: sales[i]
   }));

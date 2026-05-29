@@ -1,10 +1,12 @@
+﻿/**
+ * Campus BlindBox - App Entry
+ */
+
 const cloudUtils = require('./utils/cloud.js')
 
 App({
   onLaunch() {
-    // 初始化云开发
-    if (!wx.cloud) {
-      console.error('请使用 2.2.3 或以上的基础库以使用云能力');
+          console.error('璇蜂娇鐢?2.2.3 鎴栦互涓婄殑鍩虹搴撲互浣跨敤浜戣兘鍔?);
     } else {
       wx.cloud.init({
         env: 'cloud1-0g18d9ik5f541e32',
@@ -12,19 +14,13 @@ App({
       });
     }
     
-    // 简化错误处理，避免控制台刷屏
-    // this.setupErrorHandler(); // 暂时禁用
-    
-    // 检查登录状态
-    this.checkLoginStatus();
-    
-    // 预加载常用数据
-    this.preloadData();
-  },
+        
+        
+      },
   
   setupErrorHandler() {
     wx.onError((error) => {
-      console.error('全局错误:', error);
+      console.error('鍏ㄥ眬閿欒:', error);
       this.reportError(error);
     });
   },
@@ -42,7 +38,7 @@ App({
         showError: false
       });
     } catch (err) {
-      console.error('错误上报函数执行失败:', err);
+      console.error('閿欒涓婃姤鍑芥暟鎵ц澶辫触:', err);
     }
   },
   
@@ -51,13 +47,11 @@ App({
       const userInfo = wx.getStorageSync('userInfo');
       if (userInfo) {
         this.globalData.userInfo = userInfo;
-        // 延迟获取角色信息，避免阻塞启动
-        setTimeout(() => {
-          this.getUserRole();
+                  this.getUserRole();
         }, 500);
       }
     } catch (error) {
-      console.warn('检查登录状态失败:', error);
+      console.warn('妫€鏌ョ櫥褰曠姸鎬佸け璐?', error);
     }
   },
   
@@ -78,8 +72,7 @@ App({
         this.triggerEvent('loginSuccess', result);
       }
     } catch (err) {
-      // 静默处理，不显示错误，避免控制台刷屏
-      this.globalData.userRole = 'student';
+            this.globalData.userRole = 'student';
     }
   },
   
@@ -96,12 +89,9 @@ App({
         this.globalData.hotBoxes = result.data;
       }
     } catch (err) {
-      // 静默处理，热门数据不是关键路径
-    }
-  },
+        },
   
-  // 事件触发机制
-  events: {},
+    events: {},
   
   on(event, callback) {
     if (!this.events[event]) {
@@ -122,7 +112,7 @@ App({
         try {
           callback(data);
         } catch (error) {
-          console.error('事件回调错误:', error);
+          console.error('浜嬩欢鍥炶皟閿欒:', error);
         }
       });
     }
@@ -138,3 +128,4 @@ App({
     blindBoxCoins: 0
   }
 });
+

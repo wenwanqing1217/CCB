@@ -1,9 +1,14 @@
 {
-  "name": "triggerAutoDonate",
-  "version": "1.0.0",
-  "description": "触发自动捐赠云函数",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
+    "version":  "1.0.0",
+    "license":  "ISC",
+    "dependencies":  {
+                         "wx-server-sdk":  "^3.0.0"
+                     },
+    "name":  "triggerAutoDonate",
+    "scripts":  {
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "description":  "triggerAutoDonate云函数",
+    "author":  "",
+    "main":  "index.js"
 }

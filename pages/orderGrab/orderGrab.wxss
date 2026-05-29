@@ -1,4 +1,4 @@
-.container {
+﻿.container {
   padding: 24rpx;
   padding-bottom: 40rpx;
   min-height: 100vh;
@@ -51,9 +51,7 @@
   font-size: 36rpx;
   font-weight: 700;
   background: linear-gradient(135deg, #c8a2ff 0%, #ba55d3 50%, #9370db 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   text-shadow: 0 0 10rpx rgba(147, 112, 219, 0.5);
 }
 
@@ -80,9 +78,7 @@
   font-size: 40rpx;
   font-weight: 800;
   background: linear-gradient(135deg, #c8a2ff 0%, #ba55d3 50%, #9370db 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   text-shadow: 0 0 10rpx rgba(147, 112, 219, 0.5);
 }
 
@@ -256,20 +252,20 @@
 .empty-container .empty-icon {
   font-size: 80rpx;
   margin-bottom: 20rpx;
-  text-shadow: 0 4rpx 20rpx rgba(56, 189, 248, 0.4);
+  text-shadow: 0 4rpx 20rpx rgba(147, 112, 219, 0.4);
 }
 
 .empty-container .empty-text {
   font-size: 30rpx;
   color: #f8fafc;
   margin-bottom: 10rpx;
-  text-shadow: 0 2rpx 8rpx rgba(56, 189, 248, 0.2);
+  text-shadow: 0 2rpx 8rpx rgba(147, 112, 219, 0.2);
 }
 
 .empty-container .empty-hint {
   font-size: 24rpx;
   color: rgba(255, 255, 255, 0.6);
-  text-shadow: 0 1rpx 4rpx rgba(56, 189, 248, 0.1);
+  text-shadow: 0 1rpx 4rpx rgba(147, 112, 219, 0.1);
 }
 
 .order-list {
@@ -407,9 +403,7 @@
   font-size: 36rpx;
   font-weight: 800;
   background: linear-gradient(135deg, #c8a2ff 0%, #ba55d3 50%, #9370db 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   text-shadow: 0 0 10rpx rgba(147, 112, 219, 0.5);
 }
 
@@ -643,20 +637,20 @@
 .empty-icon {
   font-size: 80rpx;
   margin-bottom: 16rpx;
-  text-shadow: 0 4rpx 20rpx rgba(56, 189, 248, 0.4);
+  text-shadow: 0 4rpx 20rpx rgba(147, 112, 219, 0.4);
 }
 
 .empty-text {
   font-size: 30rpx;
   color: #f8fafc;
   margin-bottom: 8rpx;
-  text-shadow: 0 2rpx 8rpx rgba(56, 189, 248, 0.2);
+  text-shadow: 0 2rpx 8rpx rgba(147, 112, 219, 0.2);
 }
 
 .empty-desc {
   font-size: 24rpx;
   color: rgba(255, 255, 255, 0.6);
-  text-shadow: 0 1rpx 4rpx rgba(56, 189, 248, 0.1);
+  text-shadow: 0 1rpx 4rpx rgba(147, 112, 219, 0.1);
 }
 
 .loading {
@@ -664,7 +658,7 @@
   padding: 40rpx;
   color: rgba(255, 255, 255, 0.6);
   font-size: 28rpx;
-  text-shadow: 0 1rpx 4rpx rgba(56, 189, 248, 0.1);
+  text-shadow: 0 1rpx 4rpx rgba(147, 112, 219, 0.1);
   position: relative;
   z-index: 1;
 }
@@ -720,9 +714,7 @@
   font-size: 32rpx;
   font-weight: 600;
   background: linear-gradient(135deg, #c8a2ff 0%, #ba55d3 50%, #9370db 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   margin-bottom: 32rpx;
   text-shadow: 0 0 10rpx rgba(147, 112, 219, 0.5);
 }
@@ -748,8 +740,4 @@
   color: #ffffff;
   text-shadow: 0 0 10rpx rgba(147, 112, 219, 0.5);
 }
-
-
-
-
 

@@ -1,20 +1,7 @@
-/**
- * 配送服务云函数
- * 负责配送抢单、状态更新、订单查询、顺路推荐等操作
- *
- * 对应论文4.3章节 - 数据库设计
- * 配送集合结构（4.3.4）：
- * {
- *   _id: String,           // 配送ID，系统自动生成
- *   orderId: String,       // 订单ID（关联订单集合）
- *   riderOpenid: String,   // 骑手openid（关联用户集合）
- *   riderInfo: Object,     // 骑手信息
- *   status: String,        // 配送状态：pending/delivering/completed
- *   route: Array,          // 配送路线坐标
- *   createdAt: Date,       // 创建时间
- *   updatedAt: Date        // 更新时间
- * }
+﻿/**
+ * deliveryService
  */
+
 const cloud = require('wx-server-sdk');
 const { bizError, Validators, ErrorCodes } = require('../common/errors.js');
 
@@ -48,31 +35,27 @@ exports.main = async (event, context) => {
       case 'getDelivery': return await handleGetDelivery(data);
       case 'suspendRider': return await handleSuspendRider(data);
       case 'resumeRider': return await handleResumeRider(data);
-      default: return { success: false, message: '未知操作' };
+      default: return { success: false, message: '鏈煡鎿嶄綔' };
     }
   } catch (error) {
-    console.error('deliveryService 错误:', error);
+    console.error('deliveryService 閿欒:', error);
     if (error.code) {
       return error.toJSON ? error.toJSON() : { success: false, message: error.message };
     }
-    return { success: false, message: '服务器错误' };
+    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇? };
   }
 };
 
-/**
- * 校验抢单参数
- */
+
 function validateGrabInput({ orderId, riderOpenid, riderInfo }) {
   Validators.isNonEmptyString(orderId, 'orderId');
   Validators.isOpenid(riderOpenid, 'riderOpenid');
   if (!riderInfo || typeof riderInfo !== 'object') {
-    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'riderInfo', message: '骑手信息无效' }]);
+    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'riderInfo', message: '楠戞墜淇℃伅鏃犳晥' }]);
   }
 }
 
-/**
- * 校验状态更新参数
- */
+
 function validateUpdateStatusInput({ orderId, status, riderOpenid }) {
   Validators.isNonEmptyString(orderId, 'orderId');
   Validators.isNonEmptyString(status, 'status');
@@ -84,8 +67,6 @@ function validateUpdateStatusInput({ orderId, status, riderOpenid }) {
   }
 }
 
-// 处理抢单（对应论文4.2.4 配送服务模块）
-// 使用原子性更新防止并发超卖
 async function handleGrabOrder(data) {
   const { orderId, riderOpenid, riderInfo } = data;
 
@@ -127,10 +108,9 @@ async function handleGrabOrder(data) {
   };
   await deliveriesCollection.add({ data: newDelivery });
 
-  return { success: true, message: '抢单成功' };
+  return { success: true, message: '鎶㈠崟鎴愬姛' };
 }
 
-// 处理更新配送状态
 async function handleUpdateStatus(data) {
   const { deliveryId, status } = data;
 
@@ -160,10 +140,9 @@ async function handleUpdateStatus(data) {
     data: { status, updatedAt: new Date() }
   });
 
-  return { success: true, message: '配送状态更新成功' };
+  return { success: true, message: '閰嶉€佺姸鎬佹洿鏂版垚鍔? };
 }
 
-// 获取配送员的订单列表
 async function handleGetRiderOrders(data) {
   const { riderOpenid, page = 1, limit = 10 } = data;
   Validators.isOpenid(riderOpenid, 'riderOpenid');
@@ -188,7 +167,6 @@ async function handleGetRiderOrders(data) {
   return { success: true, deliveries: deliveriesWithOrder, total: total.total, page, limit };
 }
 
-// 获取待抢单列表
 async function handleGetPendingOrders(data) {
   const { page = 1, limit = 10 } = data;
   Validators.isInRange(page, 'page', 1, 1000);
@@ -205,13 +183,12 @@ async function handleGetPendingOrders(data) {
   return { success: true, orders: orders.data, total: total.total, page, limit };
 }
 
-// 获取顺路推荐订单（动态顺路匹配算法实现）
 async function handleGetRecommendedOrders(data) {
   const { riderOpenid, location, limit = 10 } = data;
 
   Validators.isOpenid(riderOpenid, 'riderOpenid');
   if (!location || !location.latitude || !location.longitude) {
-    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'location', message: '位置信息无效' }]);
+    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'location', message: '浣嶇疆淇℃伅鏃犳晥' }]);
   }
   Validators.isInRange(limit, 'limit', 1, 20);
 
@@ -249,12 +226,11 @@ async function handleGetRecommendedOrders(data) {
   };
 }
 
-// 更新骑手位置
 async function handleUpdateRiderLocation(data) {
   const { riderOpenid, location, accuracy } = data;
   
   if (!riderOpenid || !location) {
-    return { success: false, message: '骑手ID和位置信息不能为空' };
+    return { success: false, message: '楠戞墜ID鍜屼綅缃俊鎭笉鑳戒负绌? };
   }
   
   try {
@@ -267,14 +243,13 @@ async function handleUpdateRiderLocation(data) {
       }
     });
     
-    return { success: true, message: '位置更新成功' };
+    return { success: true, message: '浣嶇疆鏇存柊鎴愬姛' };
   } catch (error) {
-    console.error('更新骑手位置失败:', error);
-    return { success: false, message: '更新失败: ' + error.message };
+    console.error('鏇存柊楠戞墜浣嶇疆澶辫触:', error);
+    return { success: false, message: '鏇存柊澶辫触: ' + error.message };
   }
 }
 
-// 计算骑手当前负载
 async function getRiderCurrentLoad(riderOpenid) {
   const ongoingDeliveries = await deliveriesCollection
     .where({ riderOpenid, status: _.in(['pending', 'delivering']) })
@@ -283,80 +258,54 @@ async function getRiderCurrentLoad(riderOpenid) {
   return ongoingDeliveries.total;
 }
 
-/**
- * 增强顺路匹配算法
- * 结合多因素动态权重 + A*启发式搜索 + 多订单联合优化
- *
- * 算法设计：
- * 1. 基础匹配度：距离、时间、路线质量三因素加权
- * 2. 骑手负载因素：根据当前配送数量动态调整
- * 3. 订单紧迫度：即将过期的订单优先推送
- * 4. 路线规划优化：使用贪心+局部搜索找最优订单组合
- * 5. 冷启动处理：新骑手或新订单使用基于位置聚类的启发式推荐
- */
+
 async function calculateMatchScore(riderLocation, pickupAddress, deliveryAddress, riderLoad, orderCreateTime, orderDeadline) {
-  // 基础距离计算
-  const d1 = calculateDistance(riderLocation, pickupAddress);
+    const d1 = calculateDistance(riderLocation, pickupAddress);
   const d2 = calculateDistance(pickupAddress, deliveryAddress);
   const directDist = calculateDistance(riderLocation, deliveryAddress);
 
-  // 绕路比率（顺路程度的核心指标）
-  const detourRatio = directDist > 0 ? (d1 + d2) / directDist : Infinity;
+    const detourRatio = directDist > 0 ? (d1 + d2) / directDist : Infinity;
 
-  // 距离匹配度：绕路比率越低越好，1表示完全顺路，>2表示严重绕路
-  let distanceScore = 0;
+    let distanceScore = 0;
   if (detourRatio <= 1.2) {
-    distanceScore = 1 - (detourRatio - 1) * 2.5; // 1.0~1.2之间，分数从1降到0.5
-  } else if (detourRatio <= 2.0) {
-    distanceScore = 0.5 - (detourRatio - 1.2) * 0.375; // 1.2~2.0之间，分数从0.5降到0.2
-  }
+    distanceScore = 1 - (detourRatio - 1) * 2.5;   } else if (detourRatio <= 2.0) {
+    distanceScore = 0.5 - (detourRatio - 1.2) * 0.375;   }
   distanceScore = Math.max(0, Math.min(1, distanceScore));
 
-  // 时间紧迫度：订单创建越久越紧急
-  const timeSinceCreated = (Date.now() - new Date(orderCreateTime).getTime()) / 60000;
-  const timeUrgency = Math.min(1, timeSinceCreated / 15); // 15分钟达到最高紧迫度
-
-  // 截止时间影响：如果快超时，强制提高分数
-  let deadlineScore = 1;
+    const timeSinceCreated = (Date.now() - new Date(orderCreateTime).getTime()) / 60000;
+  const timeUrgency = Math.min(1, timeSinceCreated / 15); 
+    let deadlineScore = 1;
   if (orderDeadline) {
     const timeToDeadline = (new Date(orderDeadline).getTime() - Date.now()) / 60000;
     if (timeToDeadline < 5) {
-      deadlineScore = 2.0; // 5分钟内截止，分数翻倍
-    } else if (timeToDeadline < 10) {
+      deadlineScore = 2.0;     } else if (timeToDeadline < 10) {
       deadlineScore = 1.5;
     }
   }
 
-  // 路线质量（考虑实时路况）
-  const routeScore = await evaluateRouteQuality(pickupAddress, deliveryAddress);
+    const routeScore = await evaluateRouteQuality(pickupAddress, deliveryAddress);
 
-  // 骑手负载系数：负载越高，接新单的动力越低
-  const loadFactor = Math.max(0.2, 1 - riderLoad * 0.18);
+    const loadFactor = Math.max(0.2, 1 - riderLoad * 0.18);
 
-  // 综合评分
-  const rawScore = (
+    const rawScore = (
     0.45 * distanceScore +
     0.25 * timeUrgency +
     0.15 * routeScore +
     0.15 * loadFactor
   ) * deadlineScore;
 
-  // 加入随机扰动避免推荐结果固化（探索-利用平衡）
-  const explorationBonus = (Math.random() - 0.5) * 0.1;
+    const explorationBonus = (Math.random() - 0.5) * 0.1;
 
   return Math.max(0, Math.min(1, rawScore + explorationBonus));
 }
 
-/**
- * 计算两点间距离（使用Haversine公式，更精确）
- */
+
 function calculateDistance(point1, point2) {
   if (!point1 || !point2 || !point1.latitude || !point2.latitude) {
     return 100000;
   }
 
-  const R = 6371000; // 地球半径（米）
-  const lat1 = point1.latitude * Math.PI / 180;
+  const R = 6371000;   const lat1 = point1.latitude * Math.PI / 180;
   const lat2 = point2.latitude * Math.PI / 180;
   const deltaLat = (point2.latitude - point1.latitude) * Math.PI / 180;
   const deltaLng = (point2.longitude - point1.longitude) * Math.PI / 180;
@@ -369,9 +318,7 @@ function calculateDistance(point1, point2) {
   return R * c;
 }
 
-/**
- * 曼哈顿距离（用于快速估算）
- */
+
 function calculateManhattanDistance(point1, point2) {
   if (!point1 || !point2 || !point1.latitude || !point2.latitude) {
     return 100000;
@@ -381,54 +328,38 @@ function calculateManhattanDistance(point1, point2) {
   return (latDiff + lngDiff) * 111000;
 }
 
-/**
- * 评估路线质量
- * 考虑因素：时段、天气、路段类型
- */
+
 async function evaluateRouteQuality(pickup, delivery) {
   const hour = new Date().getHours();
   let baseQuality = 0.9;
 
-  // 时段影响
-  if ((hour >= 8 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
-    baseQuality = 0.6; // 早高峰、午餐高峰、晚高峰
-  } else if (hour >= 22 || hour <= 6) {
-    baseQuality = 0.95; // 深夜质量最好
-  }
+    if ((hour >= 8 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
+    baseQuality = 0.6;   } else if (hour >= 22 || hour <= 6) {
+    baseQuality = 0.95;   }
 
-  // 距离影响：太短或太长的路线质量评分降低
-  const routeDistance = calculateDistance(pickup, delivery);
+    const routeDistance = calculateDistance(pickup, delivery);
   if (routeDistance < 200) {
-    baseQuality *= 0.8; // 太短，评分降低
-  } else if (routeDistance > 3000) {
-    baseQuality *= 0.9; // 太长，评分略微降低
-  }
+    baseQuality *= 0.8;   } else if (routeDistance > 3000) {
+    baseQuality *= 0.9;   }
 
   return baseQuality;
 }
 
-/**
- * 多订单联合优化
- * 使用贪心算法 + 局部搜索，找最优订单组合
- * 目标：最大化总顺路度，同时保证订单不超时
- */
+
 async function optimizeMultiOrderSelection(candidates, maxOrders = 3) {
   if (candidates.length <= maxOrders) {
     return candidates;
   }
 
-  // 第一阶段：贪心选择
-  const sortedByScore = [...candidates].sort((a, b) => b.matchScore - a.matchScore);
+    const sortedByScore = [...candidates].sort((a, b) => b.matchScore - a.matchScore);
   const greedySelected = sortedByScore.slice(0, maxOrders);
 
-  // 第二阶段：局部搜索优化（2-opt）
-  let bestCombination = greedySelected;
+    let bestCombination = greedySelected;
   let bestTotalScore = calculateTotalScore(greedySelected);
 
   for (let i = 0; i < candidates.length; i++) {
     for (let j = i + 1; j < candidates.length; j++) {
-      // 尝试交换
-      const newCombination = replaceOrder(bestCombination, candidates[i], candidates[j]);
+            const newCombination = replaceOrder(bestCombination, candidates[i], candidates[j]);
       const newScore = calculateTotalScore(newCombination);
 
       if (newScore > bestTotalScore) {
@@ -462,10 +393,7 @@ function replaceOrder(current, newOrder1, newOrder2) {
   return result;
 }
 
-/**
- * 骑手位置聚类（用于冷启动推荐）
- * 将订单按地理位置分群，优先推荐骑手所在群体内的订单
- */
+
 function clusterOrdersByLocation(orders, riderLocation, clusterRadius = 500) {
   if (!orders || orders.length === 0) {
     return orders;
@@ -500,8 +428,7 @@ function clusterOrdersByLocation(orders, riderLocation, clusterRadius = 500) {
     clusters.push(cluster);
   }
 
-  // 找出骑手最近的簇
-  let nearestCluster = null;
+    let nearestCluster = null;
   let nearestDist = Infinity;
 
   for (const cluster of clusters) {
@@ -512,11 +439,9 @@ function clusterOrdersByLocation(orders, riderLocation, clusterRadius = 500) {
     }
   }
 
-  // 返回最近簇的订单，优先推荐
-  return nearestCluster ? nearestCluster.orders : orders.slice(0, 5);
+    return nearestCluster ? nearestCluster.orders : orders.slice(0, 5);
 }
 
-// 设置骑手在线状态
 async function handleSetOnlineStatus(data) {
   const { isOnline } = data;
   const openid = cloud.getWXContext().OPENID;
@@ -529,20 +454,19 @@ async function handleSetOnlineStatus(data) {
       }
     });
     
-    return { success: true, message: isOnline ? '已上线' : '已下线' };
+    return { success: true, message: isOnline ? '宸蹭笂绾? : '宸蹭笅绾? };
   } catch (error) {
-    console.error('设置在线状态失败:', error);
-    return { success: false, message: '操作失败: ' + error.message };
+    console.error('璁剧疆鍦ㄧ嚎鐘舵€佸け璐?', error);
+    return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
   }
 }
 
-// 更新骑手位置（简化版）
 async function handleUpdateLocation(data) {
   const { location } = data;
   const openid = cloud.getWXContext().OPENID;
   
   if (!location) {
-    return { success: false, message: '位置信息不能为空' };
+    return { success: false, message: '浣嶇疆淇℃伅涓嶈兘涓虹┖' };
   }
   
   try {
@@ -554,14 +478,13 @@ async function handleUpdateLocation(data) {
       }
     });
     
-    return { success: true, message: '位置更新成功' };
+    return { success: true, message: '浣嶇疆鏇存柊鎴愬姛' };
   } catch (error) {
-    console.error('更新位置失败:', error);
-    return { success: false, message: '更新失败: ' + error.message };
+    console.error('鏇存柊浣嶇疆澶辫触:', error);
+    return { success: false, message: '鏇存柊澶辫触: ' + error.message };
   }
 }
 
-// 获取骑手今日统计
 async function handleGetTodayStats(data) {
   const openid = cloud.getWXContext().OPENID;
   
@@ -582,8 +505,7 @@ async function handleGetTodayStats(data) {
       .get();
     
     const completedCount = deliveries.data.filter(d => d.status === 'completed').length;
-    const earnings = completedCount * 9; // 假设每单9元配送费
-    
+    const earnings = completedCount * 9;     
     return {
       success: true,
       data: {
@@ -594,12 +516,11 @@ async function handleGetTodayStats(data) {
       }
     };
   } catch (error) {
-    console.error('获取今日统计失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇浠婃棩缁熻澶辫触:', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 获取骑手周统计
 async function handleGetWeeklyStats(data) {
   const openid = cloud.getWXContext().OPENID;
   
@@ -624,17 +545,16 @@ async function handleGetWeeklyStats(data) {
     return {
       success: true,
       data: {
-        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        labels: ['鍛ㄤ竴', '鍛ㄤ簩', '鍛ㄤ笁', '鍛ㄥ洓', '鍛ㄤ簲', '鍛ㄥ叚', '鍛ㄦ棩'],
         data: weeklyData
       }
     };
   } catch (error) {
-    console.error('获取周统计失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇鍛ㄧ粺璁″け璐?', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 获取骑手月统计
 async function handleGetMonthlyStats(data) {
   const openid = cloud.getWXContext().OPENID;
   
@@ -669,12 +589,11 @@ async function handleGetMonthlyStats(data) {
       }
     };
   } catch (error) {
-    console.error('获取月统计失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇鏈堢粺璁″け璐?', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 获取骑手列表
 async function handleGetRiders(data) {
   const { status = 'all' } = data;
   
@@ -707,19 +626,18 @@ async function handleGetRiders(data) {
           todayOrders: deliveries.data.length,
           totalOrders: totalDeliveries.total,
           status: rider.isOnline ? 'online' : 'offline',
-          statusText: rider.isOnline ? '在线' : '离线'
+          statusText: rider.isOnline ? '鍦ㄧ嚎' : '绂荤嚎'
         };
       })
     );
     
     return { success: true, data: ridersWithStats };
   } catch (error) {
-    console.error('获取骑手列表失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇楠戞墜鍒楄〃澶辫触:', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 获取活跃配送列表
 async function handleGetActiveDeliveries(data) {
   try {
     const deliveries = await deliveriesCollection
@@ -736,13 +654,13 @@ async function handleGetActiveDeliveries(data) {
         const updateTime = new Date(delivery.updatedAt || delivery.createdAt);
         const diffMinutes = Math.floor((now - updateTime) / (1000 * 60));
         
-        let updateText = '刚刚';
+        let updateText = '鍒氬垰';
         if (diffMinutes < 60) {
-          updateText = `${diffMinutes}分钟前`;
+          updateText = `${diffMinutes}鍒嗛挓鍓峘;
         } else if (diffMinutes < 1440) {
-          updateText = `${Math.floor(diffMinutes / 60)}小时前`;
+          updateText = `${Math.floor(diffMinutes / 60)}灏忔椂鍓峘;
         } else {
-          updateText = `${Math.floor(diffMinutes / 1440)}天前`;
+          updateText = `${Math.floor(diffMinutes / 1440)}澶╁墠`;
         }
         
         return {
@@ -751,19 +669,18 @@ async function handleGetActiveDeliveries(data) {
           riderInfo: rider.data[0] || {},
           updateTime: updateText,
           progress: delivery.status === 'pending' ? 10 : delivery.status === 'picked' ? 30 : 60,
-          estimatedTime: delivery.status === 'pending' ? '约20分钟' : '约10分钟'
+          estimatedTime: delivery.status === 'pending' ? '绾?0鍒嗛挓' : '绾?0鍒嗛挓'
         };
       })
     );
     
     return { success: true, data: deliveriesWithOrder };
   } catch (error) {
-    console.error('获取活跃配送列表失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇娲昏穬閰嶉€佸垪琛ㄥけ璐?', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 获取配送统计
 async function handleGetDeliveryStats(data) {
   try {
     const today = new Date();
@@ -786,12 +703,11 @@ async function handleGetDeliveryStats(data) {
       }
     };
   } catch (error) {
-    console.error('获取配送统计失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇閰嶉€佺粺璁″け璐?', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 获取单个配送记录
 async function handleGetDelivery(data) {
   const { orderId } = data;
   
@@ -801,17 +717,16 @@ async function handleGetDelivery(data) {
       .get();
     
     if (delivery.data.length === 0) {
-      return { success: false, message: '配送记录不存在' };
+      return { success: false, message: '閰嶉€佽褰曚笉瀛樺湪' };
     }
     
     return { success: true, data: delivery.data[0] };
   } catch (error) {
-    console.error('获取配送记录失败:', error);
-    return { success: false, message: '获取失败: ' + error.message };
+    console.error('鑾峰彇閰嶉€佽褰曞け璐?', error);
+    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
   }
 }
 
-// 暂停骑手服务
 async function handleSuspendRider(data) {
   const { riderId } = data;
   
@@ -824,14 +739,13 @@ async function handleSuspendRider(data) {
       }
     });
     
-    return { success: true, message: '骑手已暂停' };
+    return { success: true, message: '楠戞墜宸叉殏鍋? };
   } catch (error) {
-    console.error('暂停骑手失败:', error);
-    return { success: false, message: '操作失败: ' + error.message };
+    console.error('鏆傚仠楠戞墜澶辫触:', error);
+    return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
   }
 }
 
-// 恢复骑手服务
 async function handleResumeRider(data) {
   const { riderId } = data;
   
@@ -843,9 +757,10 @@ async function handleResumeRider(data) {
       }
     });
     
-    return { success: true, message: '骑手已恢复' };
+    return { success: true, message: '楠戞墜宸叉仮澶? };
   } catch (error) {
-    console.error('恢复骑手失败:', error);
-    return { success: false, message: '操作失败: ' + error.message };
+    console.error('鎭㈠楠戞墜澶辫触:', error);
+    return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
   }
 }
+

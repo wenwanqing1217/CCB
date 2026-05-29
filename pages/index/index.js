@@ -296,7 +296,7 @@ Page({
       })
     ])
       .then(([hotBoxesRes, grabOrdersRes, dormHeatRes, communityFeedRes, recommendRes]) => {
-        let hotBoxes = hotBoxesRes && hotBoxesRes.data ? hotBoxesRes.data : [];
+        let hotBoxes = hotBoxesRes && hotBoxesRes.data && hotBoxesRes.data.boxes ? hotBoxesRes.data.boxes : [];
         let grabOrders = grabOrdersRes && grabOrdersRes.data ? grabOrdersRes.data : [];
         let dormHeat = this.parseDormHeat(dormHeatRes);
         const dormHeatMeta = dormHeatRes && dormHeatRes.meta ? dormHeatRes.meta : null;

@@ -1,15 +1,14 @@
 {
-  "name": "userBehavior",
-  "version": "1.0.0",
-  "description": "用户行为统计服务",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["user", "behavior", "analytics"],
-  "author": "",
-  "license": "ISC"
+    "version":  "1.0.0",
+    "license":  "ISC",
+    "dependencies":  {
+                         "wx-server-sdk":  "^3.0.0"
+                     },
+    "name":  "userBehavior",
+    "scripts":  {
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "description":  "userBehavior云函数",
+    "author":  "",
+    "main":  "index.js"
 }

@@ -1,6 +1,6 @@
-.container {
+﻿.container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0a0a1a 0%, #020617 50%, #0f0f23 100%);
+  background: #020208;
   padding: 24rpx;
   padding-bottom: 160rpx;
   position: relative;
@@ -10,12 +10,12 @@
 .container::before {
   content: '';
   position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-              radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 40%),
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(147, 112, 219, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 70% 60%, rgba(186, 85, 211, 0.06) 0%, transparent 40%),
               radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
   animation: bgFloat 20s ease-in-out infinite;
   pointer-events: none;
@@ -37,11 +37,9 @@
 .title {
   font-size: 36rpx;
   font-weight: 700;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 4rpx 12rpx rgba(139, 92, 246, 0.3);
+  color: #ffffff;  
+
+  text-shadow: 0 4rpx 12rpx rgba(147, 112, 219, 0.3);
 }
 
 .paste-section {
@@ -50,7 +48,7 @@
   padding: 24rpx;
   margin-bottom: 24rpx;
   backdrop-filter: blur(20rpx);
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
@@ -76,7 +74,7 @@
 
 .paste-section:active {
   transform: scale(0.98);
-  box-shadow: 0 8rpx 32rpx rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8rpx 32rpx rgba(147, 112, 219, 0.2);
 }
 
 .paste-input-wrap {
@@ -92,7 +90,7 @@
   min-height: 80rpx;
   padding: 16rpx;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1rpx solid rgba(139, 92, 246, 0.3);
+  border: 1rpx solid rgba(147, 112, 219, 0.3);
   border-radius: 20rpx;
   color: #f8fafc;
   font-size: 28rpx;
@@ -101,8 +99,8 @@
 }
 
 .paste-input:focus {
-  border-color: rgba(139, 92, 246, 0.5);
-  box-shadow: 0 0 16rpx rgba(139, 92, 246, 0.2);
+  border-color: rgba(147, 112, 219, 0.5);
+  box-shadow: 0 0 16rpx rgba(147, 112, 219, 0.2);
 }
 
 .paste-btn {
@@ -113,7 +111,7 @@
   color: rgba(255, 255, 255, 0.5);
   white-space: nowrap;
   backdrop-filter: blur(10rpx);
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   transition: all 0.3s ease;
   flex-shrink: 0;
   position: relative;
@@ -140,11 +138,11 @@
 }
 
 .paste-btn.active {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.4) 0%, rgba(219, 39, 119, 0.4) 100%);
+  background: linear-gradient(135deg, rgba(186, 85, 211, 0.4) 0%, rgba(186, 85, 211, 0.4) 100%);
   color: #f8fafc;
   font-weight: 500;
-  border-color: rgba(236, 72, 153, 0.3);
-  box-shadow: 0 4rpx 16rpx rgba(236, 72, 153, 0.3);
+  border-color: rgba(186, 85, 211, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(186, 85, 211, 0.3);
 }
 
 .paste-tip {
@@ -172,7 +170,7 @@
   border-radius: 24rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   backdrop-filter: blur(20rpx);
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -200,17 +198,17 @@
   left: 0;
   right: 0;
   height: 1rpx;
-  background: linear-gradient(90deg, transparent 0%, rgba(139, 92, 246, 0.3) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(147, 112, 219, 0.3) 50%, transparent 100%);
 }
 
 .address-card:active {
   transform: translateY(-4rpx) scale(0.98);
-  box-shadow: 0 12rpx 40rpx rgba(139, 92, 246, 0.2);
+  box-shadow: 0 12rpx 40rpx rgba(147, 112, 219, 0.2);
 }
 
 .address-card.default {
-  border-color: rgba(236, 72, 153, 0.3);
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3), 0 0 20rpx rgba(236, 72, 153, 0.1);
+  border-color: rgba(186, 85, 211, 0.3);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3), 0 0 20rpx rgba(186, 85, 211, 0.1);
 }
 
 .address-main {
@@ -242,11 +240,11 @@
 
 .default-tag {
   padding: 6rpx 16rpx;
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(219, 39, 119, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(186, 85, 211, 0.3) 0%, rgba(186, 85, 211, 0.2) 100%);
   color: #f8fafc;
   font-size: 20rpx;
   border-radius: 12rpx;
-  border: 1rpx solid rgba(236, 72, 153, 0.3);
+  border: 1rpx solid rgba(186, 85, 211, 0.3);
   font-weight: 500;
 }
 
@@ -359,9 +357,7 @@
   font-size: 80rpx;
   margin-bottom: 20rpx;
   background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   animation: emptyFloat 3s ease-in-out infinite;
 }
 
@@ -395,7 +391,7 @@
   padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
   z-index: 100;
   backdrop-filter: blur(20rpx);
-  border-top: 1rpx solid rgba(139, 92, 246, 0.2);
+  border-top: 1rpx solid rgba(147, 112, 219, 0.2);
   box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
 }
@@ -419,10 +415,8 @@
 .form-title {
   font-size: 32rpx;
   font-weight: 600;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;  
+
 }
 
 .form-close {
@@ -435,7 +429,7 @@
   border-radius: 50%;
   font-size: 32rpx;
   color: rgba(255, 255, 255, 0.6);
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -535,8 +529,8 @@
 }
 
 .form-picker:active {
-  border-color: rgba(139, 92, 246, 0.5);
-  box-shadow: 0 0 16rpx rgba(139, 92, 246, 0.2);
+  border-color: rgba(147, 112, 219, 0.5);
+  box-shadow: 0 0 16rpx rgba(147, 112, 219, 0.2);
 }
 
 .picker-value {
@@ -607,14 +601,14 @@
 .form-btn.cancel {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
   color: rgba(255, 255, 255, 0.6);
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   backdrop-filter: blur(10rpx);
 }
 
 .form-btn.confirm {
   background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
   color: #f8fafc;
-  box-shadow: 0 8rpx 32rpx rgba(236, 72, 153, 0.3);
+  box-shadow: 0 8rpx 32rpx rgba(186, 85, 211, 0.3);
 }
 
 .form-btn:active {
@@ -633,10 +627,10 @@
   height: 96rpx;
   background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
   border-radius: 48rpx;
-  box-shadow: 0 8rpx 32rpx rgba(236, 72, 153, 0.3);
+  box-shadow: 0 8rpx 32rpx rgba(186, 85, 211, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 99;
-  border: 1rpx solid rgba(236, 72, 153, 0.3);
+  border: 1rpx solid rgba(186, 85, 211, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -658,7 +652,7 @@
 
 .add-btn:active {
   transform: scale(0.95);
-  box-shadow: 0 12rpx 40rpx rgba(236, 72, 153, 0.4);
+  box-shadow: 0 12rpx 40rpx rgba(186, 85, 211, 0.4);
 }
 
 .add-icon {
@@ -683,8 +677,4 @@
   position: relative;
   z-index: 1;
 }
-
-
-
-
 

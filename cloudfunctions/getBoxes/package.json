@@ -1,9 +1,14 @@
 {
-  "name": "getBoxes",
-  "version": "1.0.0",
-  "description": "获取盲盒列表云函数",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
+    "version":  "1.0.0",
+    "license":  "ISC",
+    "dependencies":  {
+                         "wx-server-sdk":  "^3.0.0"
+                     },
+    "name":  "getBoxes",
+    "scripts":  {
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "description":  "getBoxes云函数",
+    "author":  "",
+    "main":  "index.js"
 }

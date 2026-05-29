@@ -98,7 +98,7 @@ input,
 textarea,
 .picker {
   width: 100%;
-  background: #0a0a1a;
+  background: #020208;
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
   font-size: 26rpx;
@@ -351,7 +351,7 @@ textarea:focus {
   font-weight: 700;
   text-align: center;
   border: 1rpx solid rgba(147, 112, 219, 0.1);
-  background: #0a0a1a;
+  background: #020208;
   color: #c8a2ff;
   box-shadow: 
     0 2rpx 12rpx rgba(0, 0, 0, 0.7);
@@ -396,7 +396,7 @@ textarea:focus {
 .category-content {
   width: 100%;
   max-height: 70vh;
-  background: linear-gradient(180deg, #0f0f23 0%, #050510 100%);
+  background: #020208;
   border-radius: 32rpx 32rpx 0 0;
   padding: 32rpx;
   padding-bottom: calc(32rpx + env(safe-area-inset-bottom));

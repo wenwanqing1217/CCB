@@ -1,9 +1,9 @@
-.container {
+﻿.container {
   padding: 0;
   padding-bottom: 120rpx;
   min-height: 100vh;
   box-sizing: border-box;
-  background: linear-gradient(180deg, #0a0a1a 0%, #020617 50%, #0f0f23 100%);
+  background: #020208;
   position: relative;
   overflow: hidden;
 }
@@ -138,8 +138,8 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-              radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 40%),
+  background: radial-gradient(circle at 30% 20%, rgba(147, 112, 219, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 70% 60%, rgba(186, 85, 211, 0.06) 0%, transparent 40%),
               radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
   animation: bgFloat 20s ease-in-out infinite;
   pointer-events: none;
@@ -164,11 +164,9 @@
   font-size: 48rpx;
   font-weight: 800;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   letter-spacing: 4rpx;
-  text-shadow: 0 4rpx 20rpx rgba(139, 92, 246, 0.3);
+  text-shadow: 0 4rpx 20rpx rgba(147, 112, 219, 0.3);
   animation: titleGlow 3s ease-in-out infinite;
 }
 
@@ -196,11 +194,11 @@
   display: flex;
   align-items: center;
   padding: 28rpx;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(59, 130, 246, 0.1) 100%);
-  border: 1rpx solid rgba(139, 92, 246, 0.3);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.15) 0%, rgba(186, 85, 211, 0.1) 50%, rgba(59, 130, 246, 0.1) 100%);
+  border: 1rpx solid rgba(147, 112, 219, 0.3);
   border-radius: 24rpx;
   backdrop-filter: blur(20rpx);
-  box-shadow: 0 8rpx 32rpx rgba(139, 92, 246, 0.15),
+  box-shadow: 0 8rpx 32rpx rgba(147, 112, 219, 0.15),
               inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
@@ -273,8 +271,6 @@
   box-shadow: 0 0 15rpx rgba(147, 112, 219, 0.4);
 }
 
-
-
 .box-wrap.shaking {
   animation: shake 0.5s ease-in-out, pulse 0.5s ease-in-out;
 }
@@ -288,27 +284,23 @@
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 8rpx 24rpx rgba(139, 92, 246, 0.2); }
-  50% { box-shadow: 0 8rpx 40rpx rgba(139, 92, 246, 0.4); }
-  100% { box-shadow: 0 8rpx 24rpx rgba(139, 92, 246, 0.2); }
+  0% { box-shadow: 0 8rpx 24rpx rgba(147, 112, 219, 0.2); }
+  50% { box-shadow: 0 8rpx 40rpx rgba(147, 112, 219, 0.4); }
+  100% { box-shadow: 0 8rpx 24rpx rgba(147, 112, 219, 0.2); }
 }
 
 .box-icon {
   font-size: 60rpx;
   font-weight: 800;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;  
+
 }
 
 .lucky-price {
   font-size: 36rpx;
   font-weight: 800;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
 }
 
 .lucky-original {
@@ -405,8 +397,8 @@
 }
 
 .tab-item.active {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(12, 12, 28, 0.9) 100%);
-  border-color: rgba(124, 58, 237, 0.6);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.3) 0%, rgba(12, 12, 28, 0.9) 100%);
+  border-color: rgba(147, 112, 219, 0.6);
   color: #ffffff;
   font-weight: 800;
   text-shadow: 
@@ -538,7 +530,7 @@
 
 .blind-box-card:active {
   transform: translateY(-8rpx) scale(0.98);
-  box-shadow: 0 12rpx 40rpx rgba(139, 92, 246, 0.3),
+  box-shadow: 0 12rpx 40rpx rgba(147, 112, 219, 0.3),
               0 0 30rpx rgba(147, 112, 219, 0.25);
 }
 
@@ -577,12 +569,12 @@
 }
 
 .card-type.creative {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(124, 58, 237, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.8) 0%, rgba(147, 112, 219, 0.8) 100%);
   color: #fff;
 }
 
 .card-type.donation {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.8) 0%, rgba(219, 39, 119, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(186, 85, 211, 0.8) 0%, rgba(186, 85, 211, 0.8) 100%);
   color: #fff;
 }
 
@@ -692,9 +684,7 @@
   font-size: 40rpx;
   font-weight: 800;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
   text-shadow: 0 0 20rpx rgba(251, 191, 36, 0.4);
   animation: priceGlow 2s ease-in-out infinite;
 }
@@ -719,7 +709,7 @@
 .hidden-tag {
   font-size: 20rpx;
   padding: 4rpx 10rpx;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.6) 0%, rgba(124, 58, 237, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.6) 0%, rgba(147, 112, 219, 0.6) 100%);
   color: #fff;
   border-radius: 8rpx;
   font-weight: 600;
@@ -747,7 +737,7 @@
   align-items: center;
   gap: 12rpx;
   padding: 20rpx 24rpx;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 112, 219, 0.1) 100%);
   border-radius: 20rpx;
   margin-bottom: 20rpx;
   border: 1rpx solid rgba(59, 130, 246, 0.2);
@@ -767,7 +757,7 @@
   border-radius: 24rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
   backdrop-filter: blur(10rpx);
 }
 
@@ -782,7 +772,7 @@
   height: 64rpx;
   border-radius: 50%;
   margin-right: 16rpx;
-  border: 2rpx solid rgba(139, 92, 246, 0.3);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
 }
 
 .demand-user, .supply-user {
@@ -825,9 +815,7 @@
   font-size: 30rpx;
   font-weight: 700;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
 }
 
 .demand-content, .supply-content {
@@ -860,11 +848,11 @@
 
 .demand-tag, .supply-tag {
   padding: 6rpx 14rpx;
-  background: rgba(139, 92, 246, 0.2);
+  background: rgba(147, 112, 219, 0.2);
   border-radius: 12rpx;
   font-size: 24rpx;
   color: rgba(255, 255, 255, 0.8);
-  border: 1rpx solid rgba(139, 92, 246, 0.3);
+  border: 1rpx solid rgba(147, 112, 219, 0.3);
 }
 
 .demand-footer, .supply-footer {
@@ -892,18 +880,18 @@
 
 .demand-action, .supply-action {
   padding: 12rpx 28rpx;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.4) 100%);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.4) 0%, rgba(147, 112, 219, 0.4) 100%);
   border-radius: 24rpx;
   font-size: 24rpx;
   font-weight: 600;
   color: #f8fafc;
-  border: 1rpx solid rgba(139, 92, 246, 0.3);
+  border: 1rpx solid rgba(147, 112, 219, 0.3);
   transition: all 0.3s;
 }
 
 .demand-action:active, .supply-action:active {
   transform: scale(0.95);
-  box-shadow: 0 4rpx 16rpx rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(147, 112, 219, 0.3);
 }
 
 .supply-price-wrap {
@@ -916,9 +904,7 @@
   font-size: 32rpx;
   font-weight: 700;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
 }
 
 .supply-unit {
@@ -932,16 +918,16 @@
   justify-content: center;
   gap: 12rpx;
   padding: 24rpx;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.2) 0%, rgba(186, 85, 211, 0.2) 100%);
   border-radius: 24rpx;
-  border: 2rpx dashed rgba(139, 92, 246, 0.4);
+  border: 2rpx dashed rgba(147, 112, 219, 0.4);
   margin-top: 20rpx;
   transition: all 0.3s;
 }
 
 .publish-demand-btn:active, .publish-supply-btn:active {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(236, 72, 153, 0.3) 100%);
-  border-color: rgba(139, 92, 246, 0.6);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.3) 0%, rgba(186, 85, 211, 0.3) 100%);
+  border-color: rgba(147, 112, 219, 0.6);
 }
 
 .publish-icon {
@@ -979,12 +965,12 @@
 
 .empty-btn {
   padding: 16rpx 24rpx;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.4) 100%);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.4) 0%, rgba(147, 112, 219, 0.4) 100%);
   border-radius: 24rpx;
   font-size: 28rpx;
   font-weight: 600;
   color: #f8fafc;
-  border: 1rpx solid rgba(139, 92, 246, 0.3);
+  border: 1rpx solid rgba(147, 112, 219, 0.3);
 }
 
 .open-result-modal {
@@ -1003,12 +989,12 @@
 
 .result-content {
   width: 600rpx;
-  background: linear-gradient(180deg, rgba(139, 92, 246, 0.2) 0%, rgba(30, 27, 75, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(147, 112, 219, 0.2) 0%, rgba(30, 27, 75, 0.95) 100%);
   border-radius: 24rpx;
   padding: 40rpx;
   text-align: center;
-  border: 1rpx solid rgba(139, 92, 246, 0.3);
-  box-shadow: 0 20rpx 60rpx rgba(139, 92, 246, 0.3);
+  border: 1rpx solid rgba(147, 112, 219, 0.3);
+  box-shadow: 0 20rpx 60rpx rgba(147, 112, 219, 0.3);
   animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1031,9 +1017,7 @@
   font-size: 36rpx;
   font-weight: 800;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
 }
 
 .result-box {
@@ -1042,8 +1026,8 @@
   margin: 0 auto 24rpx;
   border-radius: 24rpx;
   overflow: hidden;
-  border: 3rpx solid rgba(139, 92, 246, 0.4);
-  box-shadow: 0 8rpx 32rpx rgba(139, 92, 246, 0.3);
+  border: 3rpx solid rgba(147, 112, 219, 0.4);
+  box-shadow: 0 8rpx 32rpx rgba(147, 112, 219, 0.3);
 }
 
 .result-image {
@@ -1098,22 +1082,18 @@
 }
 
 .result-btn.share {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.4) 0%, rgba(219, 39, 119, 0.4) 100%);
+  background: linear-gradient(135deg, rgba(186, 85, 211, 0.4) 0%, rgba(186, 85, 211, 0.4) 100%);
   color: #f8fafc;
-  border: 1rpx solid rgba(236, 72, 153, 0.3);
+  border: 1rpx solid rgba(186, 85, 211, 0.3);
 }
 
 .result-btn.confirm {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.5) 0%, rgba(124, 58, 237, 0.5) 100%);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.5) 0%, rgba(147, 112, 219, 0.5) 100%);
   color: #f8fafc;
-  border: 1rpx solid rgba(139, 92, 246, 0.4);
+  border: 1rpx solid rgba(147, 112, 219, 0.4);
 }
 
 .result-btn:active {
   transform: scale(0.95);
 }
-
-
-
-
 

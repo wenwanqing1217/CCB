@@ -1,31 +1,31 @@
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
 exports.main = async (event, context) => {
   try {
-    const { title } = event
+    const { title } = event;
     
     const templates = [
-      `杩欎釜${title}鎵胯浇鐫€鎴戠殑娓╂殩鍥炲繂锛屽笇鏈涘畠鑳藉甫缁欎綘鍚屾牱鐨勫揩涔愩€傜敓娲诲氨鍍忕洸鐩掞紝鍏呮弧鎯婂枩鍜屾湡寰呫€俙,
-      `姣忎竴涓墿鍝侀兘鏈夊畠鐨勬晠浜嬶紝杩欎釜${title}鏇剧粡闄即鎴戝害杩囦竴娈电編濂界殑鏃跺厜锛岀幇鍦ㄥ畠灏嗗紑濮嬫柊鐨勬梾绋嬨€俙,
-      `鍦ㄦ鐢熼櫌鐨勬棩瀛愰噷锛岃繖涓?{title}缁欐垜甯︽潵浜嗗緢澶氫究鍒╁拰蹇箰锛屽笇鏈涘畠涔熻兘涓轰綘澧炴坊涓€浠芥俯鏆栥€俙,
-      `绮惧績鎸戦€夌殑${title}锛屽笇鏈涘畠鑳芥垚涓轰綘鐢熸椿涓殑灏忕‘骞革紝璁╂瘡涓€澶╅兘鍏呮弧闃冲厜銆俙,
-      `杩欎釜${title}铏界劧涓嶆槸鍏ㄦ柊鐨勶紝浣嗗畠鎵胯浇鐫€鎴戠殑蹇冩剰锛屽笇鏈涗綘鑳藉枩娆㈠畠锛岃瀹冪户缁彂鎸ヤ环鍊笺€俙
-    ]
+      `这个${title}承载着我的美好回忆，希望它能带给你同样的快乐。生活就像盲盒，充满惊喜和期待。`,
+      `每一个物品都有它的故事，这个${title}曾经陪伴我度过一段美好的时光，现在它将开始新的旅程。`,
+      `在校园的日子里，这个${title}给我带来了很多便利和欢乐，希望它也能为你增添一份温暖。`,
+      `精心挑选的${title}，希望它能成为你生活中的小确幸，让每一天都充满阳光。`,
+      `这个${title}虽然不是全新的，但它承载着我的心意，希望你能喜欢它，让它继续发挥价值。`
+    ];
     
-    const randomIndex = Math.floor(Math.random() * templates.length)
-    const note = templates[randomIndex]
+    const randomIndex = Math.floor(Math.random() * templates.length);
+    const note = templates[randomIndex];
     
     return {
       note
-    }
+    };
   } catch (error) {
-    console.error('鐢熸垚绾告潯澶辫触', error)
+    console.error('生成寄语失败', error);
     return {
-      note: '甯屾湜杩欎釜鐗╁搧鑳界粰浣犲甫鏉ュ揩涔愬拰娓╂殩锛岃鎴戜滑涓€璧蜂紶閫掑杽鎰忋€?
-    }
+      note: '愿这个物品能带给你快乐和温暖，让我们一起传递爱心。'
+    };
   }
-}
+};

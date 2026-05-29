@@ -70,46 +70,53 @@ class LLMService {
    * 发起HTTP请求
    */
   async makeRequest(body) {
-    const { cloud } = require('wx-server-sdk');
-    cloud.init();
+    const SECRET_KEY = process.env.DOUBAO_API_KEY;
 
-    // 注意：在云函数中使用 wx-server-sdk 的http请求
-    // 如果豆包API不支持云函数内直接调用，需要使用其他方式
-    // 这里提供两种方案：
-
-    // 方案1：直接使用云开发HTTP请求（如果支持）
-    try {
-      const res = await cloud.openapi.requestSubscribeMessage({
-        touser: 'test',
-        templateId: 'test'
-      });
-      // 如果云开发支持，替换为实际请求
-    } catch (e) {
-      // 继续尝试其他方案
+    if (!SECRET_KEY) {
+      logger.warn('DOUBAO_API_KEY 未配置，使用模拟模式');
+      return this.getMockResponse(body);
     }
 
-    // 方案2：使用云函数中转（推荐）
-    // 在实际部署时，可以在云函数中使用node-fetch或axios
-    // 这里我们使用云开发环境可用的方式
+    const response = await fetch(this.config.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SECRET_KEY}`,
+      },
+      body: JSON.stringify(body),
+    });
 
-    // 模拟实现，实际使用时请替换为真实API调用
-    // const response = await fetch(this.config.endpoint, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${process.env.DOUBAO_API_KEY}`,
-    //   },
-    //   body: JSON.stringify(body),
-    // });
-    // return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API请求失败: ${response.status} - ${errorText}`);
+    }
 
-    // 临时返回模拟数据，便于测试
+    return await response.json();
+  }
+
+  /**
+   * 模拟响应（开发测试用）
+   */
+  getMockResponse(body) {
+    const lastMessage = body.messages[body.messages.length - 1]?.content || '';
+    let mockContent = '这是模拟回复，当前在开发测试模式。\n\n';
+
+    if (lastMessage.includes('coldStart')) {
+      mockContent += '推荐热门盲盒：\n1. 惊喜福袋 - ¥99\n2. 限定款盲盒 - ¥199';
+    } else if (lastMessage.includes('reEngage') || lastMessage.includes('召回')) {
+      mockContent += '我们注意到你很久没来了！\n🛍️ 平台正在做促销活动，欢迎回来看看~';
+    } else if (lastMessage.includes('盲盒') || lastMessage.includes('配送')) {
+      mockContent += '盲盒下单后一般1-3个工作日送达，校园内由骑手配送~';
+    } else {
+      mockContent += `你刚才问的是：${lastMessage.slice(0, 50)}...\n我目前是模拟回复模式，正式使用请配置 DOUBAO_API_KEY。`;
+    }
+
     return {
       id: 'mock-' + Date.now(),
       choices: [{
         message: {
           role: 'assistant',
-          content: '这是模拟回复，实际使用时需要配置真实的豆包API。'
+          content: mockContent
         }
       }]
     };

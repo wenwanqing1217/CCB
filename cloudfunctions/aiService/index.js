@@ -1,16 +1,5 @@
 /**
- * AI智能助手云函数
- *
- * 功能：
- * 1. 统一对接豆包大模型
- * 2. 支持多轮对话
- * 3. Token管控（上下文长度限制）
- * 4. 调用日志记录
- * 5. 异常容错处理
- *
- * 配置：
- * - 豆包API密钥放在环境变量中
- * - Prompt统一管理在prompts/目录
+ * aiService
  */
 
 const cloud = require('wx-server-sdk');
@@ -18,6 +7,7 @@ const LLMService = require('./services/llm-service');
 const logger = require('./services/logger');
 const CONFIG = require('./config/model-config');
 const CHAT_PROMPT = require('./prompts/chat-prompt');
+const RECOMMEND_PROMPT = require('./prompts/recommend-prompt');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
@@ -26,9 +16,6 @@ cloud.init({
 // 数据库
 const db = cloud.database();
 
-/**
- * 云函数入口
- */
 exports.main = async (event, context) => {
   const { question, history = [], userId = 'anonymous' } = event;
 
@@ -82,9 +69,6 @@ exports.main = async (event, context) => {
   }
 };
 
-/**
- * 记录用户交互日志
- */
 async function logUserInteraction(userId, question, answer) {
   try {
     await db.collection('ai_chat_logs').add({
@@ -100,3 +84,51 @@ async function logUserInteraction(userId, question, answer) {
     logger.error('记录对话日志失败', { error: error.message });
   }
 }
+
+exports.recommend = async (event, context) => {
+  const { scene = 'active', userHistory = [], userId = 'anonymous' } = event;
+
+  logger.info('收到推荐请求', {
+    userId,
+    scene,
+    historyLength: userHistory.length
+  });
+
+  const scenePrompt = RECOMMEND_PROMPT.scenes[scene];
+  if (!scenePrompt) {
+    return {
+      success: false,
+      error: `无效的推荐场景: ${scene}`
+    };
+  }
+
+  try {
+    const systemPrompt = RECOMMEND_PROMPT.systemPrompt + '\n\n' + scenePrompt;
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: JSON.stringify(userHistory) }
+    ];
+
+    const result = await LLMService.chat(messages);
+
+    if (!result.success) {
+      logger.error('推荐调用失败', { error: result.error });
+      return {
+        success: false,
+        error: '推荐服务暂时不可用'
+      };
+    }
+
+    return {
+      success: true,
+      data: result.data,
+      fields: RECOMMEND_PROMPT.fields
+    };
+  } catch (error) {
+    logger.error('推荐服务异常', { error: error.message });
+    return {
+      success: false,
+      error: '推荐服务暂时不可用'
+    };
+  }
+};

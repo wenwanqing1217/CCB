@@ -96,6 +96,7 @@ class PerformanceMonitor {
   // 设置页面生命周期监听
   setupPageLifecycle() {
     // 重写Page方法，自动监控页面加载
+    /* eslint-disable no-global-assign */
     const originalPage = Page;
     Page = function (options) {
       const onLoad = options.onLoad;
@@ -143,8 +144,7 @@ class PerformanceMonitor {
       endTime: 0,
       duration: 0,
       timestamp: new Date().toISOString(),
-      path: pageName,
-      startTime: Date.now()
+      path: pageName
     };
     
     // 记录页面加载开始时间（用于TTI计算）
@@ -652,8 +652,7 @@ class PerformanceMonitor {
       return;
     }
     
-    try {
-      await this.retryRequest(() => 
+    await this.retryRequest(() => 
         wx.cloud.callFunction({
           name: 'performanceMonitor',
           data: {
@@ -663,9 +662,6 @@ class PerformanceMonitor {
           }
         })
       );
-    } catch (error) {
-      throw error;
-    }
   }
 
   // 带重试的请求
