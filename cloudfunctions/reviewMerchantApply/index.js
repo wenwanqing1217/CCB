@@ -60,7 +60,7 @@ exports.main = async (event, context) => {
     if (approved) {
       await db.collection('users')
         .where({
-          _openid: apply.data._openid
+          _openid: apply.data.openid
         })
         .update({
           data: {

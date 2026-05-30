@@ -46,10 +46,11 @@ Page({
         page: this.data.page
       },
       success: res => {
-        if (res.result && res.result.length > 0) {
+        const data = res.result;
+        if (data && data.success && data.boxes && data.boxes.length > 0) {
           this.setData({
-            boxes: res.result,
-            hasMore: res.result.length === 10,
+            boxes: this.data.page === 1 ? data.boxes : [...this.data.boxes, ...data.boxes],
+            hasMore: data.boxes.length === 10,
             loading: false
           });
         } else {

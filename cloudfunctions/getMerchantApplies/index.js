@@ -41,7 +41,7 @@ exports.main = async (event, context) => {
     }
 
     const result = await query
-      .orderBy('createTime', 'desc')
+      .orderBy('createdAt', 'desc')
       .limit(100)
       .get();
 

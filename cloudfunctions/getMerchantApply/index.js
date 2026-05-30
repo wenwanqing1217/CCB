@@ -12,9 +12,9 @@ exports.main = async (event, context) => {
 
     const result = await db.collection('merchant_applies')
       .where({
-        _openid: openid
+        openid: openid
       })
-      .orderBy('createTime', 'desc')
+      .orderBy('createdAt', 'desc')
       .limit(1)
       .get();
 
@@ -24,7 +24,7 @@ exports.main = async (event, context) => {
 
     return null;
   } catch (error) {
-    console.error('鑾峰彇鍟嗗鐢宠鐘舵€佸け璐', error);
+    console.error('获取商家申请状态失败', error);
     return null;
   }
 };

@@ -15,9 +15,9 @@ exports.main = async (event, context) => {
     // 获取我的盲盒
     const result = await db.collection('boxes')
       .where({
-        _openid: openid
+        openid: openid
       })
-      .orderBy('publish_time', 'desc')
+      .orderBy('createdAt', 'desc')
       .get();
     
     return result.data;

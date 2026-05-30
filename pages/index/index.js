@@ -299,12 +299,12 @@ Page({
       })
     ])
       .then(([hotBoxesRes, grabOrdersRes, dormHeatRes, communityFeedRes, recommendRes]) => {
-        let hotBoxes = hotBoxesRes && hotBoxesRes.data && hotBoxesRes.data.boxes ? hotBoxesRes.data.boxes : [];
-        let grabOrders = grabOrdersRes && grabOrdersRes.data ? grabOrdersRes.data : [];
+        let hotBoxes = hotBoxesRes && hotBoxesRes.boxes ? hotBoxesRes.boxes : [];
+        let grabOrders = Array.isArray(grabOrdersRes) ? grabOrdersRes : [];
         let dormHeat = this.parseDormHeat(dormHeatRes);
         const dormHeatMeta = dormHeatRes && dormHeatRes.meta ? dormHeatRes.meta : null;
         const communityFeed = communityFeedRes && communityFeedRes.data ? communityFeedRes.data : [];
-        const recommendedBoxes = recommendRes && recommendRes.result && recommendRes.result.success ? recommendRes.result.data : [];
+        const recommendedBoxes = recommendRes && recommendRes.success ? recommendRes.data : [];
 
         if (!dormHeat.length) {
           dormHeat = campusData.getDemoDormHeat();

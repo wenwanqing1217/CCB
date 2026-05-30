@@ -27,7 +27,7 @@ exports.main = async (event, context) => {
     // 获取在售盲盒数量
     const activeBoxes = await db.collection('boxes')
       .where({
-        _openid: openid,
+        openid: openid,
         status: 'available'
       })
       .count()

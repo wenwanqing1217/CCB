@@ -171,16 +171,16 @@ async function handleUpdateStatus(data) {
 async function sendOrderStatusNotification(orderId, status, order) {
   try {
     const statusTextMap = {
-      pending: '寰呮姠鍗',
-      grabbed: '宸叉姠鍗',
-      delivering: '閰嶉€佷腑',
-      completed: '宸插畬鎴',
-      cancelled: '宸插彇娑'
+      pending: '待抢单',
+      grabbed: '已抢单',
+      delivering: '配送中',
+      completed: '已完成',
+      cancelled: '已取消'
     };
     
     const statusText = statusTextMap[status] || status;
-    const title = '璁㈠崟鐘舵€佹洿鏂';
-    const content = '鎮ㄧ殑璁㈠崟宸?{statusText}';
+    const title = '订单状态更新';
+    const content = `您的订单已${statusText}`;
     
     if (order.buyerOpenid) {
       await cloud.callFunction({
@@ -215,7 +215,7 @@ async function sendOrderStatusNotification(orderId, status, order) {
     }
     
   } catch (error) {
-    console.error('鍙戦€佽鍗曠姸鎬侀€氱煡澶辫触:', error);
+    console.error('发送订单状态通知失败:', error);
   }
 }
 
@@ -231,7 +231,7 @@ async function handleListOrders(data) {
     } else if (role === 'seller') {
       query = ordersCollection.where({ sellerOpenid: openid });
     } else {
-      return { success: false, message: '瑙掕壊鏃犳晥' };
+      return { success: false, message: '角色无效' };
     }
     
     const total = await query.count();
@@ -250,8 +250,8 @@ async function handleListOrders(data) {
       limit
     };
   } catch (error) {
-    console.error('鑾峰彇璁㈠崟鍒楄〃澶辫触:', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取订单列表失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -263,7 +263,7 @@ async function handleOrderDetail(data) {
     const order = await ordersCollection.doc(orderId).get();
     
     if (!order.data) {
-      return { success: false, message: '璁㈠崟涓嶅瓨鍦' };
+      return { success: false, message: '订单不存在' };
     }
     
     return {
@@ -271,7 +271,7 @@ async function handleOrderDetail(data) {
       order: order.data
     };
   } catch (error) {
-    console.error('鑾峰彇璁㈠崟璇︽儏澶辫触:', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取订单详情失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
