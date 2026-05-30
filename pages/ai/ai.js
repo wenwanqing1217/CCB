@@ -15,7 +15,8 @@ Page({
       interact: 3,
       total: 6
     },
-    pendingAction: null
+    pendingAction: null,
+    defaultAvatar: require('../../utils/placeholders').DEFAULT_AVATAR
   },
 
   onLoad(options) {

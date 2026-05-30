@@ -13,6 +13,7 @@ const logger = require('../../utils/logger.js');
 // 导入统一配置管理
 const config = require('../../utils/config.js');
 const { getDemoDormHeat, getDemoOrders } = require('../../utils/campusData.js');
+const placeholders = require('../../utils/placeholders.js');
 
 // 生产环境数据结构定义
 const defaultEmptyData = {
@@ -51,7 +52,9 @@ Page({
     aiBtnPosition: { x: 320, y: 40 },
     isDragging: false,
     _aiBtnStartPos: { x: 0, y: 0 },
-    _touchStartPos: { x: 0, y: 0 }
+    _touchStartPos: { x: 0, y: 0 },
+    defaultImage: placeholders.DEFAULT_IMAGE,
+    defaultAvatar: placeholders.DEFAULT_AVATAR
   },
 
   onLoad(options) {
@@ -523,10 +526,9 @@ Page({
   onImageError(e) {
     const index = e.currentTarget.dataset.index;
     console.log('图片加载失败:', index);
-    const defaultImage = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=blind%20box%20package%20with%20mystery%20items&image_size=square';
     const hotBoxes = this.data.hotBoxes;
     if (hotBoxes[index]) {
-      hotBoxes[index].images[0] = defaultImage;
+      hotBoxes[index].images[0] = placeholders.DEFAULT_IMAGE;
       this.setData({ hotBoxes });
     }
   },
@@ -534,10 +536,9 @@ Page({
   onAvatarError(e) {
     const index = e.currentTarget.dataset.index;
     console.log('头像加载失败:', index);
-    const defaultAvatar = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%20icon%20simple%20style&image_size=square';
     const communityFeed = this.data.communityFeed;
     if (communityFeed[index]) {
-      communityFeed[index].userAvatar = defaultAvatar;
+      communityFeed[index].userAvatar = placeholders.DEFAULT_AVATAR;
       this.setData({ communityFeed });
     }
   },
@@ -545,10 +546,9 @@ Page({
   onFeedImageError(e) {
     const index = e.currentTarget.dataset.index;
     console.log('动态图片加载失败:', index);
-    const defaultImage = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=blind%20box%20package%20with%20mystery%20items&image_size=square';
     const communityFeed = this.data.communityFeed;
     if (communityFeed[index]) {
-      communityFeed[index].image = defaultImage;
+      communityFeed[index].image = placeholders.DEFAULT_IMAGE;
       this.setData({ communityFeed });
     }
   },

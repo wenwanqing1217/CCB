@@ -10,35 +10,33 @@ const db = cloud.database();
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
-    const { title, price, images, from_dorm, to_dorm, note } = event;
+    const { title, desc, type, mode, price, campus, building, images, note } = event;
     const openid = cloud.getWXContext().OPENID;
-    
-    // 计算过期时间（7天）和捐赠时间（15天）
-    const now = Date.now();
-    const expire_time = now + 7 * 24 * 60 * 60 * 1000;
-    const donate_time = now + 15 * 24 * 60 * 60 * 1000;
-    
-    // 发布盲盒
-    const result = await db.collection('boxes')
-      .add({
-        data: {
-          title,
-          price,
-          images,
-          status: 'active',
-          publish_time: now,
-          expire_time,
-          donate_time,
-          from_dorm,
-          to_dorm,
-          note,
-          _openid: openid
-        }
-      });
-    
+
+    const newBox = {
+      title: (title || '').trim(),
+      desc: (desc || note || '').trim(),
+      type: type || 'other',
+      mode: mode || 'light',
+      price: Math.round(Number(price || 0) * 100) / 100,
+      campus: (campus || '').trim(),
+      building: (building || '').trim(),
+      images: Array.isArray(images) ? images.slice(0, 9) : [],
+      openid,
+      status: 'available',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('boxes').add({ data: newBox });
+
     return {
       success: true,
-      boxId: result._id
+      boxId: result._id,
+      box: {
+        ...newBox,
+        _id: result._id
+      }
     };
   } catch (error) {
     console.error('发布盲盒失败', error);

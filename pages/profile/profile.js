@@ -1,4 +1,5 @@
-﻿const config = require('../../utils/config.js');
+﻿const placeholders = require('../../utils/placeholders.js');
+const config = require('../../utils/config.js');
 const { ALL_DORMS, COLLEGES } = require('../../utils/campusData.js');
 
 Page({
@@ -74,7 +75,7 @@ Page({
         isLoggedIn: true,
         userInfo: {
           name: userInfo.nickName || '用户',
-          avatar: userInfo.avatarUrl || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=default%20user%20avatar%20icon%20simple%20clean&image_size=square',
+          avatar: userInfo.avatarUrl || placeholders.DEFAULT_AVATAR,
           id: userInfo._id || '100001'
         }
       });
@@ -166,7 +167,7 @@ Page({
           isLoggingIn: false,
           userInfo: {
             name: userInfo.nickName || '微信用户',
-            avatar: userInfo.avatarUrl || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=default%20user%20avatar%20icon%20simple%20clean&image_size=square',
+            avatar: userInfo.avatarUrl || placeholders.DEFAULT_AVATAR,
             id: user._id || '100001'
           },
           campusInfo: user.campusInfo || { college: '', dorm: '' }
@@ -191,7 +192,7 @@ Page({
     const that = this;
     const userInfo = {
       nickName: '微信用户',
-      avatarUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=default%20user%20avatar%20icon%20simple%20clean&image_size=square'
+      avatarUrl: placeholders.DEFAULT_AVATAR
     };
     
     wx.cloud.callFunction({

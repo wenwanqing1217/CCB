@@ -1,30 +1,33 @@
-﻿/**
+/**
  * Campus BlindBox - App Entry
+ * 校园盲盒小程序入口
  */
 
 const cloudUtils = require('./utils/cloud.js')
 
 App({
   onLaunch() {
-          console.error('璇蜂娇鐢?2.2.3 鎴栦互涓婄殑鍩虹搴撲互浣跨敤浜戣兘鍔?);
+    // 检查云能力
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力');
     } else {
       wx.cloud.init({
         env: 'cloud1-0g18d9ik5f541e32',
         traceUser: true
       });
     }
-    
-        
-        
-      },
-  
+
+    // 检查登录状态
+    this.checkLoginStatus();
+  },
+
   setupErrorHandler() {
     wx.onError((error) => {
-      console.error('鍏ㄥ眬閿欒:', error);
+      console.error('全局错误:', error);
       this.reportError(error);
     });
   },
-  
+
   async reportError(error) {
     try {
       await cloudUtils.callCloudFunction({
@@ -38,23 +41,25 @@ App({
         showError: false
       });
     } catch (err) {
-      console.error('閿欒涓婃姤鍑芥暟鎵ц澶辫触:', err);
+      console.error('错误上报函数执行失败:', err);
     }
   },
-  
+
   checkLoginStatus() {
     try {
       const userInfo = wx.getStorageSync('userInfo');
       if (userInfo) {
         this.globalData.userInfo = userInfo;
-                  this.getUserRole();
+        // 延迟获取用户角色，等待云函数就绪
+        setTimeout(() => {
+          this.getUserRole();
         }, 500);
       }
     } catch (error) {
-      console.warn('妫€鏌ョ櫥褰曠姸鎬佸け璐?', error);
+      console.warn('检查登录状态失败:', error);
     }
   },
-  
+
   async getUserRole() {
     try {
       const result = await cloudUtils.callCloudFunction({
@@ -66,16 +71,16 @@ App({
       });
       if (result) {
         this.globalData.userRole = result.role || 'student';
-        this.globalData.userDorm = result.dorm || '';
-        this.globalData.loveScore = result.love_score || 0;
+        this.globalData.userDorm = result.campusInfo?.dorm || '';
+        this.globalData.loveScore = result.lovePoints || 0;
         this.globalData.blindBoxCoins = result.blindBoxCoins || 0;
-        this.triggerEvent('loginSuccess', result);
+        this.emit('loginSuccess', result);
       }
     } catch (err) {
-            this.globalData.userRole = 'student';
+      this.globalData.userRole = 'student';
     }
   },
-  
+
   async preloadData() {
     try {
       const result = await cloudUtils.callCloudFunction({
@@ -89,35 +94,38 @@ App({
         this.globalData.hotBoxes = result.data;
       }
     } catch (err) {
-        },
-  
-    events: {},
-  
+      console.error('预加载数据失败:', err);
+    }
+  },
+
+  // 自定义事件系统
+  _eventHandlers: {},
+
   on(event, callback) {
-    if (!this.events[event]) {
-      this.events[event] = [];
+    if (!this._eventHandlers[event]) {
+      this._eventHandlers[event] = [];
     }
-    this.events[event].push(callback);
+    this._eventHandlers[event].push(callback);
   },
-  
+
   off(event, callback) {
-    if (this.events[event]) {
-      this.events[event] = this.events[event].filter(cb => cb !== callback);
+    if (this._eventHandlers[event]) {
+      this._eventHandlers[event] = this._eventHandlers[event].filter(cb => cb !== callback);
     }
   },
-  
-  triggerEvent(event, data) {
-    if (this.events[event]) {
-      this.events[event].forEach(callback => {
+
+  emit(event, data) {
+    if (this._eventHandlers[event]) {
+      this._eventHandlers[event].forEach(callback => {
         try {
           callback(data);
         } catch (error) {
-          console.error('浜嬩欢鍥炶皟閿欒:', error);
+          console.error('事件回调错误:', error);
         }
       });
     }
   },
-  
+
   globalData: {
     userInfo: null,
     userRole: 'student',
@@ -128,4 +136,3 @@ App({
     blindBoxCoins: 0
   }
 });
-

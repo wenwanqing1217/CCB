@@ -1,4 +1,5 @@
 // 武汉生物工程学院（武生院）宿舍与学院数据
+const placeholders = require('../placeholders.js');
 
 const ALL_DORMS = [
   '新柏居', '松柏居', '新松居', '东四舍', '东五舍', '翠微居南楼', '翠微居北楼', '东八舍',
@@ -141,7 +142,7 @@ function getDemoHotBoxes() {
     _id: String(i + 1),
     title: titles[i],
     price: prices[i],
-    images: [`https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=blind%20box%20${i}&image_size=square`],
+    images: [placeholders.DEFAULT_IMAGE],
     fromDorm: from,
     toDorm: to,
     stock: 30,

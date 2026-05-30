@@ -17,7 +17,7 @@
     <view wx:for="{{messages}}" wx:key="index" id="msg-{{index}}" class="message-item {{item.type === 'user' ? 'user-message' : 'ai-message'}}">
       <view class="message-avatar ai-avatar-icon" wx:if="{{item.type === 'ai'}}">艾</view>
       <view class="message-avatar user-avatar" wx:if="{{item.type === 'user'}}">
-        <image src="{{userInfo.avatarUrl || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%20icon%20simple%20style&image_size=square'}}" mode="aspectFill" />
+        <image src="{{userInfo.avatarUrl || defaultAvatar}}" mode="aspectFill" />
       </view>
       <view class="message-content">
         <view class="message-bubble">

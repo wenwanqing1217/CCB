@@ -169,7 +169,7 @@
         <view class="scroll-content">
           <view class="box-card interactive-card interactive-btn" wx:for="{{hotBoxes}}" wx:key="_id" bindtap="navigateToBoxDetail" data-id="{{item._id}}">
             <view class="card-image-wrap">
-              <image class="card-image lazy-image-{{index}}" src="{{item.lazyLoaded ? item.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=blind%20box%20package%20with%20mystery%20items&image_size=square'}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}" />
+              <image class="card-image lazy-image-{{index}}" src="{{item.lazyLoaded ? item.images[0] : defaultImage}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}" />
               <view class="card-price">¥{{item.price}}</view>
             </view>
             <view class="card-info">
@@ -192,7 +192,7 @@
       <view class="community-feed">
         <view class="feed-card interactive-card interactive-btn" wx:for="{{communityFeed}}" wx:key="_id" bindtap="navigateToFeedDetail" data-type="{{item.type}}" data-id="{{item._id}}">
           <view class="feed-card-header">
-            <image class="feed-avatar lazy-avatar-{{index}}" src="{{item.avatarLoaded ? item.userAvatar : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%20icon%20simple%20style&image_size=square'}}" binderror="onAvatarError" data-index="{{index}}" />
+            <image class="feed-avatar lazy-avatar-{{index}}" src="{{item.avatarLoaded ? item.userAvatar : defaultAvatar}}" binderror="onAvatarError" data-index="{{index}}" />
             <view class="feed-user-info">
               <text class="feed-name">{{item.userName}}</text>
               <text class="feed-time">{{item.time}}</text>
@@ -206,7 +206,7 @@
               <text class="feed-action">{{item.action}}</text>
               <text class="feed-desc">{{item.description}}</text>
             </view>
-            <image class="feed-image lazy-feed-{{index}}" src="{{item.imageLoaded ? item.image : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=campus%20life%20activity%20photo&image_size=landscape_4_3'}}" mode="aspectFill" binderror="onFeedImageError" data-index="{{index}}" />
+            <image class="feed-image lazy-feed-{{index}}" src="{{item.imageLoaded ? item.image : defaultImage}}" mode="aspectFill" binderror="onFeedImageError" data-index="{{index}}" />
           </view>
         </view>
       </view>

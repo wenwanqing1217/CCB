@@ -65,3 +65,10 @@ temp/
 
 # 云函数依赖锁定文件
 cloudfunctions/*/package-lock.json
+ 
+# AI工具 
+.atomcode/ 
+ 
+# 用户目录（防止HOME环境变量目录被跟踪） 
+/Users/
+%HOME%/ 

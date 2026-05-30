@@ -28,7 +28,7 @@
       <image class="product-img" src="{{item.images[0]}}" mode="aspectFill" />
       <view class="product-info">
         <text class="product-title">{{item.title}}</text>
-        <text class="product-location">{{item.from_dorm}} → {{item.to_dorm}}</text>
+        <text class="product-location">{{item.campus || item.from_dorm || ''}}{{item.building ? ' · ' + item.building : ''}}</text>
         <view class="product-bottom">
           <text class="product-price">¥{{item.price}}</text>
           <text class="product-sales">{{item.sales}}人购买</text>
