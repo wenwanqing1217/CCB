@@ -90,8 +90,8 @@ App({
         useCache: true,
         cacheKey: 'hotBoxes'
       });
-      if (result && result.data) {
-        this.globalData.hotBoxes = result.data;
+      if (result && result.boxes) {
+        this.globalData.hotBoxes = result.boxes;
       }
     } catch (err) {
       console.error('预加载数据失败:', err);
