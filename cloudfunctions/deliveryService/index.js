@@ -157,12 +157,16 @@ async function handleGetRiderOrders(data) {
     .limit(limit)
     .get();
 
-  const deliveriesWithOrder = await Promise.all(
-    deliveries.data.map(async (delivery) => {
-      const order = await ordersCollection.doc(delivery.orderId).get();
-      return { ...delivery, order: order.data };
-    })
-  );
+  const orderIds = deliveries.data.map(d => d.orderId);
+  const ordersResult = orderIds.length > 0
+    ? await ordersCollection.where({ _id: _.in(orderIds) }).get()
+    : { data: [] };
+  const orderMap = new Map(ordersResult.data.map(o => [o._id, o]));
+
+  const deliveriesWithOrder = deliveries.data.map(delivery => ({
+    ...delivery,
+    order: orderMap.get(delivery.orderId) || null
+  }));
 
   return { success: true, deliveries: deliveriesWithOrder, total: total.total, page, limit };
 }
@@ -652,34 +656,45 @@ async function handleGetActiveDeliveries(data) {
       .orderBy('createdAt', 'desc')
       .get();
     
-    const deliveriesWithOrder = await Promise.all(
-      deliveries.data.map(async delivery => {
-        const order = await ordersCollection.doc(delivery.orderId).get();
-        const rider = await ridersCollection.where({ openid: delivery.riderOpenid }).get();
-        
-        const now = new Date();
-        const updateTime = new Date(delivery.updatedAt || delivery.createdAt);
-        const diffMinutes = Math.floor((now - updateTime) / (1000 * 60));
-        
-        let updateText = '鍒氬垰';
-        if (diffMinutes < 60) {
-          updateText = `${diffMinutes}鍒嗛挓鍓峘`;
-        } else if (diffMinutes < 1440) {
-          updateText = `${Math.floor(diffMinutes / 60)}灏忔椂鍓峘`;
-        } else {
-          updateText = `${Math.floor(diffMinutes / 1440)}澶╁墠`;
-        }
-        
-        return {
-          ...delivery,
-          order: order.data,
-          riderInfo: rider.data[0] || {},
-          updateTime: updateText,
-          progress: delivery.status === 'pending' ? 10 : delivery.status === 'picked' ? 30 : 60,
-          estimatedTime: delivery.status === 'pending' ? '绾?0鍒嗛挓' : '绾?0鍒嗛挓'
-        };
-      })
-    );
+    // 批量查询订单和骑手，消除 N+1
+    const orderIds = deliveries.data.map(d => d.orderId);
+    const riderOpenids = deliveries.data.map(d => d.riderOpenid).filter(Boolean);
+    
+    const [ordersResult, ridersResult] = await Promise.all([
+      orderIds.length > 0
+        ? ordersCollection.where({ _id: _.in(orderIds) }).get()
+        : Promise.resolve({ data: [] }),
+      riderOpenids.length > 0
+        ? ridersCollection.where({ openid: _.in(riderOpenids) }).get()
+        : Promise.resolve({ data: [] })
+    ]);
+    
+    const orderMap = new Map(ordersResult.data.map(o => [o._id, o]));
+    const riderMap = new Map(ridersResult.data.map(r => [r.openid, r]));
+
+    const deliveriesWithOrder = deliveries.data.map(delivery => {
+      const now = new Date();
+      const updateTime = new Date(delivery.updatedAt || delivery.createdAt);
+      const diffMinutes = Math.floor((now - updateTime) / (1000 * 60));
+      
+      let updateText = '刚刚';
+      if (diffMinutes < 60) {
+        updateText = `${diffMinutes}分钟前`;
+      } else if (diffMinutes < 1440) {
+        updateText = `${Math.floor(diffMinutes / 60)}小时前`;
+      } else {
+        updateText = `${Math.floor(diffMinutes / 1440)}天前`;
+      }
+      
+      return {
+        ...delivery,
+        order: orderMap.get(delivery.orderId) || null,
+        riderInfo: riderMap.get(delivery.riderOpenid) || {},
+        updateTime: updateText,
+        progress: delivery.status === 'pending' ? 10 : delivery.status === 'picked' ? 30 : 60,
+        estimatedTime: delivery.status === 'pending' ? '约30分钟' : '约20分钟'
+      };
+    });
     
     return { success: true, data: deliveriesWithOrder };
   } catch (error) {

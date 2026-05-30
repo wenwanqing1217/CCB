@@ -116,10 +116,26 @@ function getProfileVector(profile) {
 }
 
 async function getHotBoxes(count) {
-  return (await db.collection('boxes')
-    .orderBy('viewCount', 'desc')
-    .limit(count)
-    .get()).data.map(box => ({ ...box, score: 0.5 }));
+  const boxes = await db.collection('boxes')
+    .where({ status: 'available', isDeleted: false })
+    .get();
+
+  if (boxes.data.length === 0) return [];
+
+  const now = Date.now();
+  const maxView = Math.max(...boxes.data.map(b => b.viewCount || 0), 1);
+  const maxSales = Math.max(...boxes.data.map(b => b.sales || 0), 1);
+
+  const scored = boxes.data.map(box => {
+    const viewRatio = (box.viewCount || 0) / maxView;
+    const salesRatio = (box.sales || 0) / maxSales * 2;
+    const ageHours = (now - new Date(box.createdAt || now).getTime()) / 3600000;
+    const timeBonus = Math.max(0, 1 - ageHours / 48) * 0.3;
+    return { ...box, score: 0.5 + viewRatio + salesRatio + timeBonus };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, count);
 }
 
 async function getCollaborativeRecommendations(userId, count) {

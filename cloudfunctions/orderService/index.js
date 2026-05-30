@@ -13,7 +13,7 @@ const db = cloud.database();
 const ordersCollection = db.collection('orders');
 
 const boxesCollection = db.collection('boxes');
-
+const _ = db.command;
 
 exports.main = async (event, context) => {
   const { action, data } = event;
@@ -54,15 +54,28 @@ async function handleCreateOrder(data) {
     return { success: false, message: validationError };
   }
 
+  if (buyerOpenid === sellerOpenid) {
+    return { success: false, message: '不能购买自己的盲盒' };
+  }
+
   try {
-    const box = await boxesCollection.doc(boxId).get();
-    if (!box.data || box.data.status !== 'available') {
-      return { success: false, message: '鐩茬洅涓嶅瓨鍦ㄦ垨宸茶璐拱' };
+    // 原子操作：先锁定盲盒状态，防止并发超卖
+    const updateResult = await boxesCollection.where({
+      _id: boxId,
+      status: 'available'
+    }).update({
+      data: {
+        status: 'sold',
+        updatedAt: new Date()
+      }
+    });
+
+    if (updateResult.stats.updated === 0) {
+      return { success: false, message: '盲盒不存在或已被购买' };
     }
 
-    if (buyerOpenid === sellerOpenid) {
-      return { success: false, message: '涓嶈兘璐拱鑷繁鐨勭洸鐩' };
-    }
+    // 锁定成功后获取盲盒详情
+    const box = await boxesCollection.doc(boxId).get();
 
     const newOrder = {
       boxId,
@@ -80,13 +93,6 @@ async function handleCreateOrder(data) {
 
     const result = await ordersCollection.add(newOrder);
 
-    await boxesCollection.doc(boxId).update({
-      data: {
-        status: 'sold',
-        updatedAt: new Date()
-      }
-    });
-
     return {
       success: true,
       order: {
@@ -95,8 +101,8 @@ async function handleCreateOrder(data) {
       }
     };
   } catch (error) {
-    console.error('鍒涘缓璁㈠崟澶辫触:', error);
-    return { success: false, message: '鍒涘缓璁㈠崟澶辫触' };
+    console.error('创建订单失败:', error);
+    return { success: false, message: '创建订单失败' };
   }
 }
 

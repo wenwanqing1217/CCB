@@ -442,12 +442,34 @@ async function getHotRecommendations(data) {
 
   const boxes = await db.collection('boxes')
     .where({ isDeleted: false, status: 'available' })
-    .orderBy('sales', 'desc')
-    .limit(limit)
     .get();
+
+  if (boxes.data.length === 0) {
+    return { success: true, data: [] };
+  }
+
+  // 计算热榜分数：混合销量、浏览量和时间衰减
+  const now = Date.now();
+  const maxView = Math.max(...boxes.data.map(b => b.viewCount || 0), 1);
+  const maxSales = Math.max(...boxes.data.map(b => b.sales || 0), 1);
+
+  const scored = boxes.data.map(box => {
+    const viewRatio = (box.viewCount || 0) / maxView;
+    const salesRatio = (box.sales || 0) / maxSales * 2; // 销量权重更高
+    // 24h 内新发布的有额外加分
+    const ageHours = (now - new Date(box.createdAt || now).getTime()) / 3600000;
+    const timeBonus = Math.max(0, 1 - ageHours / 48) * 0.3;
+
+    return {
+      ...box,
+      trendingScore: viewRatio + salesRatio + timeBonus
+    };
+  });
+
+  scored.sort((a, b) => b.trendingScore - a.trendingScore);
 
   return {
     success: true,
-    data: boxes.data
+    data: scored.slice(0, limit)
   };
 }
