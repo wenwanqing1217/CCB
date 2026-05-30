@@ -1,5 +1,5 @@
-// 云函数入口文件
 const cloud = require('wx-server-sdk');
+const _ = cloud.database().command;
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
@@ -11,48 +11,32 @@ const db = cloud.database();
 exports.main = async (event, context) => {
   try {
     const openid = cloud.getWXContext().OPENID;
-    
-    // 获取总销量
-    const totalSales = await db.collection('orders')
+
+    // 获取已完成订单总数和总收入（price 已在订单中，无需再查盲盒表）
+    const completedOrders = await db.collection('orders')
       .where({
-        seller_id: openid,
-        delivery_status: 'completed'
-      })
-      .count()
-      .then(res => res.total);
-    
-    // 获取总收入
-    const orders = await db.collection('orders')
-      .where({
-        seller_id: openid,
-        delivery_status: 'completed'
+        sellerOpenid: openid,
+        status: 'completed'
       })
       .get()
       .then(res => res.data);
-    
-    let totalIncome = 0;
-    for (const order of orders) {
-      const box = await db.collection('boxes')
-        .doc(order.box_id)
-        .get()
-        .then(res => res.data);
-      if (box) {
-        totalIncome += box.price || 0;
-      }
-    }
-    
+
+    const totalSales = completedOrders.length;
+    const totalIncome = completedOrders.reduce((sum, o) => sum + (o.price || 0), 0);
+
     // 获取在售盲盒数量
     const activeBoxes = await db.collection('boxes')
       .where({
         _openid: openid,
-        status: 'active'
+        status: 'available'
       })
-      .count();
+      .count()
+      .then(res => res.total);
 
     return {
       totalSales,
       totalIncome,
-      activeBoxes: activeBoxes.total
+      activeBoxes
     };
   } catch (error) {
     console.error('Failed to get merchant stats:', error);

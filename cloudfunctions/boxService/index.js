@@ -112,22 +112,21 @@ function validatePublishInput({ title, price, openid, images }) {
 
 async function handleList(data) {
   const { page = 1, limit = 10, type, campus } = data;
-  
+
   try {
-    let query = boxesCollection.where({ status: 'available' });
-    
-    if (type) {
-      query = query.where({ type });
-    }
-    
-    if (campus) {
-      query = query.where({ campus });
-    }
-    
+    // 合并条件：链式 where() 会覆盖，必须用 and()
+    const conditions = [{ status: 'available' }];
+    if (type) conditions.push({ type });
+    if (campus) conditions.push({ campus });
+
+    const query = boxesCollection.where(_.and(conditions));
     const total = await query.count();
-    
+
     const boxes = await query
-      .orderBy('createdAt', 'desc')        .skip((page - 1) * limit)            .limit(limit)                        .get();
+      .orderBy('createdAt', 'desc')
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .get();
     
     return {
       success: true,
@@ -234,4 +233,3 @@ async function handleHome(data) {
     };
   }
 }
-

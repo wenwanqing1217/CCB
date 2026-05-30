@@ -135,6 +135,14 @@ async function verifyPayment(data) {
     return { success: false, message: '参数错误' };
   }
   
+  // 验证时间戳时效性（防止重放攻击，5分钟内有效）
+  const now = Date.now();
+  const ts = Number(timestamp);
+  if (!ts || now - ts > 5 * 60 * 1000 || ts > now + 30 * 1000) {
+    await logSecurityEvent('system', 'replay_attack', { orderId, timestamp, reason: '时间戳无效或已过期' });
+    return { success: false, message: '请求已过期，请重试' };
+  }
+  
   // 查询订单信息
   const order = await db.collection('orders').doc(orderId).get();
   
