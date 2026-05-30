@@ -38,7 +38,7 @@ async function deductStock({ boxId, quantity = 1 }, openid) {
     return { success: false, error: '库存不足', currentStock: stock };
   }
 
-  const updateResult = await db.collection('boxes').doc(boxId).where({
+  const updateResult = await db.collection('boxes').where({
     _id: boxId,
     stock: _.gte(quantity)
   }).update({
