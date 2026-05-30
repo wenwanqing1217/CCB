@@ -51,8 +51,7 @@ exports.main = async (event, context) => {
     const { filter } = event;
     
     let query = db.collection('orders').where({
-      status: 'pending',
-      isDeleted: false
+      status: 'pending'
     });
     
     if (filter && filter !== 'all') {
