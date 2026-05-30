@@ -1,4 +1,4 @@
-﻿# Campus BlindBox 鈥?Instant Delivery Platform
+# Campus BlindBox — Instant Delivery Platform
 
 > A campus-focused C2C & B2C blind-box trading and instant delivery system built on WeChat Mini Program and Tencent CloudBase.
 > Designed for college students to trade idle items, discover surprises, and get deliveries within minutes.
@@ -7,7 +7,7 @@
 
 [![WeChat](https://img.shields.io/badge/Platform-WeChat-07C160)](https://developers.weixin.qq.com/miniprogram/dev/framework/)
 [![CloudBase](https://img.shields.io/badge/Backend-CloudBase-0052D9)](https://cloud.tencent.com/product/tcb)
-[![Node](https://img.shields.io/badge/Node.js-16%2B-339933)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node.js-16+-339933)](https://nodejs.org/)
 [![Tests](https://img.shields.io/badge/Tests-44%20passed-brightgreen)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](#license)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
@@ -17,131 +17,168 @@
 
 ---
 
-## 馃搵 Overview
+## 📸 Screenshots
+
+<!-- 
+  TODO: 替换为真实截图链接
+  建议用微信开发者工具截取以下页面：
+  1. 首页推荐流（pages/index/index）
+  2. 盲盒广场（pages/square/square）  
+  3. 配送地图（pages/delivery/delivery）
+  4. 管理后台（pages/admin/admin）
+-->
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="docs/screenshots/home.png" width="200" alt="首页" /></td>
+      <td><img src="docs/screenshots/square.png" width="200" alt="盲盒广场" /></td>
+      <td><img src="docs/screenshots/delivery.png" width="200" alt="配送地图" /></td>
+      <td><img src="docs/screenshots/admin.png" width="200" alt="管理后台" /></td>
+    </tr>
+    <tr align="center">
+      <td>🏠 首页推荐</td>
+      <td>🎁 盲盒广场</td>
+      <td>🚴 配送追踪</td>
+      <td>📊 后台管理</td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 📖 Overview
 
 Campus BlindBox is a full-stack mini-program that combines **blind-box trading**, **real-time delivery**, and **social interaction** into one platform. It supports both peer-to-peer (C2C) idle-item trading and verified merchant storefronts (B2C), with a rider network enabling on-demand campus delivery.
 
 | Mode | Description | Example |
-|------|-------------|--------|
+|------|-------------|---------|
 | **C2C** | Students sell idle items as mystery boxes | Used books, electronics, dorm essentials |
 | **B2C** | Verified campus merchants operate storefronts | Tea shops, stationery stores, fruit shops |
 
 ---
 
-## 鉁?Features
+## ✨ Features
 
-### 馃巵 Blind-Box Trading
+### 🎁 Blind-Box Trading
 - Publish idle items as blind boxes with titles, images, and pricing
 - Category browsing, keyword search, and multi-condition filtering
 - **Hybrid recommendation engine** (UCF + ICF + SVD) for personalized discovery
 
-### 馃殮 Real-Time Delivery
+### 🚴 Real-Time Delivery
 - Rider grab-order mechanism with **atomic concurrency control** (prevents double-grab)
-- **Route matching algorithm** 鈥?Haversine distance + greedy selection + 2-opt local search
+- **Route matching algorithm** — Haversine distance + greedy selection + 2-opt local search
 - Real-time rider GPS tracking with estimated arrival time
 - Cluster-based cold-start recommendation (DBSCAN)
 
-### 馃挰 Community & Social
+### 💬 Community & Social
 - Social feed for sharing box unboxings and campus life
 - Real-time messaging / chat
 - Points & love score system
 
-### 馃 AI Assistant
-- Integrated with Doubao (璞嗗寘) LLM API for intelligent Q&A
+### 🤖 AI Assistant
+- Integrated with Doubao LLM API for intelligent Q&A
 - Context-aware chat with action routing (users can jump to orders, publishing, etc.)
 - Prompt template management for different scenarios (customer service, recommendation, polish)
 
-### 馃洝锔?Admin & Operations
+### 🔧 Admin & Operations
 - Full admin dashboard with charts, delivery monitoring, rider/order management
 - RBAC permission system: user / merchant / rider / admin
 - Performance monitoring (FPS, memory, API latency)
 
 ---
 
-## 馃彈锔?Architecture
+## 🏗️ Architecture
 
 ```
 campus-blindbox/
-鈹溾攢鈹€ miniprogram/              # WeChat Mini Program frontend
-鈹?  鈹溾攢鈹€ pages/                # 58 pages (index, trading, delivery, profile...)
-鈹?  鈹溾攢鈹€ components/           # Reusable components (virtual-list, skeleton, lazy-image)
-鈹?  鈹溾攢鈹€ custom-tab-bar/       # Custom tab bar with dark theme
-鈹?  鈹斺攢鈹€ utils/                # Utilities (auth, config, cache, store, logging...)
-鈹溾攢鈹€ cloudfunctions/           # Tencent CloudBase cloud functions (backend)
-鈹?  鈹溾攢鈹€ boxService/           # Blind-box CRUD, listing, search
-鈹?  鈹溾攢鈹€ orderService/         # Order lifecycle, status machine
-鈹?  鈹溾攢鈹€ deliveryService/      # Grab-order, route matching, rider tracking
-鈹?  鈹溾攢鈹€ userService/          # Login, profile, RBAC roles
-鈹?  鈹溾攢鈹€ recommendationService/# Content-based + collaborative filtering
-鈹?  鈹溾攢鈹€ aiService/            # LLM integration (Doubao API)
-鈹?  鈹溾攢鈹€ hybridRecommendation/ # Hybrid recommendation engine
-鈹?  鈹溾攢鈹€ securityService/      # Security & abuse prevention
-鈹?  鈹溾攢鈹€ notificationService/  # Push notifications
-鈹?  鈹溾攢鈹€ pushService/          # WebSocket / real-time push
-鈹?  鈹溾攢鈹€ coinService/          # Virtual coin system
-鈹?  鈹溾攢鈹€ socialService/        # Social feed & interactions
-鈹?  鈹斺攢鈹€ ... (60+ functions)
-鈹溾攢鈹€ services/                 # Microservice architecture (Spring Boot / Go / Python)
-鈹溾攢鈹€ tests/                    # Test suite (Python pytest + Jest)
-鈹溾攢鈹€ docs/                     # Design docs, API docs, interview prep
-鈹斺攢鈹€ docker-compose.yml        # Local dev environment (MySQL, Redis, RocketMQ)
+├── miniprogram/              # WeChat Mini Program frontend
+│   ├── pages/                # 58 pages (index, trading, delivery, profile...)
+│   ├── components/           # Reusable components (virtual-list, skeleton, lazy-image)
+│   ├── custom-tab-bar/       # Custom tab bar with dark theme
+│   └── utils/                # Utilities (auth, config, cache, store, logging...)
+├── cloudfunctions/           # Tencent CloudBase cloud functions (backend)
+│   ├── boxService/           # Blind-box CRUD, listing, search
+│   ├── orderService/         # Order lifecycle, status machine
+│   ├── deliveryService/      # Grab-order, route matching, rider tracking
+│   ├── userService/          # Login, profile, RBAC roles
+│   ├── recommendationService/# Content-based + collaborative filtering
+│   ├── aiService/            # LLM integration (Doubao API)
+│   ├── hybridRecommendation/ # Hybrid recommendation engine
+│   ├── securityService/      # Security & abuse prevention
+│   ├── notificationService/  # Push notifications
+│   ├── pushService/          # WebSocket / real-time push
+│   ├── coinService/          # Virtual coin system
+│   ├── socialService/        # Social feed & interactions
+│   └── ... (60+ functions)
+├── services/                 # Microservice architecture (Spring Boot / Go / Python)
+├── tests/                    # Test suite (Python pytest + Jest)
+├── docs/                     # Design docs, API docs, interview prep
+└── docker-compose.yml        # Local dev environment (MySQL, Redis, RocketMQ)
 ```
 
-### 馃搻 Design Layers
+### 📐 Design Layers
 
 ```
-鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?           WeChat Mini Program           鈹? 鈫?Frontend (WXML + WXSS + JS)
-鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?      CloudBase Cloud Functions          鈹? 鈫?Backend (Node.js 16+)
-鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?        Database & Storage               鈹? 鈫?TencentDB, Cloud Storage, Redis
-鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?      Monitoring & Observability         鈹? 鈫?Prometheus + Grafana
-鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
+┌─────────────────────────────────────┐
+│         WeChat Mini Program         │  ← Frontend (WXML + WXSS + JS)
+├─────────────────────────────────────┤
+│      CloudBase Cloud Functions      │  ← Backend (Node.js 16+)
+├─────────────────────────────────────┤
+│        Database & Storage           │  ← TencentDB, Cloud Storage, Redis
+├─────────────────────────────────────┤
+│     Monitoring & Observability      │  ← Prometheus + Grafana
+└─────────────────────────────────────┘
+```
 
 ---
 
-## 馃 Core Algorithms
+## 🧠 Core Algorithms
 
-### 1. Hybrid Recommendation (recommendationService)
+### 1. Hybrid Recommendation
 
 Combines **three strategies** with weighted fusion:
 
 | Strategy | Weight | Description |
 |----------|--------|-------------|
-| **User-based CF (UCF)** | 0.3 | Build user-item rating matrix 鈫?cosine similarity 鈫?find similar users |
-| **Item-based CF (ICF)** | 0.3 | Item feature vectors (one-hot categories, price buckets, sales, rating) 鈫?cosine similarity |
-| **SVD Matrix Factorization** | 0.4 | SGD-based decomposition into k=5 latent vectors 鈫?predict ratings |
+| **User-based CF (UCF)** | 0.3 | Build user-item rating matrix → cosine similarity → find similar users |
+| **Item-based CF (ICF)** | 0.3 | Item feature vectors (one-hot categories, price buckets, sales, rating) → cosine similarity |
+| **SVD Matrix Factorization** | 0.4 | SGD-based decomposition into k=5 latent vectors → predict ratings |
 
 ```
-final_score = 0.3 脳 UCF_score + 0.3 脳 ICF_score + 0.4 脳 SVD_score
+final_score = 0.3 × UCF_score + 0.3 × ICF_score + 0.4 × SVD_score
 ```
-Complexity: O(U 脳 I) for UCF, where U = users, I = items.
+
 Cold-start fallback: returns trending boxes for new users.
 
-### 2. Route Matching (deliveryService)
+### 2. Route Matching
 
 Multi-factor dynamic scoring + greedy optimization:
 
 ```
-raw_score = 0.45 脳 distance_score + 0.25 脳 time_urgency + 0.15 脳 route_quality + 0.15 脳 load_factor
+raw_score = 0.45 × distance_score + 0.25 × time_urgency + 0.15 × route_quality + 0.15 × load_factor
 ```
 
 - **distance_score**: Detour ratio via Haversine formula
 - **time_urgency**: Escalates as wait time increases
 - **route_quality**: Time-aware (peak 0.6 / late-night 0.95)
 - **load_factor**: Rider load inversely affects willingness
-- **Joint optimization**: Greedy Top-K selection 鈫?2-opt local search 鈫?random perturbation
-- **Cold-start**: DBSCAN clustering by geolocation 鈫?cluster-aware recommendation
+- **Joint optimization**: Greedy Top-K selection → 2-opt local search → random perturbation
+- **Cold-start**: DBSCAN clustering by geolocation → cluster-aware recommendation
 
 ### 3. Order State Machine
 
 ```
-pending 鈫?grabbed 鈫?delivering 鈫?completed
-   鈫?         鈫?          鈫? cancelled  cancelled  cancelled
+pending → grabbed → delivering → completed
+   ↓          ↓          ↓
+ cancelled  cancelled  cancelled
 ```
-Atomic updates prevent race conditions during grab-order (see tests/test_concurrent).
+
+Atomic updates prevent race conditions during grab-order (see tests/concurrent).
 
 ---
 
-## 馃И Testing & Quality
+## 🧪 Testing & Quality
 
 | Suite | Framework | Scope |
 |-------|-----------|-------|
@@ -151,13 +188,13 @@ Atomic updates prevent race conditions during grab-order (see tests/test_concurr
 | AI evaluation | Python | Response quality, multi-turn, performance benchmark |
 | Linting | ESLint + Prettier | Code style enforcement via Husky pre-commit hooks |
 
-- 50+ test cases covering core business scenarios
+- 44+ test cases covering core business scenarios
 - Concurrent grab-order test validates anti-over-sell mechanism
 - AI evaluator generates structured assessment reports
 
 ---
 
-## 鈿?Performance Optimizations
+## ⚡ Performance Optimizations
 
 - **Virtual list rendering** for large data sets
 - **Image lazy loading** with smart preload strategy
@@ -167,7 +204,7 @@ Atomic updates prevent race conditions during grab-order (see tests/test_concurr
 
 ---
 
-## 馃洜锔?Tech Stack
+## 🛠️ Tech Stack
 
 | Area | Technology |
 |------|-----------|
@@ -181,7 +218,7 @@ Atomic updates prevent race conditions during grab-order (see tests/test_concurr
 
 ---
 
-## 馃摝 Quick Start
+## 📝 Quick Start
 
 ### Prerequisites
 - WeChat DevTools ([download](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html))
@@ -203,7 +240,7 @@ npm install
 # Import the project root, configure your AppID in project.config.json
 
 # 4. Deploy cloud functions
-# Right-click cloudfunctions/ in WeChat DevTools 鈫?Upload & Deploy
+# Right-click cloudfunctions/ in WeChat DevTools → Upload & Deploy
 
 # 5. (Optional) Start local dev environment
 docker-compose up -d
@@ -211,28 +248,26 @@ docker-compose up -d
 
 ---
 
-## 馃搧 Docs
+## 📑 Docs
 
 | Document | Description |
 |----------|-------------|
-| [Architecture Design](docs/鍒嗗眰鏋舵瀯璁捐.md) | Layered architecture & design decisions |
-| [API Reference](docs/鎺ュ彛鏂囨。.md) | Complete API documentation |
-| [Algorithm Details](docs/椤圭洰鎬昏.md) | Recommendation & route matching deep-dive |
-| [Test Cases](docs/娴嬭瘯鐢ㄤ緥.md) | 50+ test scenarios |
-| [Cache Strategy](docs/缂撳瓨灞傝璁?md) | Redis caching & LRU eviction |
-| [Microservice Design](docs/鏋舵瀯鍗囩骇璁捐.md) | Migration from monolith to microservices |
+| [Architecture Design](docs/分层架构设计.md) | Layered architecture & design decisions |
+| [API Reference](docs/接口文档.md) | Complete API documentation |
+| [Algorithm Details](docs/项目总结.md) | Recommendation & route matching deep-dive |
+| [Test Cases](docs/测试用例.md) | 44+ test scenarios |
+| [Cache Strategy](docs/缓存层设计.md) | Redis caching & LRU eviction |
+| [Microservice Design](docs/架构升级设计.md) | Migration from monolith to microservices |
 
 ---
 
----
-
-## 馃鈥嶐煉?Personal Contributions
+## 👤 Personal Contributions
 
 > This project demonstrates full-stack development skills with a focus on backend architecture, algorithm design, and engineering practices.
 
 | Area | Contributions |
 |------|--------------|
-| **Backend Architecture** | Designed 54 cloud functions with layered architecture (controller -> service -> data access). Implemented centralized error handling system with 7-module error codes. |
+| **Backend Architecture** | Designed 54 cloud functions with layered architecture (controller → service → data access). Implemented centralized error handling system with 7-module error codes. |
 | **Recommendation Engine** | Built hybrid recommendation system combining UCF (cosine similarity), ICF, and SVD matrix factorization with weighted fusion (0.3/0.3/0.4). |
 | **Concurrency Control** | Implemented atomic order-grabbing using `where + update` pattern to prevent overselling. Validated with 100-rider concurrent stress test. |
 | **Route Optimization** | Developed multi-factor delivery matching: Haversine distance + greedy Top-K + 2-opt local search + DBSCAN cold-start clustering. |
@@ -242,7 +277,7 @@ docker-compose up -d
 
 ---
 
-## 馃幆 Technical Challenges & Solutions
+## 🔥 Technical Challenges & Solutions
 
 ### Challenge 1: Preventing Order Overselling During Peak Hours
 **Problem**: Multiple riders could grab the same order simultaneously, causing overselling.
@@ -254,16 +289,16 @@ docker-compose up -d
 **Solution**: Implemented DBSCAN clustering for rider cold-start (by geolocation) and trending-box fallback for user cold-start. Hybrid approach ensures every user gets recommendations from day one.
 
 ### Challenge 3: Real-Time Rider-Order Matching at Scale
-**Problem**: Scoring all rider-order pairs is O(R*O), impractical with many riders.
+**Problem**: Scoring all rider-order pairs is O(R×O), impractical with many riders.
 **Solution**: Greedy Top-K selection reduces candidates, then 2-opt local search refines the match. Haversine distance + time urgency + route quality + load factor scoring.
 
 ### Challenge 4: Migrating from Monolith to Microservices
 **Problem**: Initial cloud function architecture was monolithic and hard to maintain.
-**Solution**: Designed 6 microservices (user, box, order, delivery, recommendation, message) with Docker Compose, RocketMQ for async communication, ShardingSphere for data sharding. See [Microservice Design](docs/鏋舵瀯鍗囩骇璁捐.md).
+**Solution**: Designed 6 microservices (user, box, order, delivery, recommendation, message) with Docker Compose, RocketMQ for async communication, ShardingSphere for data sharding. See [Microservice Design](docs/架构升级设计.md).
 
 ---
 
-## 馃搳 Project Stats
+## 📊 Project Stats
 
 | Metric | Value |
 |--------|-------|
@@ -275,11 +310,10 @@ docker-compose up -d
 | Algorithms | Collaborative filtering, SVD, DBSCAN, 2-opt, Haversine |
 | Services | 6 microservices (Spring Boot / Go / Python) |
 
-## 馃搫 License
+## 📄 License
 
-MIT License 鈥?feel free to use, modify, and share.
+MIT License — feel free to use, modify, and share.
 
 ---
 
-*Built with 鉂わ笍 for campus communities.*
-
+*Built with ❤️ for campus communities.*
