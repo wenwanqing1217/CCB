@@ -28,11 +28,11 @@ exports.main = async (event, context) => {
       case 'submitCertification':
         return await handleSubmitCertification(data);
       default:
-        return { success: false, message: '鏈煡鎿嶄綔: ' + action };
+        return { success: false, message: '未知操作: ' + action };
     }
   } catch (error) {
-    console.error('鐢ㄦ埛鏈嶅姟浜戝嚱鏁版墽琛岄敊璇?', error);
-    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇? ' + error.message };
+    console.error('用户服务云函数执行错误', error);
+    return { success: false, message: '服务器错误: ' + error.message };
   }
 };
 
@@ -70,7 +70,17 @@ async function handleLogin(data) {
       };
     } else {
       const newUser = {
-        openid,                                          nickName: userInfo.nickName,                     avatarUrl: userInfo.avatarUrl,                   role: 'student',                                 campusInfo: { college: '', dorm: '' },           blindBoxCoins: 10,                               lovePoints: 0,                                   verifyStatus: 'unverified',                      createdAt: new Date(),                           updatedAt: new Date()                          };
+        openid,
+        nickName: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl,
+        role: 'student',
+        campusInfo: { college: '', dorm: '' },
+        blindBoxCoins: 10,
+        lovePoints: 0,
+        verifyStatus: 'unverified',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
       
       const result = await usersCollection.add(newUser);
       return {

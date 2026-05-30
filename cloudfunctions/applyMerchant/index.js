@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
 
     const existingApply = await db.collection('merchant_applies')
       .where({
-        _openid: openid,
+        openid: openid,
         status: db.command.in(['pending', 'approved'])
       })
       .get();
@@ -37,9 +37,9 @@ exports.main = async (event, context) => {
       idFront,
       idBack,
       status: 'pending',
-      applyTime: new Date(now).toLocaleString('zh-CN'),
-      createTime: now,
-      _openid: openid
+      openid: openid,
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
     if (merchantType === 'formal' && businessLicense) {

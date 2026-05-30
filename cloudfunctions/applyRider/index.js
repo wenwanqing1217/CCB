@@ -33,7 +33,7 @@ exports.main = async (event, context) => {
     // 检查是否已有待审核或已通过的申请
     const existingApply = await db.collection('riderApplies')
       .where({
-        _openid: openid,
+        openid: openid,
         status: _.in(['pending', 'approved'])
       })
       .get();
@@ -63,9 +63,9 @@ exports.main = async (event, context) => {
         idFront: idFront || '',
         idBack: idBack || '',
         status: 'pending',
-        _openid: openid,
-        createTime: db.serverDate(),
-        updateTime: db.serverDate()
+        openid: openid,
+        createdAt: db.serverDate(),
+        updatedAt: db.serverDate()
       }
     });
     

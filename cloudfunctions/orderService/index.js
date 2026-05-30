@@ -29,11 +29,11 @@ exports.main = async (event, context) => {
       case 'detail':
         return await handleOrderDetail(data);
       default:
-        return { success: false, message: '鏈煡鎿嶄綔: ' + action };
+        return { success: false, message: '未知操作: ' + action };
     }
   } catch (error) {
-    console.error('璁㈠崟鏈嶅姟浜戝嚱鏁版墽琛岄敊璇?', error);
-    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇? ' + error.message };
+    console.error('订单服务云函数执行错误', error);
+    return { success: false, message: '服务器错误: ' + error.message };
   }
 };
 
@@ -109,25 +109,25 @@ async function handleCreateOrder(data) {
 
 function validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, contact }) {
   if (!boxId || typeof boxId !== 'string') {
-    return '鐩茬洅淇℃伅鏃犳晥';
+    return '盲盒信息无效';
   }
   if (!buyerOpenid || typeof buyerOpenid !== 'string') {
-    return '涔板淇℃伅鏃犳晥';
+    return '买家信息无效';
   }
   if (!sellerOpenid || typeof sellerOpenid !== 'string') {
-    return '鍗栧淇℃伅鏃犳晥';
+    return '卖家信息无效';
   }
   if (!price || isNaN(Number(price)) || Number(price) < 0) {
-    return '浠锋牸鏃犳晥';
+    return '价格无效';
   }
   if (!address || typeof address !== 'object') {
-    return '閰嶉€佸湴鍧€鏃犳晥';
+    return '配送地址无效';
   }
   if (!contact || typeof contact !== 'object') {
-    return '鑱旂郴鏂瑰紡鏃犳晥';
+    return '联系方式无效';
   }
   if (!contact.phone && !contact.name) {
-    return '鑱旂郴鏂瑰紡涓嶅畬鏁';
+    return '联系方式不完整';
   }
   return null;
 }
@@ -139,7 +139,7 @@ async function handleUpdateStatus(data) {
   try {
     const order = await ordersCollection.doc(orderId).get();
     if (!order.data) {
-      return { success: false, message: '璁㈠崟涓嶅瓨鍦' };
+      return { success: false, message: '订单不存在' };
     }
     
     const oldOrder = order.data;
@@ -159,11 +159,11 @@ async function handleUpdateStatus(data) {
     
     return {
       success: true,
-      message: '璁㈠崟鐘舵€佹洿鏂版垚鍔'
+      message: '订单状态更新成功'
     };
   } catch (error) {
-    console.error('鏇存柊璁㈠崟鐘舵€佸け璐?', error);
-    return { success: false, message: '鏇存柊澶辫触: ' + error.message };
+    console.error('更新订单状态失败', error);
+    return { success: false, message: '更新失败: ' + error.message };
   }
 }
 

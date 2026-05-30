@@ -35,14 +35,14 @@ exports.main = async (event, context) => {
       case 'getDelivery': return await handleGetDelivery(data);
       case 'suspendRider': return await handleSuspendRider(data);
       case 'resumeRider': return await handleResumeRider(data);
-      default: return { success: false, message: '鏈煡鎿嶄綔' };
+      default: return { success: false, message: '未知操作' };
     }
   } catch (error) {
-    console.error('deliveryService 閿欒:', error);
+    console.error('deliveryService 错误:', error);
     if (error.code) {
       return error.toJSON ? error.toJSON() : { success: false, message: error.message };
     }
-    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇' };
+    return { success: false, message: '服务器错误' };
   }
 };
 
@@ -51,7 +51,7 @@ function validateGrabInput({ orderId, riderOpenid, riderInfo }) {
   Validators.isNonEmptyString(orderId, 'orderId');
   Validators.isOpenid(riderOpenid, 'riderOpenid');
   if (!riderInfo || typeof riderInfo !== 'object') {
-    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'riderInfo', message: '楠戞墜淇℃伅鏃犳晥' }]);
+    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'riderInfo', message: '骑手信息无效' }]);
   }
 }
 
@@ -108,7 +108,7 @@ async function handleGrabOrder(data) {
   };
   await deliveriesCollection.add({ data: newDelivery });
 
-  return { success: true, message: '鎶㈠崟鎴愬姛' };
+  return { success: true, message: '抢单成功' };
 }
 
 async function handleUpdateStatus(data) {
@@ -140,7 +140,7 @@ async function handleUpdateStatus(data) {
     data: { status, updatedAt: new Date() }
   });
 
-  return { success: true, message: '閰嶉€佺姸鎬佹洿鏂版垚鍔' };
+  return { success: true, message: '配送状态更新成功' };
 }
 
 async function handleGetRiderOrders(data) {
@@ -192,7 +192,7 @@ async function handleGetRecommendedOrders(data) {
 
   Validators.isOpenid(riderOpenid, 'riderOpenid');
   if (!location || !location.latitude || !location.longitude) {
-    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'location', message: '浣嶇疆淇℃伅鏃犳晥' }]);
+    throw bizError('SYSTEM.PARAM_INVALID', [{ field: 'location', message: '位置信息无效' }]);
   }
   Validators.isInRange(limit, 'limit', 1, 20);
 
@@ -234,7 +234,7 @@ async function handleUpdateRiderLocation(data) {
   const { riderOpenid, location, accuracy } = data;
   
   if (!riderOpenid || !location) {
-    return { success: false, message: '楠戞墜ID鍜屼綅缃俊鎭笉鑳戒负绌' };
+    return { success: false, message: '骑手ID和位置信息不能为空' };
   }
   
   try {
@@ -247,10 +247,10 @@ async function handleUpdateRiderLocation(data) {
       }
     });
     
-    return { success: true, message: '浣嶇疆鏇存柊鎴愬姛' };
+    return { success: true, message: '位置更新成功' };
   } catch (error) {
-    console.error('鏇存柊楠戞墜浣嶇疆澶辫触:', error);
-    return { success: false, message: '鏇存柊澶辫触: ' + error.message };
+    console.error('更新骑手位置失败:', error);
+    return { success: false, message: '更新失败: ' + error.message };
   }
 }
 
@@ -465,10 +465,10 @@ async function handleSetOnlineStatus(data) {
       }
     });
     
-    return { success: true, message: isOnline ? '宸蹭笂绾' : '宸蹭笅绾' };
+    return { success: true, message: isOnline ? '已上线' : '已下线' };
   } catch (error) {
-    console.error('璁剧疆鍦ㄧ嚎鐘舵€佸け璐?', error);
-    return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
+    console.error('设置在线状态失败?', error);
+    return { success: false, message: '操作失败: ' + error.message };
   }
 }
 
@@ -477,7 +477,7 @@ async function handleUpdateLocation(data) {
   const openid = cloud.getWXContext().OPENID;
   
   if (!location) {
-    return { success: false, message: '浣嶇疆淇℃伅涓嶈兘涓虹┖' };
+    return { success: false, message: '位置信息不能为空' };
   }
   
   try {
@@ -489,10 +489,10 @@ async function handleUpdateLocation(data) {
       }
     });
     
-    return { success: true, message: '浣嶇疆鏇存柊鎴愬姛' };
+    return { success: true, message: '位置更新成功' };
   } catch (error) {
-    console.error('鏇存柊浣嶇疆澶辫触:', error);
-    return { success: false, message: '鏇存柊澶辫触: ' + error.message };
+    console.error('更新位置失败:', error);
+    return { success: false, message: '更新失败: ' + error.message };
   }
 }
 
@@ -528,7 +528,7 @@ async function handleGetTodayStats(data) {
     };
   } catch (error) {
     console.error('鑾峰彇浠婃棩缁熻澶辫触:', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -562,7 +562,7 @@ async function handleGetWeeklyStats(data) {
     };
   } catch (error) {
     console.error('鑾峰彇鍛ㄧ粺璁″け璐?', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -600,8 +600,8 @@ async function handleGetMonthlyStats(data) {
       }
     };
   } catch (error) {
-    console.error('鑾峰彇鏈堢粺璁″け璐?', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取月统计失败?', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -637,15 +637,15 @@ async function handleGetRiders(data) {
           todayOrders: deliveries.data.length,
           totalOrders: totalDeliveries.total,
           status: rider.isOnline ? 'online' : 'offline',
-          statusText: rider.isOnline ? '鍦ㄧ嚎' : '绂荤嚎'
+          statusText: rider.isOnline ? '在线' : '离线'
         };
       })
     );
     
     return { success: true, data: ridersWithStats };
   } catch (error) {
-    console.error('鑾峰彇楠戞墜鍒楄〃澶辫触:', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取骑手列表失败:', error);
+    return { success: false, message: '获取骑手列表失败: ' + error.message };
   }
 }
 
@@ -698,8 +698,8 @@ async function handleGetActiveDeliveries(data) {
     
     return { success: true, data: deliveriesWithOrder };
   } catch (error) {
-    console.error('鑾峰彇娲昏穬閰嶉€佸垪琛ㄥけ璐?', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取活跃配送列表失败?', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -725,8 +725,8 @@ async function handleGetDeliveryStats(data) {
       }
     };
   } catch (error) {
-    console.error('鑾峰彇閰嶉€佺粺璁″け璐?', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取配送统计失败?', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -745,7 +745,7 @@ async function handleGetDelivery(data) {
     return { success: true, data: delivery.data[0] };
   } catch (error) {
     console.error('鑾峰彇閰嶉€佽褰曞け璐?', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -764,7 +764,7 @@ async function handleSuspendRider(data) {
     return { success: true, message: '楠戞墜宸叉殏鍋' };
   } catch (error) {
     console.error('鏆傚仠楠戞墜澶辫触:', error);
-    return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
+    return { success: false, message: '操作失败: ' + error.message };
   }
 }
 
@@ -782,7 +782,7 @@ async function handleResumeRider(data) {
     return { success: true, message: '楠戞墜宸叉仮澶' };
   } catch (error) {
     console.error('鎭㈠楠戞墜澶辫触:', error);
-    return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
+    return { success: false, message: '操作失败: ' + error.message };
   }
 }
 

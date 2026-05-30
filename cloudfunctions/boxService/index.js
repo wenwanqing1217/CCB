@@ -25,11 +25,11 @@ exports.main = async (event, context) => {
       case 'home':
         return await handleHome(data);
       default:
-        return { success: false, message: '鏈煡鎿嶄綔: ' + action };
+        return { success: false, message: '未知操作: ' + action };
     }
   } catch (error) {
-    console.error('鐩茬洅鏈嶅姟浜戝嚱鏁版墽琛岄敊璇?', error);
-    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇? ' + error.message };
+    console.error('盲盒服务云函数执行错误', error);
+    return { success: false, message: '服务器错误: ' + error.message };
   }
 };
 
@@ -78,33 +78,33 @@ async function handlePublish(data) {
       }
     };
   } catch (error) {
-    console.error('鍙戝竷鐩茬洅澶辫触:', error);
-    return { success: false, message: '鍙戝竷澶辫触: ' + error.message };
+    console.error('发布盲盒失败:', error);
+    return { success: false, message: '发布失败: ' + error.message };
   }
 }
 
 
 function validatePublishInput({ title, price, openid, images }) {
   if (!title || typeof title !== 'string' || title.trim().length === 0) {
-    return '鏍囬涓嶈兘涓虹┖';
+    return '标题不能为空';
   }
   if (title.trim().length > 50) {
-    return '鏍囬涓嶈兘瓒呰繃50涓瓧绗';
+    return '标题不能超过50个字符';
   }
   if (!price || isNaN(Number(price)) || Number(price) < 0) {
-    return '浠锋牸蹇呴』鏄ぇ浜庣瓑浜?鐨勬暟瀛';
+    return '价格必须是大于等于0的数字';
   }
   if (Number(price) > 99999) {
-    return '浠锋牸涓嶈兘瓒呰繃99999';
+    return '价格不能超过99999';
   }
   if (!openid || typeof openid !== 'string') {
-    return '鐢ㄦ埛淇℃伅鏃犳晥';
+    return '用户信息无效';
   }
   if (images && !Array.isArray(images)) {
-    return '鍥剧墖鏍煎紡鏃犳晥';
+    return '图片格式无效';
   }
   if (images && images.length > 9) {
-    return '鍥剧墖鏈€澶氫笂浼?寮';
+    return '图片最多上传9张';
   }
   return null;
 }
@@ -119,7 +119,7 @@ async function handleList(data) {
     if (type) conditions.push({ type });
     if (campus) conditions.push({ campus });
 
-    const query = boxesCollection.where(_.and(conditions));
+    const query = boxesCollection.where(db.command.and(conditions));
     const total = await query.count();
 
     const boxes = await query
@@ -136,8 +136,8 @@ async function handleList(data) {
       limit
     };
   } catch (error) {
-    console.error('鑾峰彇鐩茬洅鍒楄〃澶辫触:', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取盲盒列表失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -149,7 +149,7 @@ async function handleDetail(data) {
     const box = await boxesCollection.doc(boxId).get();
     
     if (!box.data) {
-      return { success: false, message: '鐩茬洅涓嶅瓨鍦' };
+      return { success: false, message: '盲盒不存在' };
     }
     
     return {
@@ -157,8 +157,8 @@ async function handleDetail(data) {
       box: box.data
     };
   } catch (error) {
-    console.error('鑾峰彇鐩茬洅璇︽儏澶辫触:', error);
-    return { success: false, message: '鑾峰彇澶辫触: ' + error.message };
+    console.error('获取盲盒详情失败:', error);
+    return { success: false, message: '获取失败: ' + error.message };
   }
 }
 
@@ -192,34 +192,34 @@ async function handleHome(data) {
       stats
     };
   } catch (error) {
-    console.error('鑾峰彇棣栭〉鏁版嵁澶辫触:', error);
+    console.error('获取首页数据失败:', error);
     return {
       success: false,
       boxes: [
         {
           _id: 'demo1',
-          title: '涓洯鍏瘬涔︽湰鏂囧叿鐩茬洅',
-          desc: '鍖呭惈鑰冪爺璧勬枡銆佺瑪璁版湰銆佺瀛楃瑪绛夊涔犵敤鍝',
+          title: '中园公寓书本文具盲盒',
+          desc: '包含考研资料、笔记本、签字笔等学习用品',
           type: 'secondhand',
           mode: 'light',
           price: 5.2,
-          campus: '涓洯鍏瘬',
+          campus: '中园公寓',
           building: '302',
-          fromDorm: '涓洯鍏瘬',
+          fromDorm: '中园公寓',
           sales: 12,
           isCharity: false,
           images: ['data:image/svg+xml,%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520width%253D%2522400%2522%2520height%253D%2522400%2522%253E%253Crect%2520width%253D%2522400%2522%2520height%253D%2522400%2522%2520fill%253D%2522%2523f3e8ff%2522%252F%253E%253Ctext%2520x%253D%2522200%2522%2520y%253D%2522220%2522%2520text-anchor%253D%2522middle%2522%2520font-size%253D%252260%2522%2520fill%253D%2522%2523c8a2ff%2522%253E%25E2%259C%25A8%253C%252Ftext%253E%253C%252Fsvg%253E']
         },
         {
           _id: 'demo2',
-          title: '鏍″洯鏂囧垱鎵嬩綔鐩茬洅',
-          desc: '鎵嬬粯璐寸焊+寰界珷+姝︾敓闄㈤檺瀹氭槑淇＄墖',
+          title: '校园文创手作盲盒',
+          desc: '手绘贴纸+徽章+武生院限定明信片',
           type: 'original',
           mode: 'dark',
           price: 9.9,
-          campus: '鑻忓洯灞',
+          campus: '苏园居',
           building: '201',
-          fromDorm: '鑻忓洯灞',
+          fromDorm: '苏园居',
           sales: 8,
           isCharity: true,
           images: ['data:image/svg+xml,%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520width%253D%2522400%2522%2520height%253D%2522400%2522%253E%253Crect%2520width%253D%2522400%2522%2520height%253D%2522400%2522%2520fill%253D%2522%2523f3e8ff%2522%252F%253E%253Ctext%2520x%253D%2522200%2522%2520y%253D%2522220%2522%2520text-anchor%253D%2522middle%2522%2520font-size%253D%252260%2522%2520fill%253D%2522%2523c8a2ff%2522%253E%25E2%259C%25A8%253C%252Ftext%253E%253C%252Fsvg%253E']
