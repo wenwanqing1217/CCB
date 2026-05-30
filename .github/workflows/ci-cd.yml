@@ -137,18 +137,26 @@ jobs:
 
       - name: Deploy Cloud Functions
         env:
-          APPID: ${{ secrets.WECHAT_APPID }}
           TCB_SECRET_ID: ${{ secrets.TCB_SECRET_ID }}
           TCB_SECRET_KEY: ${{ secrets.TCB_SECRET_KEY }}
           TCB_ENV_ID: ${{ secrets.TCB_ENV_ID }}
         run: |
-          echo "Configuring CloudBase..."
-          tcb env:configure --appid "$APPID" --secret-id "$TCB_SECRET_ID" --secret-key "$TCB_SECRET_KEY"
+          echo "Logging into CloudBase..."
+          tcb login --apiKeyId "$TCB_SECRET_ID" --apiKey "$TCB_SECRET_KEY" --force 2>/dev/null || echo "Login via env vars"
+
           for dir in cloudfunctions/*/; do
             func_name=$(basename "$dir")
+            # Skip directories without an index.js entry point
+            if [ ! -f "$dir/index.js" ]; then
+              echo "Skipping $func_name (no index.js)"
+              continue
+            fi
             echo "Deploying $func_name..."
-            (cd "$dir" && npm install --production 2>/dev/null)
-            tcb fn:deploy "$func_name" -e "$TCB_ENV_ID" || echo "Failed to deploy $func_name"
+            # Install production dependencies if package.json exists
+            if [ -f "$dir/package.json" ]; then
+              (cd "$dir" && npm install --production 2>/dev/null || echo "npm install warnings for $func_name")
+            fi
+            tcb fn:deploy "$func_name" -e "$TCB_ENV_ID" --force 2>&1 || echo "Failed to deploy $func_name"
           done
           echo "Cloud Function deployment completed!"
 
@@ -172,3 +180,4 @@ jobs:
           fi
           echo "Commit: ${{ github.sha }}"
           echo "Branch: ${{ github.ref_name }}"
+

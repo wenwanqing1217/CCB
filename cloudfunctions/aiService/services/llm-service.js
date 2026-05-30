@@ -81,9 +81,9 @@ class LLMService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SECRET_KEY}`,
+        'Authorization': `Bearer ${SECRET_KEY}`
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
 
     if (!response.ok) {

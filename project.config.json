@@ -1,7 +1,7 @@
-{
+﻿{
   "miniprogramRoot": "./",
   "projectname": "campus-blindbox",
-  "description": "校园盲盒即时配送平台",
+  "description": "鏍″洯鐩茬洅鍗虫椂閰嶉€佸钩鍙?,
   "appid": "YOUR_APPID",
   "setting": {
     "urlCheck": false,
@@ -99,3 +99,4 @@
   "cloudfunctionRoot": "cloudfunctions/",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }
+

@@ -9,6 +9,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 const db = cloud.database();
 const { bizError, Validators } = require('../common/errors.js');
+const _ = db.command;
 
 exports.main = async (event, context) => {
   const { userId, name, phone, dorm, address, idFront, idBack } = event;

@@ -89,10 +89,10 @@ function validatePublishInput({ title, price, openid, images }) {
     return '鏍囬涓嶈兘涓虹┖';
   }
   if (title.trim().length > 50) {
-    return '鏍囬涓嶈兘瓒呰繃50涓瓧绗?;
+    return '鏍囬涓嶈兘瓒呰繃50涓瓧绗';
   }
   if (!price || isNaN(Number(price)) || Number(price) < 0) {
-    return '浠锋牸蹇呴』鏄ぇ浜庣瓑浜?鐨勬暟瀛?;
+    return '浠锋牸蹇呴』鏄ぇ浜庣瓑浜?鐨勬暟瀛';
   }
   if (Number(price) > 99999) {
     return '浠锋牸涓嶈兘瓒呰繃99999';
@@ -104,7 +104,7 @@ function validatePublishInput({ title, price, openid, images }) {
     return '鍥剧墖鏍煎紡鏃犳晥';
   }
   if (images && images.length > 9) {
-    return '鍥剧墖鏈€澶氫笂浼?寮?;
+    return '鍥剧墖鏈€澶氫笂浼?寮';
   }
   return null;
 }
@@ -114,19 +114,19 @@ async function handleList(data) {
   const { page = 1, limit = 10, type, campus } = data;
   
   try {
-        let query = boxesCollection.where({ status: 'available' });
+    let query = boxesCollection.where({ status: 'available' });
     
-        if (type) {
+    if (type) {
       query = query.where({ type });
     }
     
-        if (campus) {
+    if (campus) {
       query = query.where({ campus });
     }
     
-        const total = await query.count();
+    const total = await query.count();
     
-        const boxes = await query
+    const boxes = await query
       .orderBy('createdAt', 'desc')        .skip((page - 1) * limit)            .limit(limit)                        .get();
     
     return {
@@ -147,10 +147,10 @@ async function handleDetail(data) {
   const { boxId } = data;
   
   try {
-        const box = await boxesCollection.doc(boxId).get();
+    const box = await boxesCollection.doc(boxId).get();
     
     if (!box.data) {
-      return { success: false, message: '鐩茬洅涓嶅瓨鍦? };
+      return { success: false, message: '鐩茬洅涓嶅瓨鍦' };
     }
     
     return {
@@ -166,19 +166,19 @@ async function handleDetail(data) {
 
 async function handleHome(data) {
   try {
-        const hotBoxes = await boxesCollection
+    const hotBoxes = await boxesCollection
       .where({ status: 'available' })
       .orderBy('createdAt', 'desc')
       .limit(10)
       .get();
     
-        const processedBoxes = hotBoxes.data.map(box => ({
+    const processedBoxes = hotBoxes.data.map(box => ({
       ...box,
       fromDorm: box.campus || box.building || '',
       sales: box.sales || 0
     }));
     
-        const stats = {
+    const stats = {
       todayBoxes: (await boxesCollection
         .where({
           status: 'available',
@@ -194,13 +194,13 @@ async function handleHome(data) {
     };
   } catch (error) {
     console.error('鑾峰彇棣栭〉鏁版嵁澶辫触:', error);
-        return {
+    return {
       success: false,
       boxes: [
         {
           _id: 'demo1',
           title: '涓洯鍏瘬涔︽湰鏂囧叿鐩茬洅',
-          desc: '鍖呭惈鑰冪爺璧勬枡銆佺瑪璁版湰銆佺瀛楃瑪绛夊涔犵敤鍝?,
+          desc: '鍖呭惈鑰冪爺璧勬枡銆佺瑪璁版湰銆佺瀛楃瑪绛夊涔犵敤鍝',
           type: 'secondhand',
           mode: 'light',
           price: 5.2,
@@ -218,9 +218,9 @@ async function handleHome(data) {
           type: 'original',
           mode: 'dark',
           price: 9.9,
-          campus: '鑻忓洯灞?,
+          campus: '鑻忓洯灞',
           building: '201',
-          fromDorm: '鑻忓洯灞?,
+          fromDorm: '鑻忓洯灞',
           sales: 8,
           isCharity: true,
           images: ['https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=campus%20cultural%20creative%20blind%20box&image_size=square']

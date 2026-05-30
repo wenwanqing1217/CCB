@@ -86,7 +86,9 @@ function calculateSVD(matrix, k = 10) {
 function performSVD(matrix, k) {
   const m = matrix.length;
   const n = matrix[0]?.length || 0;
-  if (m === 0 || n === 0) return { U: [], S: [], V: [] };
+  if (m === 0 || n === 0) {
+    return { U: [], S: [], V: [] };
+  }
 
   const actualK = Math.min(k, Math.min(m, n));
   let U = [];

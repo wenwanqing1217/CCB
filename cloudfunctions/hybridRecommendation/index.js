@@ -10,13 +10,13 @@ exports.main = async (event, context) => {
   const { userId, count = 10 } = event;
   
   try {
-        const contentRecs = await getContentBasedRecommendations(userId, count);
+    const contentRecs = await getContentBasedRecommendations(userId, count);
     
-        const collaborativeRecs = await getCollaborativeRecommendations(userId, count);
+    const collaborativeRecs = await getCollaborativeRecommendations(userId, count);
     
-        const hybridRecs = mergeRecommendations(contentRecs, collaborativeRecs, 0.6, 0.4);
+    const hybridRecs = mergeRecommendations(contentRecs, collaborativeRecs, 0.6, 0.4);
     
-        const result = deduplicateRecommendations(hybridRecs).slice(0, count);
+    const result = deduplicateRecommendations(hybridRecs).slice(0, count);
     
     return {
       success: true,
@@ -32,13 +32,13 @@ exports.main = async (event, context) => {
 };
 
 async function getContentBasedRecommendations(userId, count) {
-    const userProfile = await getUserInterestProfile(userId);
+  const userProfile = await getUserInterestProfile(userId);
   
   if (!userProfile || Object.keys(userProfile).length === 0) {
-        return await getHotBoxes(count);
+    return await getHotBoxes(count);
   }
   
-    const boxes = await db.collection('boxes').get();
+  const boxes = await db.collection('boxes').get();
   
   const scoredBoxes = boxes.data.map(box => {
     const similarity = calculateCosineSimilarity(box, userProfile);
@@ -123,19 +123,19 @@ async function getHotBoxes(count) {
 }
 
 async function getCollaborativeRecommendations(userId, count) {
-    const userRecords = await getUserBehaviorRecords(userId);
+  const userRecords = await getUserBehaviorRecords(userId);
   
   if (userRecords.length === 0) {
     return [];
   }
   
-    const similarUsers = await findSimilarUsers(userId, userRecords);
+  const similarUsers = await findSimilarUsers(userId, userRecords);
   
   if (similarUsers.length === 0) {
     return [];
   }
   
-    const recommendations = await getRecommendationsFromSimilarUsers(similarUsers, userId);
+  const recommendations = await getRecommendationsFromSimilarUsers(similarUsers, userId);
   
   return recommendations.map(box => ({ ...box, score: box.score * 0.4 })).slice(0, count);
 }
@@ -156,12 +156,12 @@ async function findSimilarUsers(userId, userRecords) {
     return [];
   }
   
-    const similarOrders = await db.collection('orders')
+  const similarOrders = await db.collection('orders')
     .where({ boxId: db.command.in(boxIds) })
     .where({ userId: db.command.neq(userId) })
     .get();
   
-    const similarityMap = {};
+  const similarityMap = {};
   similarOrders.data.forEach(order => {
     const otherUserId = order.userId;
     if (!similarityMap[otherUserId]) {
@@ -170,7 +170,7 @@ async function findSimilarUsers(userId, userRecords) {
     similarityMap[otherUserId]++;
   });
   
-    return Object.entries(similarityMap)
+  return Object.entries(similarityMap)
     .map(([uid, score]) => ({ userId: uid, similarity: score / boxIds.length }))
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, 10);
@@ -183,10 +183,10 @@ async function getRecommendationsFromSimilarUsers(similarUsers, excludeUserId) {
     .where({ userId: db.command.in(userIds) })
     .get();
   
-    const excludeBoxIds = (await db.collection('orders').where({ userId: excludeUserId }).get())
+  const excludeBoxIds = (await db.collection('orders').where({ userId: excludeUserId }).get())
     .data.map(o => o.boxId);
   
-    const recommendationMap = {};
+  const recommendationMap = {};
   orders.data.forEach(order => {
     const boxId = order.boxId;
     if (excludeBoxIds.includes(boxId)) {
@@ -201,7 +201,7 @@ async function getRecommendationsFromSimilarUsers(similarUsers, excludeUserId) {
     recommendationMap[boxId].totalSimilarity += userSimilarity;
   });
   
-    const boxIds = Object.keys(recommendationMap);
+  const boxIds = Object.keys(recommendationMap);
   const boxes = await db.collection('boxes')
     .where({ _id: db.command.in(boxIds) })
     .get();

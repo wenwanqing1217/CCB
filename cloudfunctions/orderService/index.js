@@ -61,7 +61,7 @@ async function handleCreateOrder(data) {
     }
 
     if (buyerOpenid === sellerOpenid) {
-      return { success: false, message: '涓嶈兘璐拱鑷繁鐨勭洸鐩? };
+      return { success: false, message: '涓嶈兘璐拱鑷繁鐨勭洸鐩' };
     }
 
     const newOrder = {
@@ -121,7 +121,7 @@ function validateOrderInput({ boxId, buyerOpenid, sellerOpenid, price, address, 
     return '鑱旂郴鏂瑰紡鏃犳晥';
   }
   if (!contact.phone && !contact.name) {
-    return '鑱旂郴鏂瑰紡涓嶅畬鏁?;
+    return '鑱旂郴鏂瑰紡涓嶅畬鏁';
   }
   return null;
 }
@@ -131,29 +131,29 @@ async function handleUpdateStatus(data) {
   const { orderId, status, riderOpenid } = data;
   
   try {
-        const order = await ordersCollection.doc(orderId).get();
+    const order = await ordersCollection.doc(orderId).get();
     if (!order.data) {
-      return { success: false, message: '璁㈠崟涓嶅瓨鍦? };
+      return { success: false, message: '璁㈠崟涓嶅瓨鍦' };
     }
     
     const oldOrder = order.data;
     
-        const updateData = {
+    const updateData = {
       status,
       updatedAt: new Date()
     };
     
-        if (status === 'grabbed' && riderOpenid) {
+    if (status === 'grabbed' && riderOpenid) {
       updateData.riderOpenid = riderOpenid;
     }
     
     await ordersCollection.doc(orderId).update({ data: updateData });
     
-        await sendOrderStatusNotification(orderId, status, oldOrder);
+    await sendOrderStatusNotification(orderId, status, oldOrder);
     
     return {
       success: true,
-      message: '璁㈠崟鐘舵€佹洿鏂版垚鍔?
+      message: '璁㈠崟鐘舵€佹洿鏂版垚鍔'
     };
   } catch (error) {
     console.error('鏇存柊璁㈠崟鐘舵€佸け璐?', error);
@@ -165,18 +165,18 @@ async function handleUpdateStatus(data) {
 async function sendOrderStatusNotification(orderId, status, order) {
   try {
     const statusTextMap = {
-      pending: '寰呮姠鍗?,
-      grabbed: '宸叉姠鍗?,
+      pending: '寰呮姠鍗',
+      grabbed: '宸叉姠鍗',
       delivering: '閰嶉€佷腑',
-      completed: '宸插畬鎴?,
-      cancelled: '宸插彇娑?
+      completed: '宸插畬鎴',
+      cancelled: '宸插彇娑'
     };
     
     const statusText = statusTextMap[status] || status;
-    const title = '璁㈠崟鐘舵€佹洿鏂?;
-    const content = `鎮ㄧ殑璁㈠崟宸?{statusText}`;
+    const title = '璁㈠崟鐘舵€佹洿鏂';
+    const content = '鎮ㄧ殑璁㈠崟宸?{statusText}';
     
-        if (order.buyerOpenid) {
+    if (order.buyerOpenid) {
       await cloud.callFunction({
         name: 'notificationService',
         data: {
@@ -192,7 +192,7 @@ async function sendOrderStatusNotification(orderId, status, order) {
       });
     }
     
-        if (order.sellerOpenid) {
+    if (order.sellerOpenid) {
       await cloud.callFunction({
         name: 'notificationService',
         data: {
@@ -208,7 +208,7 @@ async function sendOrderStatusNotification(orderId, status, order) {
       });
     }
     
-    } catch (error) {
+  } catch (error) {
     console.error('鍙戦€佽鍗曠姸鎬侀€氱煡澶辫触:', error);
   }
 }
@@ -220,7 +220,7 @@ async function handleListOrders(data) {
   try {
     let query;
     
-        if (role === 'buyer') {
+    if (role === 'buyer') {
       query = ordersCollection.where({ buyerOpenid: openid });
     } else if (role === 'seller') {
       query = ordersCollection.where({ sellerOpenid: openid });
@@ -228,9 +228,9 @@ async function handleListOrders(data) {
       return { success: false, message: '瑙掕壊鏃犳晥' };
     }
     
-        const total = await query.count();
+    const total = await query.count();
     
-        const orders = await query
+    const orders = await query
       .orderBy('createdAt', 'desc')
       .skip((page - 1) * limit)
       .limit(limit)
@@ -254,10 +254,10 @@ async function handleOrderDetail(data) {
   const { orderId } = data;
   
   try {
-        const order = await ordersCollection.doc(orderId).get();
+    const order = await ordersCollection.doc(orderId).get();
     
     if (!order.data) {
-      return { success: false, message: '璁㈠崟涓嶅瓨鍦? };
+      return { success: false, message: '璁㈠崟涓嶅瓨鍦' };
     }
     
     return {

@@ -42,7 +42,7 @@ exports.main = async (event, context) => {
     if (error.code) {
       return error.toJSON ? error.toJSON() : { success: false, message: error.message };
     }
-    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇? };
+    return { success: false, message: '鏈嶅姟鍣ㄩ敊璇' };
   }
 };
 
@@ -140,7 +140,7 @@ async function handleUpdateStatus(data) {
     data: { status, updatedAt: new Date() }
   });
 
-  return { success: true, message: '閰嶉€佺姸鎬佹洿鏂版垚鍔? };
+  return { success: true, message: '閰嶉€佺姸鎬佹洿鏂版垚鍔' };
 }
 
 async function handleGetRiderOrders(data) {
@@ -230,7 +230,7 @@ async function handleUpdateRiderLocation(data) {
   const { riderOpenid, location, accuracy } = data;
   
   if (!riderOpenid || !location) {
-    return { success: false, message: '楠戞墜ID鍜屼綅缃俊鎭笉鑳戒负绌? };
+    return { success: false, message: '楠戞墜ID鍜屼綅缃俊鎭笉鑳戒负绌' };
   }
   
   try {
@@ -260,41 +260,44 @@ async function getRiderCurrentLoad(riderOpenid) {
 
 
 async function calculateMatchScore(riderLocation, pickupAddress, deliveryAddress, riderLoad, orderCreateTime, orderDeadline) {
-    const d1 = calculateDistance(riderLocation, pickupAddress);
+  const d1 = calculateDistance(riderLocation, pickupAddress);
   const d2 = calculateDistance(pickupAddress, deliveryAddress);
   const directDist = calculateDistance(riderLocation, deliveryAddress);
 
-    const detourRatio = directDist > 0 ? (d1 + d2) / directDist : Infinity;
+  const detourRatio = directDist > 0 ? (d1 + d2) / directDist : Infinity;
 
-    let distanceScore = 0;
+  let distanceScore = 0;
   if (detourRatio <= 1.2) {
-    distanceScore = 1 - (detourRatio - 1) * 2.5;   } else if (detourRatio <= 2.0) {
-    distanceScore = 0.5 - (detourRatio - 1.2) * 0.375;   }
+    distanceScore = 1 - (detourRatio - 1) * 2.5;   
+  } else if (detourRatio <= 2.0) {
+    distanceScore = 0.5 - (detourRatio - 1.2) * 0.375;   
+  }
   distanceScore = Math.max(0, Math.min(1, distanceScore));
 
-    const timeSinceCreated = (Date.now() - new Date(orderCreateTime).getTime()) / 60000;
+  const timeSinceCreated = (Date.now() - new Date(orderCreateTime).getTime()) / 60000;
   const timeUrgency = Math.min(1, timeSinceCreated / 15); 
-    let deadlineScore = 1;
+  let deadlineScore = 1;
   if (orderDeadline) {
     const timeToDeadline = (new Date(orderDeadline).getTime() - Date.now()) / 60000;
     if (timeToDeadline < 5) {
-      deadlineScore = 2.0;     } else if (timeToDeadline < 10) {
+      deadlineScore = 2.0;     
+    } else if (timeToDeadline < 10) {
       deadlineScore = 1.5;
     }
   }
 
-    const routeScore = await evaluateRouteQuality(pickupAddress, deliveryAddress);
+  const routeScore = await evaluateRouteQuality(pickupAddress, deliveryAddress);
 
-    const loadFactor = Math.max(0.2, 1 - riderLoad * 0.18);
+  const loadFactor = Math.max(0.2, 1 - riderLoad * 0.18);
 
-    const rawScore = (
+  const rawScore = (
     0.45 * distanceScore +
     0.25 * timeUrgency +
     0.15 * routeScore +
     0.15 * loadFactor
   ) * deadlineScore;
 
-    const explorationBonus = (Math.random() - 0.5) * 0.1;
+  const explorationBonus = (Math.random() - 0.5) * 0.1;
 
   return Math.max(0, Math.min(1, rawScore + explorationBonus));
 }
@@ -333,14 +336,18 @@ async function evaluateRouteQuality(pickup, delivery) {
   const hour = new Date().getHours();
   let baseQuality = 0.9;
 
-    if ((hour >= 8 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
-    baseQuality = 0.6;   } else if (hour >= 22 || hour <= 6) {
-    baseQuality = 0.95;   }
+  if ((hour >= 8 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
+    baseQuality = 0.6;   
+  } else if (hour >= 22 || hour <= 6) {
+    baseQuality = 0.95;   
+  }
 
-    const routeDistance = calculateDistance(pickup, delivery);
+  const routeDistance = calculateDistance(pickup, delivery);
   if (routeDistance < 200) {
-    baseQuality *= 0.8;   } else if (routeDistance > 3000) {
-    baseQuality *= 0.9;   }
+    baseQuality *= 0.8;   
+  } else if (routeDistance > 3000) {
+    baseQuality *= 0.9;   
+  }
 
   return baseQuality;
 }
@@ -351,15 +358,15 @@ async function optimizeMultiOrderSelection(candidates, maxOrders = 3) {
     return candidates;
   }
 
-    const sortedByScore = [...candidates].sort((a, b) => b.matchScore - a.matchScore);
+  const sortedByScore = [...candidates].sort((a, b) => b.matchScore - a.matchScore);
   const greedySelected = sortedByScore.slice(0, maxOrders);
 
-    let bestCombination = greedySelected;
+  let bestCombination = greedySelected;
   let bestTotalScore = calculateTotalScore(greedySelected);
 
   for (let i = 0; i < candidates.length; i++) {
     for (let j = i + 1; j < candidates.length; j++) {
-            const newCombination = replaceOrder(bestCombination, candidates[i], candidates[j]);
+      const newCombination = replaceOrder(bestCombination, candidates[i], candidates[j]);
       const newScore = calculateTotalScore(newCombination);
 
       if (newScore > bestTotalScore) {
@@ -428,7 +435,7 @@ function clusterOrdersByLocation(orders, riderLocation, clusterRadius = 500) {
     clusters.push(cluster);
   }
 
-    let nearestCluster = null;
+  let nearestCluster = null;
   let nearestDist = Infinity;
 
   for (const cluster of clusters) {
@@ -439,7 +446,7 @@ function clusterOrdersByLocation(orders, riderLocation, clusterRadius = 500) {
     }
   }
 
-    return nearestCluster ? nearestCluster.orders : orders.slice(0, 5);
+  return nearestCluster ? nearestCluster.orders : orders.slice(0, 5);
 }
 
 async function handleSetOnlineStatus(data) {
@@ -454,7 +461,7 @@ async function handleSetOnlineStatus(data) {
       }
     });
     
-    return { success: true, message: isOnline ? '宸蹭笂绾? : '宸蹭笅绾? };
+    return { success: true, message: isOnline ? '宸蹭笂绾' : '宸蹭笅绾' };
   } catch (error) {
     console.error('璁剧疆鍦ㄧ嚎鐘舵€佸け璐?', error);
     return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
@@ -656,9 +663,9 @@ async function handleGetActiveDeliveries(data) {
         
         let updateText = '鍒氬垰';
         if (diffMinutes < 60) {
-          updateText = `${diffMinutes}鍒嗛挓鍓峘;
+          updateText = `${diffMinutes}鍒嗛挓鍓峘`;
         } else if (diffMinutes < 1440) {
-          updateText = `${Math.floor(diffMinutes / 60)}灏忔椂鍓峘;
+          updateText = `${Math.floor(diffMinutes / 60)}灏忔椂鍓峘`;
         } else {
           updateText = `${Math.floor(diffMinutes / 1440)}澶╁墠`;
         }
@@ -739,7 +746,7 @@ async function handleSuspendRider(data) {
       }
     });
     
-    return { success: true, message: '楠戞墜宸叉殏鍋? };
+    return { success: true, message: '楠戞墜宸叉殏鍋' };
   } catch (error) {
     console.error('鏆傚仠楠戞墜澶辫触:', error);
     return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };
@@ -757,7 +764,7 @@ async function handleResumeRider(data) {
       }
     });
     
-    return { success: true, message: '楠戞墜宸叉仮澶? };
+    return { success: true, message: '楠戞墜宸叉仮澶' };
   } catch (error) {
     console.error('鎭㈠楠戞墜澶辫触:', error);
     return { success: false, message: '鎿嶄綔澶辫触: ' + error.message };

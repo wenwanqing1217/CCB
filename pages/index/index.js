@@ -229,7 +229,7 @@ Page({
     if (!meta) {
       return '交易活跃度';
     }
-    if (meta.windowHours == null) {
+    if (meta.windowHours === null) {
       return '累计交易活跃度';
     }
     if (meta.windowHours <= 24) {

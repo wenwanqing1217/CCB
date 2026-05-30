@@ -17,7 +17,7 @@ const SLOW_QUERY_THRESHOLD = 500;
 
 exports.main = async (event, context) => {
   try {
-    const { action, performanceData, days } = event;
+    const { action, performanceData, days, hours } = event;
 
     switch (action) {
       case 'report':

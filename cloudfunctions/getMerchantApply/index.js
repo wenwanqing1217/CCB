@@ -1,14 +1,14 @@
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-})
+});
 
-const db = cloud.database()
+const db = cloud.database();
 
 exports.main = async (event, context) => {
   try {
-    const openid = cloud.getWXContext().OPENID
+    const openid = cloud.getWXContext().OPENID;
 
     const result = await db.collection('merchant_applies')
       .where({
@@ -16,15 +16,15 @@ exports.main = async (event, context) => {
       })
       .orderBy('createTime', 'desc')
       .limit(1)
-      .get()
+      .get();
 
     if (result.data.length > 0) {
-      return result.data[0]
+      return result.data[0];
     }
 
-    return null
+    return null;
   } catch (error) {
-    console.error('鑾峰彇鍟嗗鐢宠鐘舵€佸け璐?, error)
-    return null
+    console.error('鑾峰彇鍟嗗鐢宠鐘舵€佸け璐', error);
+    return null;
   }
-}
+};

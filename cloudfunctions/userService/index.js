@@ -17,9 +17,10 @@ exports.main = async (event, context) => {
 
   try {
     switch (action) {
-      case 'login':
+      case 'login': {
         const loginResult = await handleLogin(data);
         return loginResult;
+      }
       case 'updateCampusInfo':
         return await handleUpdateCampusInfo(data);
       case 'getUserInfo':
@@ -40,12 +41,12 @@ async function handleLogin(data) {
   const { userInfo, code } = data;
   
   try {
-        const wxContext = cloud.getWXContext();
+    const wxContext = cloud.getWXContext();
     const openid = wxContext.OPENID;
     const existingUser = await usersCollection.where({ openid }).get();
     
     if (existingUser.data.length > 0) {
-            const user = existingUser.data[0];
+      const user = existingUser.data[0];
       await usersCollection.doc(user._id).update({
         data: {
           nickName: userInfo.nickName,
@@ -68,7 +69,7 @@ async function handleLogin(data) {
         }
       };
     } else {
-            const newUser = {
+      const newUser = {
         openid,                                          nickName: userInfo.nickName,                     avatarUrl: userInfo.avatarUrl,                   role: 'student',                                 campusInfo: { college: '', dorm: '' },           blindBoxCoins: 10,                               lovePoints: 0,                                   verifyStatus: 'unverified',                      createdAt: new Date(),                           updatedAt: new Date()                          };
       
       const result = await usersCollection.add(newUser);
@@ -91,13 +92,13 @@ async function handleUpdateCampusInfo(data) {
   const { openid, college, dorm } = data;
   
   try {
-        const user = await usersCollection.where({ openid }).get();
+    const user = await usersCollection.where({ openid }).get();
     
     if (user.data.length === 0) {
-      return { success: false, message: '鐢ㄦ埛涓嶅瓨鍦? };
+      return { success: false, message: '鐢ㄦ埛涓嶅瓨鍦' };
     }
     
-        await usersCollection.doc(user.data[0]._id).update({
+    await usersCollection.doc(user.data[0]._id).update({
       data: {
         campusInfo: {
           college,
@@ -122,10 +123,10 @@ async function handleGetUserInfo(data) {
   const { openid } = data;
   
   try {
-        const user = await usersCollection.where({ openid }).get();
+    const user = await usersCollection.where({ openid }).get();
     
     if (user.data.length === 0) {
-      return { success: false, message: '鐢ㄦ埛涓嶅瓨鍦? };
+      return { success: false, message: '鐢ㄦ埛涓嶅瓨鍦' };
     }
     
     return {
@@ -145,7 +146,7 @@ async function handleSubmitCertification(data) {
   const { realName, school, studentId, phone, studentCard } = data || {};
 
   if (!realName || !studentId || !phone) {
-    return { success: false, message: '璇峰～鍐欏畬鏁磋璇佷俊鎭? };
+    return { success: false, message: '璇峰～鍐欏畬鏁磋璇佷俊鎭' };
   }
 
   try {
@@ -184,7 +185,7 @@ async function handleSubmitCertification(data) {
       }
     });
 
-    return { success: true, message: '璁よ瘉鐢宠宸叉彁浜? };
+    return { success: true, message: '璁よ瘉鐢宠宸叉彁浜' };
   } catch (error) {
     console.error('鎻愪氦璁よ瘉澶辫触:', error);
     return { success: false, message: '鎻愪氦澶辫触: ' + error.message };

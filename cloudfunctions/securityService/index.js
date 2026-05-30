@@ -285,7 +285,7 @@ async function validateInput(data) {
         }
         break;
         
-      case 'pattern':
+      case 'pattern': {
         const regex = new RegExp(rule.value);
         if (!regex.test(value)) {
           validation.success = false;
@@ -293,7 +293,8 @@ async function validateInput(data) {
         }
         break;
         
-      case 'email':
+      }
+      case 'email': {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(value)) {
           validation.success = false;
@@ -301,7 +302,8 @@ async function validateInput(data) {
         }
         break;
         
-      case 'phone':
+      }
+      case 'phone': {
         const phoneRegex = /^1[3-9]\d{9}$/;
         if (!phoneRegex.test(value)) {
           validation.success = false;
@@ -309,6 +311,7 @@ async function validateInput(data) {
         }
         break;
         
+      }
       case 'number':
         if (isNaN(Number(value))) {
           validation.success = false;

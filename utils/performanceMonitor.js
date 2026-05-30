@@ -653,15 +653,15 @@ class PerformanceMonitor {
     }
     
     await this.retryRequest(() => 
-        wx.cloud.callFunction({
-          name: 'performanceMonitor',
-          data: {
-            action: 'reportBatch',
-            events,
-            timestamp: new Date().toISOString()
-          }
-        })
-      );
+      wx.cloud.callFunction({
+        name: 'performanceMonitor',
+        data: {
+          action: 'reportBatch',
+          events,
+          timestamp: new Date().toISOString()
+        }
+      })
+    );
   }
 
   // 带重试的请求
