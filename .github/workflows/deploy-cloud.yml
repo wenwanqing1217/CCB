@@ -27,12 +27,14 @@ jobs:
       - name: Deploy cloud functions
         run: |
           echo "Deploying cloudfunctions..."
+          ENV_ID="${CLOUDBASE_ENV_ID:-cloud1-0g18d9ik5f541e32}"
+          echo "Using EnvID: $ENV_ID"
           if [ -d "./cloudfunctions" ]; then
             for d in cloudfunctions/*; do
               if [ -d "$d" ]; then
                 name=$(basename "$d")
                 echo "Deploying $name"
-                cloudbase functions:deploy --envId $CLOUDBASE_ENV_ID --name $name --src "$d" || (echo "Deploy failed for $name"; exit 1)
+                cloudbase functions:deploy --envId "$ENV_ID" --name "$name" --src "$d" || (echo "Deploy failed for $name"; exit 1)
               fi
             done
           else
