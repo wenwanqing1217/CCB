@@ -466,11 +466,46 @@ async function callCloudFunction(options) {
 
     const errorType = categorizeError(error);
 
+    // If cloud permission error or env not enabled, set short circuit and return mock/cached data
+    const isPermissionError = (error && error.errMsg && (error.errMsg.indexOf('errCode: -601034') !== -1 || error.errMsg.indexOf('没有权限') !== -1));
+
+    if (isPermissionError) {
+      console.warn(`云功能不可用 detected for ${name}:`, error);
+      try { globalThis.__cloudUnavailableUntil = Date.now() + 60 * 1000; } catch(e) {}
+      const MOCK_RESPONSES = {
+        getHotBoxes: { data: [] },
+        getGrabOrders: { data: [] },
+        getCommunityFeed: { data: [] },
+        recommendationService: { data: [] },
+        getDormHeat: { data: [] },
+        getUserInfo: { role: 'student' }
+      };
+      const mock = MOCK_RESPONSES[name] || {};
+      if (useCache && cacheKey) setCache(cacheKey, mock, cacheExpire);
+      return mock;
+    }
+
+    if (globalThis.__cloudUnavailableUntil && Date.now() < globalThis.__cloudUnavailableUntil) {
+      const MOCK_RESPONSES = {
+        getHotBoxes: { data: [] },
+        getGrabOrders: { data: [] },
+        getCommunityFeed: { data: [] },
+        recommendationService: { data: [] },
+        getDormHeat: { data: [] },
+        getUserInfo: { role: 'student' }
+      };
+      const mock = MOCK_RESPONSES[name] || {};
+      console.warn(`云不可用，快速返回本地 mock：${name}`);
+      if (useCache && cacheKey) setCache(cacheKey, mock, cacheExpire);
+      return mock;
+    }
+
     if (showError) {
       if (errorType === 'network_error') {
         toast.networkError('网络连接失败，请检查网络设置');
       } else if (errorType === 'permission_error') {
-        toast.error('权限不足，请检查权限设置');
+        // permission errors already handled above; degrade silently
+        console.warn('权限不足，云功能调用被阻止以防止重复错误');
       } else if (errorType === 'login_error') {
         toast.error('登录状态已过期，请重新登录');
         wx.removeStorageSync('userInfo');
@@ -484,18 +519,23 @@ async function callCloudFunction(options) {
 
     console.error(`云函数 ${name} 调用失败:`, error);
     
+    // 尝试上报错误，但避免在云不可用时再次调用云函数
     try {
-      await wx.cloud.callFunction({
-        name: 'reportError',
-        data: {
-          error: error.toString(),
-          errorType,
-          functionName: name,
-          executionTime,
-          timestamp: new Date().toISOString(),
-          data: JSON.stringify(data)
-        }
-      });
+      if (!globalThis.__cloudUnavailableUntil) {
+        await wx.cloud.callFunction({
+          name: 'reportError',
+          data: {
+            error: error.toString(),
+            errorType,
+            functionName: name,
+            executionTime,
+            timestamp: new Date().toISOString(),
+            data: JSON.stringify(data)
+          }
+        });
+      } else {
+        console.warn('跳过错误上报（云不可用）');
+      }
     } catch (reportError) {
       console.error('错误上报失败:', reportError);
     }
