@@ -21,6 +21,28 @@ Page({
     this.loadWalletData();
   },
 
+  // 合并 setData 更新，减少渲染压力
+  scheduleSetData(changes) {
+    if (!this._pendingSetData) this._pendingSetData = {};
+    Object.assign(this._pendingSetData, changes);
+    if (!this._flushScheduled) {
+      this._flushScheduled = true;
+      setTimeout(() => {
+        this._flushScheduled = false;
+        try {
+          this.setData(this._pendingSetData);
+        } catch (e) {
+          for (const k in this._pendingSetData) {
+            const o = {};
+            o[k] = this._pendingSetData[k];
+            this.setData(o);
+          }
+        }
+        this._pendingSetData = {};
+      }, 16);
+    }
+  },
+
   loadWalletData() {
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo && userInfo.openid) {
@@ -33,7 +55,7 @@ Page({
         success: res => {
           if (res.result && res.result.success && res.result.user) {
             const user = res.result.user;
-            this.setData({
+            this.scheduleSetData({
               balance: user.walletBalance || 0,
               coins: user.blindBoxCoins || 0
             });
@@ -54,7 +76,7 @@ Page({
         const result = res.result || {};
         if (result.success === false) {
           wx.showToast({ title: '加载记录失败', icon: 'none' });
-          this.setData({ records: [] });
+          this.scheduleSetData({ records: [] });
           return;
         }
         const records = result.records || (Array.isArray(result) ? result : []);
@@ -67,37 +89,37 @@ Page({
         const totalWithdraw = records
           .filter(r => r.type === 'withdraw')
           .reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-        this.setData({ records, totalIncome, totalExpense, totalWithdraw });
+        this.scheduleSetData({ records, totalIncome, totalExpense, totalWithdraw });
       },
       fail: () => {
         wx.showToast({ title: '加载记录失败', icon: 'none' });
-        this.setData({ records: [] });
+        this.scheduleSetData({ records: [] });
       }
     });
   },
 
   toggleBalance() {
-    this.setData({ showBalance: !this.data.showBalance });
+    this.scheduleSetData({ showBalance: !this.data.showBalance });
   },
 
   showWithdraw() {
-    this.setData({ showWithdraw: true });
+    this.scheduleSetData({ showWithdraw: true });
   },
 
   closeWithdraw() {
-    this.setData({ showWithdraw: false, withdrawAmount: '' });
+    this.scheduleSetData({ showWithdraw: false, withdrawAmount: '' });
   },
 
   onWithdrawInput(e) {
     const value = parseFloat(e.detail.value) || 0;
-    this.setData({
+    this.scheduleSetData({
       withdrawAmount: e.detail.value,
       canWithdraw: value >= 1 && value <= this.data.balance
     });
   },
 
   withdrawAll() {
-    this.setData({
+    this.scheduleSetData({
       withdrawAmount: String(this.data.balance),
       canWithdraw: this.data.balance >= 1
     });
@@ -130,7 +152,7 @@ Page({
     const titles = { spin: '幸运转盘', quiz: '知识问答', sign: '每日签到' };
     const tips = { spin: '点击开始抽奖', quiz: '回答问题赢取奖励', sign: '每日签到领取奖励' };
 
-    this.setData({
+    this.scheduleSetData({
       showGameModal: true,
       gameType: game,
       gameTitle: titles[game],
@@ -140,7 +162,7 @@ Page({
   },
 
   closeGameModal() {
-    this.setData({ showGameModal: false });
+    this.scheduleSetData({ showGameModal: false });
   },
 
   startGame() {
