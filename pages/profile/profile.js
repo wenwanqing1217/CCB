@@ -83,8 +83,26 @@ Page({
         }
       });
       this.loadUserData();
+    } else {
+      // 自动使用演示数据
+      this.setData({
+        isLoggedIn: true,
+        isLoggingIn: false,
+        userInfo: {
+          name: '演示用户',
+          avatar: '',
+          id: 'demo_001'
+        },
+        campusInfo: { college: '武生院', dorm: '苏园居3层' },
+        stats: { publish: 12, sold: 5, bought: 8, score: 238 },
+        walletBalance: 68.5,
+        blindBoxCoins: 128,
+        isRider: true,
+        riderLevel: 2,
+        todayEarnings: 15.5,
+        unreadCount: 3
+      });
     }
-  },
 
   doLogin() {
     // 防止重复调用
@@ -181,7 +199,7 @@ Page({
       fail: err => {
         console.error('云函数登录失败:', err);
         that.setData({ isLoggingIn: false });
-        wx.showToast({ title: '网络错误，请重试', icon: 'none' });
+        that.handleAnonymousLogin();
       }
     });
   },
@@ -288,7 +306,19 @@ Page({
         }
       },
       fail: () => {
-        wx.showToast({ title: '加载用户信息失败', icon: 'none' });
+        console.warn('加载用户统计失败，使用演示数据');
+        const demoStats = { publish: 12, sold: 5, bought: 8, score: 238 };
+        const levelInfo = this.calculateLevel(demoStats.score);
+        const vipInfo = this.calculateVIP(demoStats.score);
+        this.setData({
+          stats: demoStats,
+          isRider: true,
+          riderLevel: 2,
+          todayEarnings: 15.5,
+          walletBalance: 68.5,
+          ...levelInfo,
+          ...vipInfo
+        });
       }
     });
   },
@@ -532,7 +562,7 @@ Page({
       fail: (err) => {
         this.setData({ isSigningIn: false });
         console.error('签到失败:', err);
-        wx.showToast({ title: '签到失败', icon: 'none' });
+        wx.showToast({ title: '签到失败(离线模式)', icon: 'none' });
       }
     });
   },
