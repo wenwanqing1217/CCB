@@ -16,7 +16,7 @@
   <view class="podium glass-card-v2">
     <view class="podium-item second" wx:if="{{rankData.length >= 2}}">
       <view class="podium-avatar-wrap">
-        <image class="podium-avatar" src="{{rankData[1].avatar}}" />
+        <image class="podium-avatar" src="{{rankData[1].avatar}}" binderror="onAvatarError" data-index="1" />
         <view class="podium-rank silver">2</view>
       </view>
       <text class="podium-name">{{rankData[1].name}}</text>
@@ -26,7 +26,7 @@
     <view class="podium-item first" wx:if="{{rankData.length >= 1}}">
       <view class="podium-crown">👑</view>
       <view class="podium-avatar-wrap">
-        <image class="podium-avatar" src="{{rankData[0].avatar}}" />
+        <image class="podium-avatar" src="{{rankData[0].avatar}}" binderror="onAvatarError" data-index="0" />
         <view class="podium-rank gold">1</view>
       </view>
       <text class="podium-name">{{rankData[0].name}}</text>
@@ -35,7 +35,7 @@
     </view>
     <view class="podium-item third" wx:if="{{rankData.length >= 3}}">
       <view class="podium-avatar-wrap">
-        <image class="podium-avatar" src="{{rankData[2].avatar}}" />
+        <image class="podium-avatar" src="{{rankData[2].avatar}}" binderror="onAvatarError" data-index="2" />
         <view class="podium-rank bronze">3</view>
       </view>
       <text class="podium-name">{{rankData[2].name}}</text>

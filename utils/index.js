@@ -226,6 +226,9 @@ module.exports = {
   
   // 图片处理工具
   imageProcessor: require('./imageProcessor'),
+
+  // 动画工具
+  animations: require('./animations'),
   
   // 工具函数
   debounce,
@@ -241,3 +244,4 @@ module.exports = {
   safeJsonParse,
   getProperty
 };
+
