@@ -97,7 +97,7 @@ class PerformanceMonitor {
   setupPageLifecycle() {
     // 重写Page方法，自动监控页面加载
     const originalPage = Page;
-    Page = function (options) {
+    const customPage = function (options) {
       const onLoad = options.onLoad;
       const onShow = options.onShow;
       const onHide = options.onHide;
@@ -133,6 +133,9 @@ class PerformanceMonitor {
       
       return originalPage(options);
     };
+    
+    // 将重写后的Page函数赋值给全局变量
+    globalThis.Page = customPage;
   }
 
   // 开始页面加载监控
@@ -143,8 +146,7 @@ class PerformanceMonitor {
       endTime: 0,
       duration: 0,
       timestamp: new Date().toISOString(),
-      path: pageName,
-      startTime: Date.now()
+      path: pageName
     };
     
     // 记录页面加载开始时间（用于TTI计算）
@@ -296,18 +298,22 @@ class PerformanceMonitor {
   // 采集内存使用情况
   collectMemoryInfo() {
     try {
-      const systemInfo = wx.getSystemInfoSync();
+      const deviceInfo = wx.getDeviceInfo ? wx.getDeviceInfo() : {};
+      const windowInfo = wx.getWindowInfo ? wx.getWindowInfo() : {};
+      const appBaseInfo = wx.getAppBaseInfo ? wx.getAppBaseInfo() : {};
+      const systemInfo = wx.getSystemInfoSync ? wx.getSystemInfoSync() : (wx.getDeviceInfo ? wx.getDeviceInfo() : {});
+      
       const memoryData = {
         timestamp: new Date().toISOString(),
-        memory: systemInfo.memory || 0,
-        platform: systemInfo.platform,
-        version: systemInfo.version,
-        screenWidth: systemInfo.screenWidth,
-        screenHeight: systemInfo.screenHeight,
-        devicePixelRatio: systemInfo.devicePixelRatio,
-        brand: systemInfo.brand,
-        model: systemInfo.model,
-        SDKVersion: systemInfo.SDKVersion
+        memory: systemInfo.memory || deviceInfo.memory || 0,
+        platform: deviceInfo.platform || systemInfo.platform || '',
+        version: deviceInfo.version || systemInfo.version || '',
+        screenWidth: windowInfo.screenWidth || systemInfo.screenWidth || 0,
+        screenHeight: windowInfo.screenHeight || systemInfo.screenHeight || 0,
+        devicePixelRatio: windowInfo.devicePixelRatio || systemInfo.devicePixelRatio || 2,
+        brand: deviceInfo.brand || systemInfo.brand || '',
+        model: deviceInfo.model || systemInfo.model || '',
+        SDKVersion: appBaseInfo.SDKVersion || systemInfo.SDKVersion || ''
       };
       
       this.performanceData.memory.push(memoryData);
@@ -652,20 +658,16 @@ class PerformanceMonitor {
       return;
     }
     
-    try {
-      await this.retryRequest(() => 
-        wx.cloud.callFunction({
-          name: 'performanceMonitor',
-          data: {
-            action: 'reportBatch',
-            events,
-            timestamp: new Date().toISOString()
-          }
-        })
-      );
-    } catch (error) {
-      throw error;
-    }
+    await this.retryRequest(() => 
+      wx.cloud.callFunction({
+        name: 'performanceMonitor',
+        data: {
+          action: 'reportBatch',
+          events,
+          timestamp: new Date().toISOString()
+        }
+      })
+    );
   }
 
   // 带重试的请求

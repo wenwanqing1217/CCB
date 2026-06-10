@@ -229,7 +229,7 @@ Page({
     if (!meta) {
       return '交易活跃度';
     }
-    if (meta.windowHours == null) {
+    if (meta.windowHours === null) {
       return '累计交易活跃度';
     }
     if (meta.windowHours <= 24) {
@@ -253,14 +253,24 @@ Page({
     const openid = userInfo?.openid || '';
     const campusData = require('../../utils/campusData.js');
     
-    Promise.all([
-      cloudUtils.callCloudFunction({
+    const app = getApp();
+    const cachedHotBoxes = app.globalData.hotBoxes || [];
+    
+    const promises = [];
+    
+    if (cachedHotBoxes.length > 0 && !forceRefresh) {
+      promises.push(Promise.resolve({ data: cachedHotBoxes }));
+    } else {
+      promises.push(cloudUtils.callCloudFunction({
         name: 'getHotBoxes',
         showLoading: false,
         useCache: !forceRefresh,
         cacheKey: 'hotBoxes',
         cacheExpire: cacheConfig.defaultExpire
-      }),
+      }));
+    }
+    
+    promises.push(
       cloudUtils.callCloudFunction({
         name: 'getGrabOrders',
         showLoading: false,
@@ -294,7 +304,9 @@ Page({
         cacheKey: 'recommendedBoxes',
         cacheExpire: cacheConfig.defaultExpire
       })
-    ])
+    );
+    
+    Promise.all(promises)
       .then(([hotBoxesRes, grabOrdersRes, dormHeatRes, communityFeedRes, recommendRes]) => {
         let hotBoxes = hotBoxesRes && hotBoxesRes.data ? hotBoxesRes.data : [];
         let grabOrders = grabOrdersRes && grabOrdersRes.data ? grabOrdersRes.data : [];
@@ -701,7 +713,7 @@ Page({
     
     if (this.data.isDragging) {
       // 获取屏幕尺寸
-      const sysInfo = wx.getSystemInfoSync();
+      const sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : (wx.getSystemInfoSync ? wx.getSystemInfoSync() : {});
       const screenWidth = sysInfo.windowWidth;
       const screenHeight = sysInfo.windowHeight;
       const btnSize = 54; // 108rpx ≈ 54px
@@ -729,7 +741,7 @@ Page({
       this.navigateToAI();
     } else {
       // 拖动结束后，吸附到左右边缘
-      const sysInfo = wx.getSystemInfoSync();
+      const sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : (wx.getSystemInfoSync ? wx.getSystemInfoSync() : {});
       const screenWidth = sysInfo.windowWidth;
       const btnSize = 54;
       const currentX = this.data.aiBtnPosition.x;

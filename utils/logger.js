@@ -119,15 +119,18 @@ class Logger {
    */
   getDeviceInfo() {
     try {
-      const info = wx.getSystemInfoSync();
+      const deviceInfo = wx.getDeviceInfo ? wx.getDeviceInfo() : {};
+      const windowInfo = wx.getWindowInfo ? wx.getWindowInfo() : {};
+      const systemInfo = wx.getSystemInfoSync ? wx.getSystemInfoSync() : (wx.getDeviceInfo ? wx.getDeviceInfo() : {});
+      
       return {
-        platform: info.platform,
-        version: info.version,
-        screenWidth: info.screenWidth,
-        screenHeight: info.screenHeight,
-        devicePixelRatio: info.devicePixelRatio,
-        model: info.model,
-        system: info.system
+        platform: deviceInfo.platform || systemInfo.platform || '',
+        version: deviceInfo.version || systemInfo.version || '',
+        screenWidth: windowInfo.screenWidth || systemInfo.screenWidth || 0,
+        screenHeight: windowInfo.screenHeight || systemInfo.screenHeight || 0,
+        devicePixelRatio: windowInfo.devicePixelRatio || systemInfo.devicePixelRatio || 2,
+        model: deviceInfo.model || systemInfo.model || '',
+        system: deviceInfo.system || systemInfo.system || ''
       };
     } catch (e) {
       return {};
