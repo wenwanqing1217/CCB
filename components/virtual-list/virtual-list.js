@@ -33,8 +33,8 @@ Component({
 
   methods: {
     getContainerHeight: function () {
-      const sysInfo = wx.getSystemInfoSync();
-      const containerHeight = sysInfo.windowHeight - 200;
+      const windowInfo = wx.getWindowInfo();
+      const containerHeight = windowInfo.windowHeight - 200;
       this.setData({ containerHeight });
       this.updateList();
     },
@@ -44,6 +44,7 @@ Component({
       const totalHeight = data.length * itemHeight;
       const visibleCount = Math.ceil(containerHeight / itemHeight) + bufferSize * 2;
       
+      // initial render: set necessary fields once
       this.setData({
         totalHeight,
         endIndex: Math.min(visibleCount, data.length),
@@ -51,28 +52,33 @@ Component({
       });
     },
 
+    // Batch scroll updates to avoid frequent setData
     onScroll: function (e) {
-      const { scrollTop } = e.detail;
-      const { itemHeight, bufferSize, data } = this.properties;
-      
-      const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
-      const visibleCount = Math.ceil(this.data.containerHeight / itemHeight) + bufferSize * 2;
-      const endIndex = Math.min(startIndex + visibleCount, data.length);
+      const scrollTop = e.detail.scrollTop;
+      this._pendingScrollTop = scrollTop;
+      if (!this._pendingFlushScheduled) {
+        this._pendingFlushScheduled = true;
+        setTimeout(() => {
+          this._pendingFlushScheduled = false;
+          const { itemHeight, bufferSize, data } = this.properties;
+          const startIndex = Math.max(0, Math.floor(this._pendingScrollTop / itemHeight) - bufferSize);
+          const visibleCount = Math.ceil(this.data.containerHeight / itemHeight) + bufferSize * 2;
+          const endIndex = Math.min(startIndex + visibleCount, data.length);
 
-      if (startIndex !== this.data.startIndex || endIndex !== this.data.endIndex) {
-        const visibleData = data.slice(startIndex, endIndex);
-        
-        this.setData({
-          startIndex,
-          endIndex,
-          visibleData
-        });
-        
-        this.triggerEvent('scroll', {
-          startIndex,
-          endIndex,
-          scrollTop
-        });
+          if (startIndex !== this.data.startIndex || endIndex !== this.data.endIndex) {
+            const visibleData = data.slice(startIndex, endIndex);
+            this.setData({
+              startIndex,
+              endIndex,
+              visibleData
+            });
+            this.triggerEvent('scroll', {
+              startIndex,
+              endIndex,
+              scrollTop: this._pendingScrollTop
+            });
+          }
+        }, 16);
       }
     },
 
