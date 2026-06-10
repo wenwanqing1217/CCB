@@ -1,4 +1,6 @@
 const cloudUtils = require('./utils/cloud.js')
+// Patch runtime to add scheduleSetData helper to Page and Component
+try { require('./utils/schedule.js')(); } catch (e) { console.warn('schedule init failed', e); }
 
 App({
   onLaunch() {
@@ -18,8 +20,8 @@ App({
     // 检查登录状态
     this.checkLoginStatus();
     
-    // 预加载常用数据
-    this.preloadData();
+    // 预加载常用数据（已移除，改为由首页统一加载）
+    // this.preloadData();
   },
   
   setupErrorHandler() {
