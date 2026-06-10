@@ -582,7 +582,7 @@ Page({
 
   navigateToCoinLog() {
     wx.navigateTo({ url: '../wallet/wallet' });
-  }
+  },
 
   navigateToAchievement() {
     wx.navigateTo({ url: '../achievement/achievement' });

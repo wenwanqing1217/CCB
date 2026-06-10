@@ -351,7 +351,7 @@ Page({
         wx.showToast({ title: '页面跳转失败', icon: 'none' });
       }
     });
-  }
+  },
   
   // 原有的内联详情已废弃，保留方法仅做兼容
   _legacyShowBoxDetail(e) {
