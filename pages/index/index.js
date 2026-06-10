@@ -67,6 +67,29 @@ Page({
     this.initLazyLoad();
   },
 
+  // 合并 setData 更新，减少每帧多次调用导致的重绘
+  scheduleSetData(changes) {
+    if (!this._pendingSetData) this._pendingSetData = {};
+    Object.assign(this._pendingSetData, changes);
+    if (!this._flushScheduled) {
+      this._flushScheduled = true;
+      setTimeout(() => {
+        this._flushScheduled = false;
+        try {
+          this.setData(this._pendingSetData);
+        } catch (e) {
+          // 回退到逐个更新
+          for (const k in this._pendingSetData) {
+            const obj = {};
+            obj[k] = this._pendingSetData[k];
+            this.setData(obj);
+          }
+        }
+        this._pendingSetData = {};
+      }, 16);
+    }
+  },
+
   onShow() {
     logger.info('首页显示');
     this.updateUnreadCount();
@@ -692,7 +715,7 @@ Page({
   // AI按钮拖动事件
   onAiBtnTouchStart(e) {
     const touch = e.touches[0];
-    this.setData({
+    this.scheduleSetData({
       isDragging: false,
       '_touchStartPos.x': touch.clientX,
       '_touchStartPos.y': touch.clientY,
@@ -708,7 +731,7 @@ Page({
     
     // 如果移动距离超过5px，认为是拖动
     if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-      this.setData({ isDragging: true });
+      this.scheduleSetData({ isDragging: true });
     }
     
     if (this.data.isDragging) {
@@ -725,7 +748,7 @@ Page({
       newX = Math.max(0, Math.min(newX, screenWidth - btnSize));
       newY = Math.max(0, Math.min(newY, screenHeight - btnSize));
       
-      this.setData({
+      this.scheduleSetData({
         'aiBtnPosition.x': newX,
         'aiBtnPosition.y': newY
       });
@@ -734,7 +757,7 @@ Page({
 
   onAiBtnTouchEnd(e) {
     const wasDragging = this.data.isDragging;
-    this.setData({ isDragging: false });
+    this.scheduleSetData({ isDragging: false });
     
     // 如果没有拖动（只是点击），则触发点击事件
     if (!wasDragging) {
@@ -750,7 +773,7 @@ Page({
       // 吸附到最近的边缘
       const targetX = currentX < centerX ? 10 : screenWidth - btnSize - 10;
       
-      this.setData({
+      this.scheduleSetData({
         'aiBtnPosition.x': targetX
       });
     }
