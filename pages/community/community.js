@@ -181,6 +181,19 @@ Page({
     showPublishMenu: false
   },
 
+  scheduleSetData(changes) {
+    if (!this._pendingSetData) this._pendingSetData = {};
+    Object.assign(this._pendingSetData, changes);
+    if (!this._flushScheduled) {
+      this._flushScheduled = true;
+      setTimeout(() => {
+        this._flushScheduled = false;
+        try { this.setData(this._pendingSetData); } catch (e) { for (const k in this._pendingSetData) { const o = {}; o[k] = this._pendingSetData[k]; this.setData(o); } }
+        this._pendingSetData = {};
+      }, 16);
+    }
+  },
+
   onLoad() {
     console.log('校园社区页面加载');
     this.loadData();
@@ -199,7 +212,7 @@ Page({
   // 切换Tab
   setTab(e) {
     const tab = e.currentTarget.dataset.tab;
-    this.setData({ activeTab: tab });
+    this.scheduleSetData({ activeTab: tab });
   },
 
   // 跳转到免费送列表
@@ -258,7 +271,7 @@ Page({
 
   // 发布按钮触摸开始
   onPublishBtnTouchStart(e) {
-    this.setData({
+    this.scheduleSetData({
       isDragging: false,
       '_publishBtnStartPos.x': this.data.publishBtnPosition.x,
       '_publishBtnStartPos.y': this.data.publishBtnPosition.y,
@@ -273,17 +286,17 @@ Page({
     const moveY = e.touches[0].clientY - this.data._publishBtnStartPos.touchY;
     
     if (Math.abs(moveX) > 5 || Math.abs(moveY) > 5) {
-      this.setData({ isDragging: true });
+      this.scheduleSetData({ isDragging: true });
     }
     
     const newX = this.data._publishBtnStartPos.x + moveX;
     const newY = this.data._publishBtnStartPos.y + moveY;
     
     // 限制在屏幕范围内
-    const maxX = wx.getSystemInfoSync().windowWidth - 60;
-    const maxY = wx.getSystemInfoSync().windowHeight - 150;
-    
-    this.setData({
+    const windowInfo = wx.getWindowInfo();
+    const maxX = windowInfo.windowWidth - 60;
+    const maxY = windowInfo.windowHeight - 150;
+    this.scheduleSetData({
       'publishBtnPosition.x': Math.max(0, Math.min(newX, maxX)),
       'publishBtnPosition.y': Math.max(50, Math.min(newY, maxY))
     });
@@ -297,23 +310,24 @@ Page({
     }
     
     // 吸附到左右边缘
-    const screenWidth = wx.getSystemInfoSync().windowWidth;
+    const windowInfo = wx.getWindowInfo();
+    const screenWidth = windowInfo.windowWidth;
     const currentX = this.data.publishBtnPosition.x;
     const targetX = currentX < screenWidth / 2 ? 10 : screenWidth - 70;
     
-    this.setData({
+    this.scheduleSetData({
       'publishBtnPosition.x': targetX
     });
   },
 
   // 显示发布菜单
   showPublishMenu() {
-    this.setData({ showPublishMenu: true });
+    this.scheduleSetData({ showPublishMenu: true });
   },
 
   // 隐藏发布菜单
   hidePublishMenu() {
-    this.setData({ showPublishMenu: false });
+    this.scheduleSetData({ showPublishMenu: false });
   },
 
   // 阻止冒泡

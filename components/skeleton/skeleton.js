@@ -26,29 +26,50 @@ Component({
 
   lifetimes: {
     attached() {
-      this.setData({ visible: this.properties.loading });
+      if (this.scheduleSetData) {
+        this.scheduleSetData({ visible: this.properties.loading });
+      } else {
+        this.setData({ visible: this.properties.loading });
+      }
     }
   },
 
   observers: {
     loading: function (newVal) {
-      this.setData({ visible: newVal });
+      if (this.scheduleSetData) {
+        this.scheduleSetData({ visible: newVal });
+      } else {
+        this.setData({ visible: newVal });
+      }
     }
   },
 
   methods: {
+    scheduleSetData(changes) {
+      if (!this._pendingSetData) this._pendingSetData = {};
+      Object.assign(this._pendingSetData, changes);
+      if (!this._flushScheduled) {
+        this._flushScheduled = true;
+        setTimeout(() => {
+          this._flushScheduled = false;
+          try { this.setData(this._pendingSetData); } catch (e) { for (const k in this._pendingSetData) { const o = {}; o[k] = this._pendingSetData[k]; this.setData(o); } }
+          this._pendingSetData = {};
+        }, 16);
+      }
+    },
+
     show() {
-      this.setData({ visible: true });
+      this.scheduleSetData({ visible: true });
       this.triggerEvent('show');
     },
 
     hide() {
-      this.setData({ visible: false });
+      this.scheduleSetData({ visible: false });
       this.triggerEvent('hide');
     },
 
     toggle() {
-      this.setData({ visible: !this.data.visible });
+      this.scheduleSetData({ visible: !this.data.visible });
     }
   }
 });
