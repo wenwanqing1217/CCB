@@ -84,7 +84,7 @@ Page({
 
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `../exchangeDetail/exchangeDetail?id=${id}` });
+    wx.navigateTo({ url: `../box-detail/box-detail?id=${id}` });
   },
 
   applyExchange() {

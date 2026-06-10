@@ -1,0 +1,116 @@
+<!-- 图表组件 - 支持环形图/柱状图/折线图/热力图 -->
+<view class="charts-container">
+  <!-- 环形图 -->
+  <view class="chart-wrap" wx:if="{{type === 'ring'}}">
+    <view class="ring-container" style="width: {{width}}rpx; height: {{height}}rpx;">
+      <svg width="{{width}}" height="{{height}}" viewBox="0 0 {{width}} {{height}}">
+        <circle cx="{{centerX}}" cy="{{centerY}}" r="{{radius}}" 
+                fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="{{strokeWidth}}"/>
+        <circle wx:for="{{segments}}" wx:key="index"
+                cx="{{centerX}}" cy="{{centerY}}" r="{{radius}}"
+                fill="none" stroke="{{item.color}}"
+                stroke-width="{{strokeWidth}}"
+                stroke-dasharray="{{item.dasharray}}"
+                stroke-dashoffset="{{item.dashoffset}}"
+                transform="rotate(-90 {{centerX}} {{centerY}})"
+                style="transition: stroke-dashoffset 0.8s ease-out;">
+        </circle>
+      </svg>
+      <view class="ring-center">
+        <text class="ring-total">{{total}}</text>
+        <text class="ring-label">总计</text>
+      </view>
+    </view>
+    <view class="ring-legend">
+      <view class="legend-item" wx:for="{{data}}" wx:key="label">
+        <view class="legend-dot" style="background: {{item.color}}"></view>
+        <text class="legend-label">{{item.label}}</text>
+        <text class="legend-value">{{item.value}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 柱状图 -->
+  <view class="chart-wrap" wx:if="{{type === 'bar'}}">
+    <view class="bar-container" style="height: {{height}}rpx;">
+      <view class="bar-y-axis">
+        <text class="y-label" wx:for="{{yLabels}}" wx:key="*this">{{item}}</text>
+      </view>
+      <scroll-view class="bar-scroll" scroll-x wx:if="{{data.length > 6}}">
+        <view class="bar-chart" style="width: {{barChartWidth}}rpx;">
+          <view class="bar-item" wx:for="{{data}}" wx:key="label">
+            <view class="bar-col" style="height: {{height - 40}}rpx;">
+              <view class="bar-fill {{animate ? 'animated' : ''}}" 
+                    style="height: {{item.percent}}%; background: {{item.color || barColor}}; transition-delay: {{index * 0.05}}s;">
+                <text class="bar-value" wx:if="{{item.value > 0}}">{{item.displayValue}}</text>
+              </view>
+            </view>
+            <text class="bar-label">{{item.label}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="bar-chart" wx:else>
+        <view class="bar-item" wx:for="{{data}}" wx:key="label">
+          <view class="bar-col" style="height: {{height - 40}}rpx;">
+            <view class="bar-fill {{animate ? 'animated' : ''}}" 
+                  style="height: {{item.percent}}%; background: {{item.color || barColor}}; transition-delay: {{index * 0.05}}s;">
+              <text class="bar-value" wx:if="{{item.value > 0}}">{{item.displayValue}}</text>
+            </view>
+          </view>
+          <text class="bar-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 折线图 -->
+  <view class="chart-wrap" wx:if="{{type === 'line'}}">
+    <view class="line-container" style="height: {{height}}rpx;">
+      <svg width="100%" height="{{height}}" viewBox="0 0 {{lineViewBoxW}} {{height}}" preserveAspectRatio="none">
+        <!-- 网格线 -->
+        <line wx:for="{{gridLines}}" wx:key="index"
+              x1="0" y1="{{item}}" x2="{{lineViewBoxW}}" y2="{{item}}"
+              stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <!-- 填充区域 -->
+        <path d="{{areaPath}}" fill="{{fillColor || 'rgba(147,112,219,0.15)'}}"/>
+        <!-- 线条 -->
+        <path d="{{linePath}}" fill="none" 
+              stroke="{{lineColor || '#9370DB'}}" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round"
+              class="{{animate ? 'line-draw' : ''}}"/>
+        <!-- 数据点 -->
+        <circle wx:for="{{data}}" wx:key="label"
+                cx="{{item.cx}}" cy="{{item.cy}}" r="4"
+                fill="{{lineColor || '#9370DB'}}" stroke="#020208" stroke-width="2"/>
+      </svg>
+      <!-- X轴标签 -->
+      <view class="line-x-labels">
+        <text class="x-label" wx:for="{{data}}" wx:key="label" 
+              style="left: {{item.labelX}}%;">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热力图 -->
+  <view class="chart-wrap" wx:if="{{type === 'heatmap'}}">
+    <view class="heatmap-container">
+      <view class="heatmap-row" wx:for="{{heatGrid}}" wx:for-index="rowIdx" wx:key="rowIdx">
+        <view class="heatmap-cell" wx:for="{{item}}" wx:for-index="colIdx" wx:key="colIdx"
+              style="background: {{getHeatColor(colIdx, rowIdx)}};"
+              bindtap="onCellTap" data-row="{{rowIdx}}" data-col="{{colIdx}}">
+        </view>
+      </view>
+    </view>
+    <view class="heatmap-legend">
+      <view class="heat-legend-item" wx:for="{{heatLegend}}" wx:key="index">
+        <view class="heat-legend-dot" style="background: {{item.color}}"></view>
+        <text class="heat-legend-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="chart-empty" wx:if="{{data.length === 0 && type !== 'heatmap'}}">
+    <text class="empty-text">暂无数据</text>
+  </view>
+</view>

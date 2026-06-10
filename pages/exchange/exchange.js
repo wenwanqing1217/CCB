@@ -23,48 +23,48 @@ Page({
       {
         _id: '101',
         userName: '小明',
-        userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200',
+        userAvatar: '/images/blindbox/electronics_0_0.jpg',
         school: '中园公寓',
         createTime: '2小时前',
         wantItem: '游戏手柄',
         haveItem: '全新笔记本电脑',
-        images: ['https://images.unsplash.com/photo-1593642532400-2682810df593?w=400'],
+        images: ['/images/blindbox/fashion_0_0.jpg'],
         description: '全新未拆封笔记本电脑，想换一个游戏手柄，有意者私信',
         userId: 'user1'
       },
       {
         _id: '102',
         userName: '小红',
-        userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+        userAvatar: '/images/blindbox/fashion_1_1.jpg',
         school: '苏园居',
         createTime: '4小时前',
         wantItem: '英语四级资料',
         haveItem: '考研资料',
-        images: ['https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400'],
+        images: ['/images/blindbox/study_0_0.jpg'],
         description: '考研资料全套，想换英语四级资料，有需要的同学联系我',
         userId: 'user2'
       },
       {
         _id: '103',
         userName: '小李',
-        userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
+        userAvatar: '/images/blindbox/study_1_1.jpg',
         school: '中南公寓',
         createTime: '6小时前',
         wantItem: '篮球',
         haveItem: '足球',
-        images: ['https://images.unsplash.com/photo-1576410597635-72f4a4013690?w=400'],
+        images: ['/images/blindbox/sports_0_0.jpg'],
         description: '全新足球，想换一个篮球，有意者请私信',
         userId: 'user3'
       },
       {
         _id: '104',
         userName: '小王',
-        userAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
+        userAvatar: '/images/blindbox/electronics_0_0.jpg',
         school: '新柏居',
         createTime: '8小时前',
         wantItem: '滑板',
         haveItem: '羽毛球拍',
-        images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'],
+        images: ['/images/blindbox/fashion_0_0.jpg'],
         description: '尤尼克斯羽毛球拍，几乎全新，想换一个滑板',
         userId: 'user4'
       }
@@ -272,7 +272,7 @@ Page({
 
   navigateToPublish() {
     wx.navigateTo({
-      url: '../exchangePublish/exchangePublish'
+      url: '../box-publish/box-publish'
     });
   }
 });

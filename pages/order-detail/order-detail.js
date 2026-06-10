@@ -199,7 +199,7 @@ Page({
       _id: this.data.id || '123456',
       boxInfo: {
         title: '精美文具套装盲盒',
-        images: ['https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400'],
+        images: ['/images/blindbox/electronics_0_0.jpg'],
         desc: '包含笔、本子、尺子等精美文具，超值盲盒！'
       },
       price: 14.9,
@@ -219,7 +219,7 @@ Page({
       paymentMethod: 'offline',
       rider: {
         name: '李师傅',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200',
+        avatar: '/images/blindbox/fashion_0_0.jpg',
         phone: '13900139000',
         rating: 4.8,
         completedOrders: 128,

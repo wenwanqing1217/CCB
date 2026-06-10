@@ -17,31 +17,31 @@ Page({
       {
         _id: '1',
         name: '热心学长',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200',
+        avatar: '/images/blindbox/electronics_0_0.jpg',
         points: 520
       },
       {
         _id: '2',
         name: '爱心学姐',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+        avatar: '/images/blindbox/fashion_0_0.jpg',
         points: 380
       },
       {
         _id: '3',
         name: '环保小卫士',
-        avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcabd36?w=200',
+        avatar: '/images/blindbox/study_0_0.jpg',
         points: 320
       },
       {
         _id: '4',
         name: '闲置大王',
-        avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200',
+        avatar: '/images/blindbox/sports_0_0.jpg',
         points: 220
       },
       {
         _id: '5',
         name: '分享达人',
-        avatar: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=200',
+        avatar: '/images/blindbox/life_0_0.jpg',
         points: 180
       }
     ],
@@ -59,9 +59,9 @@ Page({
       {
         _id: '1',
         title: '考研数学复习全书',
-        images: ['https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400'],
+        images: ['/images/blindbox/electronics_1_1.jpg'],
         userName: '小明同学',
-        userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200',
+        userAvatar: '/images/blindbox/electronics_0_0.jpg',
         location: '中园公寓',
         status: 'pending',
         statusText: '待领取',
@@ -72,9 +72,9 @@ Page({
       {
         _id: '2',
         title: '闲置台灯 九成新',
-        images: ['https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400'],
+        images: ['/images/blindbox/fashion_1_1.jpg'],
         userName: '小红',
-        userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+        userAvatar: '/images/blindbox/fashion_0_0.jpg',
         location: '苏园居',
         status: 'pending',
         statusText: '待领取',
@@ -85,9 +85,9 @@ Page({
       {
         _id: '3',
         title: '英语四六级资料',
-        images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400'],
+        images: ['/images/blindbox/study_1_1.jpg'],
         userName: '学霸君',
-        userAvatar: 'https://images.unsplash.com/photo-1599566150163-29194dcabd36?w=200',
+        userAvatar: '/images/blindbox/study_0_0.jpg',
         location: '知行1栋',
         status: 'claimed',
         statusText: '已领完',
@@ -103,7 +103,7 @@ Page({
         _id: '1',
         wantItem: '蓝牙耳机',
         haveItem: '机械键盘',
-        userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200',
+        userAvatar: '/images/blindbox/electronics_0_0.jpg',
         userName: '键盘侠',
         createTime: '1小时前'
       },
@@ -111,7 +111,7 @@ Page({
         _id: '2',
         wantItem: '保温杯',
         haveItem: '充电宝',
-        userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+        userAvatar: '/images/blindbox/fashion_0_0.jpg',
         userName: '小美美',
         createTime: '3小时前'
       },
@@ -119,7 +119,7 @@ Page({
         _id: '3',
         wantItem: '羽毛球拍',
         haveItem: '篮球',
-        userAvatar: 'https://images.unsplash.com/photo-1599566150163-29194dcabd36?w=200',
+        userAvatar: '/images/blindbox/study_0_0.jpg',
         userName: '运动达人',
         createTime: '5小时前'
       }
@@ -130,7 +130,7 @@ Page({
       { 
         _id: '1', 
         name: '热心学长', 
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200', 
+        avatar: '/images/blindbox/electronics_0_0.jpg', 
         donateCount: 25, 
         exchangeCount: 12, 
         score: 520 
@@ -138,7 +138,7 @@ Page({
       { 
         _id: '2', 
         name: '爱心学姐', 
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200', 
+        avatar: '/images/blindbox/fashion_0_0.jpg', 
         donateCount: 18, 
         exchangeCount: 8, 
         score: 380 
@@ -146,7 +146,7 @@ Page({
       { 
         _id: '3', 
         name: '环保小卫士', 
-        avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcabd36?w=200', 
+        avatar: '/images/blindbox/study_0_0.jpg', 
         donateCount: 15, 
         exchangeCount: 10, 
         score: 320 
@@ -154,7 +154,7 @@ Page({
       { 
         _id: '4', 
         name: '闲置大王', 
-        avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200', 
+        avatar: '/images/blindbox/sports_0_0.jpg', 
         donateCount: 10, 
         exchangeCount: 6, 
         score: 220 
@@ -162,7 +162,7 @@ Page({
       { 
         _id: '5', 
         name: '分享达人', 
-        avatar: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=200', 
+        avatar: '/images/blindbox/life_0_0.jpg', 
         donateCount: 8, 
         exchangeCount: 5, 
         score: 180 
@@ -218,7 +218,7 @@ Page({
   // 跳转到免费送列表
   navigateToDonationList() {
     wx.navigateTo({ 
-      url: '../love/love',
+      url: '/pages/love/love',
       fail: () => {
         wx.showToast({
           title: '页面跳转失败',
@@ -232,7 +232,7 @@ Page({
   navigateToDonationDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ 
-      url: '../donationDetail/donationDetail?id=' + id,
+      url: '../box-detail/box-detail?id=' + id,
       fail: () => {
         wx.showToast({
           title: '页面跳转中',
@@ -245,7 +245,7 @@ Page({
   // 跳转到交换列表
   navigateToExchangeList() {
     wx.navigateTo({ 
-      url: '../exchange/exchange',
+      url: '/pages/love/love',
       fail: () => {
         wx.showToast({
           title: '页面跳转失败',
@@ -259,7 +259,7 @@ Page({
   navigateToExchangeDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ 
-      url: '../exchangeDetail/exchangeDetail?id=' + id,
+      url: '../box-detail/box-detail?id=' + id,
       fail: () => {
         wx.showToast({
           title: '页面跳转失败',
@@ -339,7 +339,7 @@ Page({
   navigateToPublishDonation() {
     this.hidePublishMenu();
     wx.navigateTo({ 
-      url: '../love-donate/love-donate',
+      url: '../box-publish/box-publish',
       fail: () => {
         wx.showToast({
           title: '页面跳转失败',
@@ -353,7 +353,7 @@ Page({
   navigateToPublishExchange() {
     this.hidePublishMenu();
     wx.navigateTo({ 
-      url: '../exchangePublish/exchangePublish',
+      url: '../box-publish/box-publish',
       fail: () => {
         wx.showToast({
           title: '页面跳转失败',
@@ -376,7 +376,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '校园社区 - 闲置流转，温暖传递',
-      path: '/pages/community/community'
+      path: '/pages/love/love'
     };
   }
 });

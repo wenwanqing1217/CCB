@@ -1,3 +1,5 @@
+const { boxes, searchBoxes } = require('../../data/mock-data.js');
+
 Page({
   data: {
     keyword: '',

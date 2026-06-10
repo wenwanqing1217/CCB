@@ -1,3 +1,5 @@
+const { getBoxById } = require('../../data/mock-data.js');
+
 Page({
   data: {
     boxInfo: {},
@@ -28,7 +30,7 @@ Page({
         _id: '1',
         title: '神秘电子产品盲盒',
         price: 29.9,
-        images: ['https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=600'],
+        images: ['/images/blindbox/electronics_0_0.jpg'],
         desc: '内含各种电子产品，可能开出蓝牙耳机、充电宝、数据线等实用物品',
         campus: '中园公寓',
         category: 'electronics'
@@ -37,7 +39,7 @@ Page({
         _id: '2',
         title: '校园生活盲盒',
         price: 19.9,
-        images: ['https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600'],
+        images: ['/images/blindbox/fashion_0_0.jpg'],
         desc: '内含各种校园生活用品，可能开出保温杯、台灯、收纳盒等实用物品',
         campus: '苏园居',
         category: 'life'
@@ -46,7 +48,7 @@ Page({
         _id: '3',
         title: '学习资料盲盒',
         price: 24.9,
-        images: ['https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600'],
+        images: ['/images/blindbox/fashion_1_1.jpg'],
         desc: '内含各种学习资料，可能开出考研资料、四六级词汇、笔记本等',
         campus: '中南公寓',
         category: 'study'
@@ -55,7 +57,7 @@ Page({
         _id: '4',
         title: '运动装备盲盒',
         price: 39.9,
-        images: ['https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600'],
+        images: ['/images/blindbox/study_0_0.jpg'],
         desc: '内含各种运动装备，可能出瑜伽垫、哑铃、跳绳、护具等',
         campus: '新柏居',
         category: 'sports'
@@ -64,7 +66,7 @@ Page({
         _id: '5',
         title: '时尚配饰盲盒',
         price: 29.9,
-        images: ['https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=600'],
+        images: ['/images/blindbox/study_1_1.jpg'],
         desc: '内含各种时尚配饰，可能开出戒指、耳钉、手链、发饰等',
         campus: '三友园',
         category: 'fashion'
@@ -73,7 +75,7 @@ Page({
         _id: '6',
         title: '文创用品盲盒',
         price: 14.9,
-        images: ['https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600'],
+        images: ['/images/blindbox/sports_0_0.jpg'],
         desc: '内含各种文创用品，可能出水杯、鼠标垫、文件夹、文件袋等',
         campus: '中园公寓',
         category: 'study'
@@ -82,7 +84,7 @@ Page({
         _id: '7',
         title: '创意电子产品盲盒',
         price: 39.9,
-        images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600'],
+        images: ['/images/blindbox/electronics_0_0.jpg'],
         desc: '内含各种创意电子产品，可能出智能手环、蓝牙音箱、智能闹钟等',
         campus: '苏园居',
         category: 'electronics'
@@ -91,7 +93,7 @@ Page({
         _id: '8',
         title: '潮流运动盲盒',
         price: 49.9,
-        images: ['https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600'],
+        images: ['/images/blindbox/fashion_0_0.jpg'],
         desc: '内含各种潮流运动装备，可能出运动背包、护腕、运动水壶等',
         campus: '中南公寓',
         category: 'sports'
@@ -225,7 +227,7 @@ Page({
       } else {
         wx.showToast({ title: '订单提交成功', icon: 'success' });
         setTimeout(() => {
-          wx.navigateTo({ url: '../order-list/order-list' });
+          wx.navigateTo({ url: '../order/order' });
         }, 1500);
       }
     }, 1000);

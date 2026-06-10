@@ -1,0 +1,9 @@
+{
+  "name": "merchant_applies",
+  "version": "1.0.0",
+  "description": "merchant_applies",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

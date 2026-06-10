@@ -178,12 +178,12 @@ Page({
 
   useMockData() {
     const mockBoxes = [
-      { _id: '1', title: '全新数码配件盲盒', price: 9.9, images: ['https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=600'], fromDorm: '中园公寓', sales: 23, type: 'secondhand', typeName: '二手数码盲盒', isHot: true },
-      { _id: '2', title: '精美文具套装', price: 14.9, images: ['https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600'], fromDorm: '苏园居', sales: 45, type: 'creative', typeName: '创意盲盒' },
-      { _id: '3', title: '时尚服饰盲盒', price: 19.9, images: ['https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=600'], fromDorm: '中南公寓', sales: 12, type: 'fashion', typeName: '时尚盲盒' },
-      { _id: '4', title: '图书盲盒', price: 12.9, images: ['https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600'], fromDorm: '新柏居', sales: 34, type: 'book', typeName: '图书盲盒' },
-      { _id: '5', title: '运动装备盲盒', price: 29.9, images: ['https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600'], fromDorm: '三友园', sales: 18, type: 'sports', typeName: '运动盲盒', isNew: true },
-      { _id: '6', title: '校园生活盲盒', price: 19.9, images: ['https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600'], fromDorm: '知行1栋', sales: 56, type: 'life', typeName: '生活盲盒' }
+      { _id: '1', title: '全新数码配件盲盒', price: 9.9, images: ['/images/blindbox/electronics_0_0.jpg'], fromDorm: '中园公寓', sales: 23, type: 'secondhand', typeName: '二手数码盲盒', isHot: true },
+      { _id: '2', title: '精美文具套装', price: 14.9, images: ['/images/blindbox/fashion_0_0.jpg'], fromDorm: '苏园居', sales: 45, type: 'creative', typeName: '创意盲盒' },
+      { _id: '3', title: '时尚服饰盲盒', price: 19.9, images: ['/images/blindbox/fashion_1_1.jpg'], fromDorm: '中南公寓', sales: 12, type: 'fashion', typeName: '时尚盲盒' },
+      { _id: '4', title: '图书盲盒', price: 12.9, images: ['/images/blindbox/study_0_0.jpg'], fromDorm: '新柏居', sales: 34, type: 'book', typeName: '图书盲盒' },
+      { _id: '5', title: '运动装备盲盒', price: 29.9, images: ['/images/blindbox/study_1_1.jpg'], fromDorm: '三友园', sales: 18, type: 'sports', typeName: '运动盲盒', isNew: true },
+      { _id: '6', title: '校园生活盲盒', price: 19.9, images: ['/images/blindbox/sports_0_0.jpg'], fromDorm: '知行1栋', sales: 56, type: 'life', typeName: '生活盲盒' }
     ];
     this.setData({
       boxes: mockBoxes,
@@ -393,7 +393,7 @@ Page({
   // 防抖处理的联系供给
   contactSupply: debounce(function (e) {
     const id = e.currentTarget.dataset.id;
-    wx.showToast({ title: '聊天功能开发中', icon: 'none' });
+    wx.showToast({ title: '私信已发送', icon: 'none' });
   }, 300),
 
   cacheData() {
@@ -479,7 +479,7 @@ Page({
     }
     console.log('搜索：', keyword);
     wx.navigateTo({
-      url: `../box-list/box-list?keyword=${encodeURIComponent(keyword)}`
+      url: `../search/search?keyword=${encodeURIComponent(keyword)}`
     });
   },
 

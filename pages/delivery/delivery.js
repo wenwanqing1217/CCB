@@ -69,6 +69,6 @@ Page({
   },
 
   navigateToDonation() {
-    wx.navigateTo({ url: '../donation/donation' });
+    wx.switchTab({ url: '/pages/love/love' });
   }
 });

@@ -1,0 +1,22 @@
+<view
+  class="common-card"
+  :class="{
+    'card-hoverable': hoverable,
+    'card-hovered': isHovered,
+    'card-bordered': bordered,
+    'card-shadow': shadow,
+    'card-glow': glow
+  }"
+  :style="[
+    { padding: padding, borderRadius: radius },
+    customStyle
+  ]"
+  @tap="handleTap"
+  @longpress="handleLongPress"
+  @touchstart="onTouchStart"
+  @touchend="onTouchEnd"
+  @touchcancel="onTouchCancel"
+>
+  <slot />
+  <view class="card-glow-effect" />
+</view>

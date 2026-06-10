@@ -1,4 +1,4 @@
-<view class="page">
+<view class="page particle-bg">
   <view class="card form">
     <view class="form-item">
       <view class="label">盲盒标题</view>

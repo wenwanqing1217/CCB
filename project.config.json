@@ -2,7 +2,7 @@
   "miniprogramRoot": "./",
   "projectname": "campus-blindbox",
   "description": "校园盲盒即时配送平台",
-  "appid": "YOUR_APPID",
+  "appid": "wx4846e890eee295a4",
   "setting": {
     "urlCheck": false,
     "es6": true,
@@ -38,10 +38,15 @@
     "disableUseStrict": false,
     "minifyWXML": true,
     "showES6CompileOption": false,
-    "useCompilerPlugins": false
+    "useCompilerPlugins": false,
+    "compileWorklet": false,
+    "localPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.3.5",
+  "libVersion": "3.14.3",
   "srcMiniprogramRoot": "miniprogram/",
   "condition": {
     "search": {
@@ -97,5 +102,10 @@
     "formatOnSave": true
   },
   "cloudfunctionRoot": "cloudfunctions/",
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  }
 }

@@ -1,0 +1,325 @@
+page { background: #020208; }
+
+.container {
+  min-height: 100vh;
+  padding: 24rpx;
+  padding-bottom: 100rpx;
+  position: relative;
+}
+
+/* 统计概览 */
+.stats-overview {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 24rpx 16rpx;
+  text-align: center;
+  border-radius: 20rpx;
+}
+
+.stat-num {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #c8a2ff;
+  text-shadow: 0 0 20rpx rgba(147,112,219,0.5);
+  line-height: 1.2;
+}
+
+.stat-num.accent { color: #A78BFA; text-shadow: 0 0 20rpx rgba(167,139,250,0.5); }
+.stat-num.gold { color: #FBBF24; text-shadow: 0 0 20rpx rgba(251,191,36,0.5); }
+
+.stat-label {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+  margin-top: 8rpx;
+}
+
+/* 进度条 */
+.progress-section {
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.progress-title { font-size: 26rpx; color: rgba(255,255,255,0.8); font-weight: 600; }
+.progress-percent { font-size: 28rpx; color: #c8a2ff; font-weight: 700; }
+
+.progress-bar-wrap {
+  height: 12rpx;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999rpx;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #c8a2ff);
+  border-radius: 999rpx;
+  box-shadow: 0 0 20rpx rgba(147,112,219,0.5);
+  transition: width 1s ease-out;
+}
+
+/* 分类 */
+.category-scroll {
+  margin-bottom: 20rpx;
+  white-space: nowrap;
+}
+
+.category-list {
+  display: flex;
+  gap: 16rpx;
+  padding: 4rpx 0;
+}
+
+.category-item {
+  padding: 12rpx 28rpx;
+  background: rgba(255,255,255,0.05);
+  border: 1rpx solid rgba(255,255,255,0.08);
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.6);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.category-item.active {
+  background: rgba(147,112,219,0.2);
+  border-color: rgba(147,112,219,0.4);
+  color: #c8a2ff;
+  box-shadow: 0 0 20rpx rgba(147,112,219,0.2);
+}
+
+/* 成就网格 */
+.achievement-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.achievement-card.hidden {
+  display: none;
+}
+
+.achievement-card {
+  padding: 24rpx;
+  text-align: center;
+  border-radius: 20rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-card.locked {
+  opacity: 0.6;
+}
+
+.achievement-card.locked .ach-icon { filter: grayscale(1); }
+
+.ach-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  margin: 0 auto 12rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
+  border: 2rpx solid rgba(255,255,255,0.1);
+  position: relative;
+}
+
+.ach-icon-wrap.common { border-color: rgba(156,163,175,0.4); }
+.ach-icon-wrap.uncommon { border-color: rgba(52,211,153,0.4); box-shadow: 0 0 15rpx rgba(52,211,153,0.3); }
+.ach-icon-wrap.rare { border-color: rgba(96,165,250,0.4); box-shadow: 0 0 15rpx rgba(96,165,250,0.3); }
+.ach-icon-wrap.epic { border-color: rgba(167,139,250,0.5); box-shadow: 0 0 20rpx rgba(167,139,250,0.4); }
+.ach-icon-wrap.legendary { border-color: rgba(251,191,36,0.5); box-shadow: 0 0 25rpx rgba(251,191,36,0.4); animation: legendaryShine 2s ease-in-out infinite; }
+
+.ach-icon { font-size: 36rpx; }
+
+.ach-rarity-dot {
+  position: absolute;
+  top: -4rpx;
+  right: -4rpx;
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  border: 2rpx solid #020208;
+}
+
+.achievement-card.unlocked .ach-icon-wrap.common .ach-rarity-dot { background: #9CA3AF; }
+.achievement-card.unlocked .ach-icon-wrap.uncommon .ach-rarity-dot { background: #34D399; }
+.achievement-card.unlocked .ach-icon-wrap.rare .ach-rarity-dot { background: #60A5FA; }
+.achievement-card.unlocked .ach-icon-wrap.epic .ach-rarity-dot { background: #A78BFA; }
+.achievement-card.unlocked .ach-icon-wrap.legendary .ach-rarity-dot { background: #FBBF24; }
+
+.ach-name {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 4rpx;
+}
+
+.ach-desc {
+  display: block;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.4;
+}
+
+.ach-progress {
+  margin-top: 12rpx;
+}
+
+.ach-progress-bar {
+  height: 6rpx;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999rpx;
+  overflow: hidden;
+  margin-bottom: 4rpx;
+}
+
+.ach-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #c8a2ff);
+  border-radius: 999rpx;
+}
+
+.ach-progress-text {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.3);
+}
+
+.ach-status { margin-top: 8rpx; }
+
+.status-unlocked {
+  font-size: 20rpx;
+  color: #4ECDC4;
+  font-weight: 500;
+}
+
+.status-locked {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.3);
+}
+
+/* 详情弹窗 */
+.detail-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.detail-modal.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+}
+
+.modal-card {
+  position: relative;
+  z-index: 1;
+  width: 560rpx;
+  padding: 48rpx 40rpx;
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16rpx;
+  right: 24rpx;
+  font-size: 36rpx;
+  color: rgba(255,255,255,0.4);
+  padding: 8rpx;
+}
+
+.modal-icon-wrap {
+  width: 120rpx;
+  height: 120rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: rgba(255,255,255,0.05);
+}
+
+.modal-icon-wrap.common { border: 2rpx solid rgba(156,163,175,0.4); box-shadow: 0 0 20rpx rgba(156,163,175,0.3); }
+.modal-icon-wrap.uncommon { border: 2rpx solid rgba(52,211,153,0.4); box-shadow: 0 0 25rpx rgba(52,211,153,0.3); }
+.modal-icon-wrap.rare { border: 2rpx solid rgba(96,165,250,0.4); box-shadow: 0 0 25rpx rgba(96,165,250,0.3); }
+.modal-icon-wrap.epic { border: 2rpx solid rgba(167,139,250,0.5); box-shadow: 0 0 35rpx rgba(167,139,250,0.4); }
+.modal-icon-wrap.legendary { border: 2rpx solid rgba(251,191,36,0.5); box-shadow: 0 0 45rpx rgba(251,191,36,0.4); }
+
+.modal-icon { font-size: 56rpx; }
+
+.modal-icon-glow {
+  position: absolute;
+  inset: -10rpx;
+  border-radius: 50%;
+  opacity: 0.3;
+  filter: blur(15rpx);
+}
+
+.modal-name { font-size: 36rpx; font-weight: 700; color: #fff; margin-bottom: 8rpx; }
+.modal-desc { font-size: 26rpx; color: rgba(255,255,255,0.6); line-height: 1.5; margin-bottom: 16rpx; }
+.modal-condition { font-size: 24rpx; color: rgba(255,255,255,0.4); margin-bottom: 16rpx; }
+
+.modal-progress { margin: 16rpx 0; }
+.modal-progress .progress-bar-wrap { height: 8rpx; }
+.modal-progress .progress-text { font-size: 22rpx; color: rgba(255,255,255,0.4); margin-top: 4rpx; display: block; }
+
+.modal-badge {
+  display: inline-block;
+  padding: 6rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  margin: 8rpx 0;
+}
+
+.modal-badge.common { background: rgba(156,163,175,0.2); color: #9CA3AF; }
+.modal-badge.uncommon { background: rgba(52,211,153,0.2); color: #34D399; }
+.modal-badge.rare { background: rgba(96,165,250,0.2); color: #60A5FA; }
+.modal-badge.epic { background: rgba(167,139,250,0.2); color: #A78BFA; }
+.modal-badge.legendary { background: rgba(251,191,36,0.2); color: #FBBF24; }
+
+.modal-reward {
+  display: block;
+  font-size: 24rpx;
+  color: #FBBF24;
+  margin-top: 12rpx;
+}
+
+.modal-time {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.3);
+  margin-top: 8rpx;
+}
+
+@keyframes legendaryShine {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
+}

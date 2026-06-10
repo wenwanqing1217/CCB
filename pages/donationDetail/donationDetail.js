@@ -34,8 +34,8 @@ Page({
         _id: '1',
         title: '闲置书籍一批',
         images: [
-          'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&h=600&fit=crop',
-          'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=600&fit=crop'
+          '/images/blindbox/electronics_0_0.jpg',
+          '/images/blindbox/fashion_0_0.jpg'
         ],
         description: '整理宿舍发现很多书没地方放，都是很好的书，希望送给有需要的同学。包括高等数学、大学英语、计算机基础等教材，都是八成新以上。',
         category: '图书',
@@ -43,16 +43,16 @@ Page({
         location: '中园公寓',
         deliveryFee: 1,
         tags: ['图书', '学习', '教材'],
-        userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop',
+        userAvatar: '/images/blindbox/fashion_1_1.jpg',
         userName: '小明',
         status: 'pending',
         statusText: '待领取',
         createTime: '2024-01-15'
       },
       similarItems: [
-        { _id: '2', images: ['https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&h=300&fit=crop'], title: '文具套装', location: '中南公寓' },
-        { _id: '3', images: ['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop'], title: '台灯', location: '新柏居' },
-        { _id: '4', images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=300&fit=crop'], title: '收纳盒', location: '清水居' }
+        { _id: '2', images: ['/images/blindbox/study_0_0.jpg'], title: '文具套装', location: '中南公寓' },
+        { _id: '3', images: ['/images/blindbox/study_1_1.jpg'], title: '台灯', location: '新柏居' },
+        { _id: '4', images: ['/images/blindbox/sports_0_0.jpg'], title: '收纳盒', location: '清水居' }
       ]
     });
   },
@@ -86,12 +86,12 @@ Page({
   },
 
   navigateToDonation() {
-    wx.navigateTo({ url: '../donation/donation' });
+    wx.navigateTo({ url: '/pages/love/love' });
   },
 
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: '../donationDetail/donationDetail?id=' + id });
+    wx.navigateTo({ url: '../box-detail/box-detail?id=' + id });
   },
 
   claimDonation() {

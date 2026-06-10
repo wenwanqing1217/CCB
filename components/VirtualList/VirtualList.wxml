@@ -1,0 +1,34 @@
+<view class="virtual-list-container" style="height: {{containerHeight || windowHeight}}rpx;">
+  <scroll-view
+    scroll-y
+    class="virtual-scroll"
+    :show-scrollbar="showScrollbar"
+    :scroll-top="scrollTop"
+    @scroll="onScroll"
+    @scrolltolower="onScrollToLower"
+    @scrolltoupper="onScrollToUpper"
+    enhanced
+    :bounces="true"
+  >
+    <view class="virtual-scroll-content" :style="{ height: totalHeight + 'rpx' }">
+      <view 
+        class="virtual-item-spacer" 
+        :style="{ height: startIndex * itemHeight + 'rpx' }"
+      />
+      <view
+        wx:for="visibleData"
+        wx:key="__virtualIndex"
+        class="virtual-item"
+        :data-index="item.__virtualIndex"
+        @tap="handleItemTap"
+        @longpress="handleItemLongPress"
+      >
+        <slot :item="item" :index="item.__virtualIndex" />
+      </view>
+      <view 
+        class="virtual-item-spacer" 
+        :style="{ height: (data.length - endIndex - 1) * itemHeight + 'rpx' }"
+      />
+    </view>
+  </scroll-view>
+</view>

@@ -10,13 +10,13 @@ exports.main = async (event, context) => {
   try {
     switch (action) {
       case 'deduct':
-        return await deductStock(params);
+        return await deductStock({ ...params, openid });
       case 'restore':
-        return await restoreStock(params);
+        return await restoreStock({ ...params, openid });
       case 'query':
         return await queryStock(params);
       case 'sync':
-        return await syncStock(params);
+        return await syncStock({ ...params, openid });
       case 'warning':
         return await getStockWarning();
       default:
@@ -28,7 +28,7 @@ exports.main = async (event, context) => {
   }
 };
 
-async function deductStock({ boxId, quantity = 1 }) {
+async function deductStock({ boxId, quantity = 1, openid }) {
   const { stock } = await db.collection('boxes').doc(boxId).get();
   if (!stock) {
     return { success: false, error: '盲盒不存在' };
@@ -64,7 +64,7 @@ async function deductStock({ boxId, quantity = 1 }) {
   return { success: true, currentStock: stock - quantity };
 }
 
-async function restoreStock({ boxId, quantity = 1, orderId }) {
+async function restoreStock({ boxId, quantity = 1, orderId, openid }) {
   const box = await db.collection('boxes').doc(boxId).get();
   if (!box.data) {
     return { success: false, error: '盲盒不存在' };
@@ -104,7 +104,7 @@ async function queryStock({ boxId }) {
   };
 }
 
-async function syncStock({ boxId, actualStock }) {
+async function syncStock({ boxId, actualStock, openid }) {
   const box = await db.collection('boxes').doc(boxId).get();
   if (!box.data) {
     return { success: false, error: '盲盒不存在' };

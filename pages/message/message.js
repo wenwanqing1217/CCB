@@ -52,7 +52,7 @@ Page({
       {
         id: '5',
         name: '张三',
-        avatar: 'https://picsum.photos/100/100?random=36',
+        avatar: '/images/blindbox/electronics_0_0.jpg',
         message: '这个盲盒还有吗？我想买',
         time: '14:20',
         unread: false,
@@ -61,7 +61,7 @@ Page({
       {
         id: '6',
         name: '李四',
-        avatar: 'https://picsum.photos/100/100?random=37',
+        avatar: '/images/blindbox/fashion_0_0.jpg',
         message: '好的，明天下午东区见',
         time: '星期一',
         unread: false,
@@ -153,7 +153,7 @@ Page({
     console.log('跳转到系统消息');
     this.setData({ systemUnread: 0 });
     wx.navigateTo({
-      url: '/pages/system-message/system-message',
+      url: '/pages/message/message',
       success: function (res) {
         console.log('跳转到系统消息页面成功');
       },
@@ -173,7 +173,7 @@ Page({
     console.log('跳转到订单消息');
     this.setData({ orderUnread: 0 });
     wx.navigateTo({
-      url: '/pages/order-message/order-message',
+      url: '/pages/message/message',
       success: function (res) {
         console.log('跳转到订单消息页面成功');
       },

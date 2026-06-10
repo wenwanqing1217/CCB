@@ -1,4 +1,4 @@
-/* 骑手页面 - 紫色霓虹灯风�?*/
+/* 骑手页面 - 紫色霓虹灯风格 */
 
 .container {
   padding: 24rpx;
@@ -44,7 +44,7 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* 状态卡�?*/
+/* 状态卡片 */
 .status-card {
   position: relative;
   background: linear-gradient(135deg, rgba(12, 12, 28, 0.95) 0%, rgba(5, 5, 15, 0.98) 100%);
@@ -673,7 +673,7 @@
   box-shadow: 0 0 15rpx rgba(147, 112, 219, 0.3);
 }
 
-/* 订单状�?*/
+/* 订单状态 */
 .order-status {
   font-size: 24rpx;
   padding: 4rpx 12rpx;

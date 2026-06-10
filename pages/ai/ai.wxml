@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <!-- AI助手信息 -->
   <view class="ai-header">
     <view class="ai-avatar">艾</view>

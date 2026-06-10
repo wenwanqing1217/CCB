@@ -1,4 +1,4 @@
-/* 商家申请页面 - 紫色霓虹灯风�?*/
+/* 商家申请页面 - 紫色霓虹灯风格 */
 
 .container {
   padding: 32rpx 24rpx;
@@ -435,7 +435,7 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* 身份证上�?*/
+/* 身份证上传 */
 .id-card-upload {
   display: flex;
   gap: 20rpx;

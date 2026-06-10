@@ -34,7 +34,7 @@ Page({
       const userInfo = {
         id: this.data.userId,
         name: this.data.userId === '1' ? '小明' : '小红',
-        avatar: this.data.userId === '1' ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200' : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+        avatar: this.data.userId === '1' ? '/images/blindbox/electronics_0_0.jpg' : '/images/blindbox/fashion_0_0.jpg',
         college: '计算机学院',
         dorm: '中园公寓302',
         vipLevel: 2,
@@ -75,7 +75,7 @@ Page({
         {
           _id: '1',
           title: '全新数码配件盲盒',
-          images: ['https://images.unsplash.com/photo-1550009158-9ebf69056955?w=400&h=400&fit=crop'],
+          images: ['/images/blindbox/fashion_1_1.jpg'],
           price: 9.9,
           sales: 32,
           likes: 15,
@@ -85,7 +85,7 @@ Page({
         {
           _id: '2',
           title: '精美文具套装',
-          images: ['https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&h=400&fit=crop'],
+          images: ['/images/blindbox/study_0_0.jpg'],
           price: 14.9,
           sales: 18,
           likes: 8,
@@ -95,7 +95,7 @@ Page({
         {
           _id: '3',
           title: '时尚服饰盲盒',
-          images: ['https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=400&fit=crop'],
+          images: ['/images/blindbox/study_1_1.jpg'],
           price: 19.9,
           sales: 5,
           likes: 3,
@@ -116,14 +116,14 @@ Page({
         {
           _id: '1',
           title: '闲置书籍一批',
-          image: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=400&fit=crop',
+          image: '/images/blindbox/sports_0_0.jpg',
           time: '2024-01-15',
           status: 'completed'
         },
         {
           _id: '2',
           title: '旧衣物捐赠',
-          image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=400&fit=crop',
+          image: '/images/blindbox/electronics_0_0.jpg',
           time: '2024-01-10',
           status: 'completed'
         }
@@ -167,7 +167,7 @@ Page({
   viewDonationDetail(e) {
     const donationId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `../donationDetail/donationDetail?id=${donationId}`
+      url: `../box-detail/box-detail?id=${donationId}`
     });
   }
 });

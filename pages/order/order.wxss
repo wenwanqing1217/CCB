@@ -1,4 +1,4 @@
-/* 订单页面 - 深色霓虹灯主�?*/
+/* 订单页面 - 深色霓虹灯主题 */
 
 .container {
   min-height: 100vh;
@@ -106,7 +106,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* 筛�?Tab */
+/* 筛选Tab */
 .filter-tabs {
   display: flex;
   gap: 16rpx;
@@ -586,7 +586,7 @@
   box-shadow: 0 0 25rpx rgba(147, 112, 219, 0.3);
 }
 
-/* 加载状�?*/
+/* 加载状态 */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -616,7 +616,7 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* 空状�?*/
+/* 空状态 */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -708,3 +708,46 @@
 
 
 
+/* 订单页面增强 */
+.order-card {
+  transition: all 0.3s ease;
+}
+
+.order-card:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 0 25rpx rgba(147,112,219,0.2);
+}
+
+/* 状态标签 */
+.status-tag {
+  transition: all 0.3s;
+}
+
+/* 物流追踪时间线动画 */
+.timeline-dot {
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(147,112,219,0.4); }
+  50% { box-shadow: 0 0 0 10rpx rgba(147,112,219,0); }
+}
+
+/* 搜索页面 */
+.search-history-tag {
+  transition: all 0.3s ease;
+}
+
+.search-history-tag:active {
+  transform: scale(0.95);
+  background: rgba(147,112,219,0.15);
+}
+
+.hot-search-item {
+  transition: all 0.3s ease;
+}
+
+.hot-search-item:active {
+  transform: translateX(8rpx);
+  color: #c8a2ff;
+}

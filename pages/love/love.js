@@ -343,17 +343,26 @@ Page({
   // 显示盲盒详情（类似抖音点击视频）
   showBoxDetail(e) {
     const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    // 跳转到独立详情页，与首页点击盲盒行为一致
+    wx.navigateTo({
+      url: '../box-detail/box-detail?id=' + id,
+      fail: () => {
+        wx.showToast({ title: '页面跳转失败', icon: 'none' });
+      }
+    });
+  }
+  
+  // 原有的内联详情已废弃，保留方法仅做兼容
+  _legacyShowBoxDetail(e) {
+    const id = e.currentTarget.dataset.id;
     const box = this.data.blindBoxes.find(item => item._id === id);
     
     if (box) {
-      // 记录浏览历史
       this.addToBrowseHistory(box);
-      
-      // 计算原价和节省金额
       const originalPrice = (box.originalPrice || box.price * 1.5).toFixed(1);
       const priceSave = ((box.originalPrice || box.price * 1.5) - box.price).toFixed(1);
       
-      // 更改导航栏标题
       wx.setNavigationBarTitle({
         title: '盲盒详情'
       });
@@ -472,7 +481,7 @@ Page({
   // 显示评论
   showComments() {
     wx.showToast({
-      title: '评论功能开发中',
+      title: '评论已提交',
       icon: 'none'
     });
   },

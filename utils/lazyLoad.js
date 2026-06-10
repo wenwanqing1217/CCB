@@ -8,6 +8,11 @@ class LazyLoad {
       thresholds: [0.1],
       observeAll: false
     };
+    // 降级方案：分批加载队列
+    this.fallbackQueue = [];
+    this.fallbackProcessing = false;
+    this.fallbackBatchSize = 2;
+    this.fallbackInterval = 200;
     this.init();
   }
 
@@ -41,8 +46,9 @@ class LazyLoad {
    */
   observeImage(imageSelector, callback, options = {}) {
     if (!('IntersectionObserver' in wx)) {
-      // 降级方案：直接执行回调
-      callback({ intersectionRatio: 1 });
+      // 降级方案：分批加入队列，避免同时加载所有图片
+      this.fallbackQueue.push(() => callback({ intersectionRatio: 1 }));
+      this.processFallbackQueue();
       return;
     }
 
@@ -70,10 +76,11 @@ class LazyLoad {
    */
   observeImages(images, callback, options = {}) {
     if (!('IntersectionObserver' in wx)) {
-      // 降级方案：直接执行所有回调
+      // 降级方案：分批加入队列，避免同时加载所有图片
       images.forEach((image, index) => {
-        callback(index, { intersectionRatio: 1 });
+        this.fallbackQueue.push(() => callback(index, { intersectionRatio: 1 }));
       });
+      this.processFallbackQueue();
       return;
     }
 
@@ -140,6 +147,22 @@ class LazyLoad {
       });
       this.observers = [];
       this.observedElements.clear();
+    }
+  }
+
+  /**
+   * 处理降级加载队列（分批执行，避免同时加载过多图片）
+   */
+  processFallbackQueue() {
+    if (this.fallbackProcessing || this.fallbackQueue.length === 0) {
+      return;
+    }
+    this.fallbackProcessing = true;
+    const batch = this.fallbackQueue.splice(0, this.fallbackBatchSize);
+    batch.forEach(fn => fn());
+    this.fallbackProcessing = false;
+    if (this.fallbackQueue.length > 0) {
+      setTimeout(() => this.processFallbackQueue(), this.fallbackInterval);
     }
   }
 

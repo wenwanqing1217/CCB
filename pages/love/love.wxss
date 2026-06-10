@@ -1977,3 +1977,106 @@ page {
     0 12rpx 40rpx rgba(0, 0, 0, 0.6),
     0 0 50rpx rgba(255, 255, 255, 0.4);
 }
+/* 分类标签动画增强 */
+.category-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-item:active {
+  transform: translateY(-2rpx);
+}
+
+.category-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 4rpx;
+  background: #c8a2ff;
+  border-radius: 2rpx;
+  box-shadow: 0 0 10rpx rgba(200, 162, 255, 0.6);
+  animation: activeTab 0.3s ease-out;
+}
+
+@keyframes activeTab {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* 盲盒卡片入场序列动画 */
+.box-card {
+  opacity: 0;
+  transform: translateY(30rpx);
+  animation: boxCardEnter 0.5s ease-out forwards;
+}
+
+.box-card:nth-child(1) { animation-delay: 0.05s; }
+.box-card:nth-child(2) { animation-delay: 0.1s; }
+.box-card:nth-child(3) { animation-delay: 0.15s; }
+.box-card:nth-child(4) { animation-delay: 0.2s; }
+.box-card:nth-child(5) { animation-delay: 0.25s; }
+.box-card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes boxCardEnter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 摇一摇按钮增强 */
+.shake-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shake-btn:active {
+  transform: translateY(-4rpx) scale(0.95);
+  box-shadow: 0 0 30rpx rgba(147, 112, 219, 0.4);
+}
+
+/* 推荐商品增强 */
+.recommended-item {
+  transition: all 0.3s ease;
+}
+
+.recommended-item:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 0 20rpx rgba(147, 112, 219, 0.3);
+}
+
+/* 详情页增强 */
+.detail-hero-section {
+  position: relative;
+}
+
+.detail-sticky-bar {
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+}
+
+.buy-btn {
+  transition: all 0.3s ease;
+}
+
+.buy-btn:active {
+  transform: scale(0.95);
+}
+
+/* 摇一摇弹窗动画增强 */
+.shake-modal .shake-content {
+  animation: modalEnter 0.4s ease-out;
+}
+
+@keyframes modalEnter {
+  from { transform: scale(0.8) translateY(40rpx); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.shaking {
+  animation: shakePhone 0.15s ease-in-out infinite;
+}
+
+@keyframes shakePhone {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25% { transform: translate(-10rpx, 5rpx) rotate(-5deg); }
+  50% { transform: translate(10rpx, -5rpx) rotate(5deg); }
+  75% { transform: translate(-5rpx, 10rpx) rotate(-3deg); }
+}

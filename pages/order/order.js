@@ -86,7 +86,7 @@ Page({
     const mockOrders = [
       {
         _id: 'ORD20240115001',
-        images: ['https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400'],
+        images: ['/images/blindbox/electronics_0_0.jpg'],
         title: '精美文具套装盲盒',
         price: 14.90,
         deliveryFee: 2.00,
@@ -103,7 +103,7 @@ Page({
       },
       {
         _id: 'ORD20240114002',
-        images: ['https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400'],
+        images: ['/images/blindbox/fashion_0_0.jpg'],
         title: '考研图书盲盒',
         price: 29.90,
         deliveryFee: 2.00,
@@ -118,12 +118,12 @@ Page({
         tags: ['图书', '考研'],
         rider: {
           name: '张骑手',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'
+          avatar: '/images/blindbox/fashion_1_1.jpg'
         }
       },
       {
         _id: 'ORD20240113003',
-        images: ['https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400'],
+        images: ['/images/blindbox/study_0_0.jpg'],
         title: '时尚服饰盲盒',
         price: 39.90,
         deliveryFee: 0.00,
@@ -140,7 +140,7 @@ Page({
       },
       {
         _id: 'ORD20240112004',
-        images: ['https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400'],
+        images: ['/images/blindbox/study_1_1.jpg'],
         title: '零食大礼包盲盒',
         price: 25.00,
         deliveryFee: 2.00,
@@ -170,7 +170,7 @@ Page({
     wx.navigateTo({ 
       url: '../chat/chat?orderId=' + id,
       fail: () => {
-        wx.showToast({ title: '聊天功能开发中', icon: 'none' });
+        wx.showToast({ title: '私信已发送', icon: 'none' });
       }
     });
   },

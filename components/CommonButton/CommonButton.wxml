@@ -1,0 +1,28 @@
+<view
+  class="common-btn"
+  :class="[
+    `btn-${type}`,
+    `btn-${size}`,
+    {
+      'btn-disabled': disabled,
+      'btn-loading': loading,
+      'btn-round': round,
+      'btn-block': block,
+      'btn-pressed': isPressed
+    }
+  ]"
+  :style="customStyle"
+  @tap="handleTap"
+  @longpress="handleLongPress"
+>
+  <view wx:if="loading" class="btn-loading-icon">
+    <view class="loading-spinner" />
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
+  <template wx:else>
+    <text wx:if="icon && iconPosition === 'left'" class="btn-icon">{{icon}}</text>
+    <text class="btn-text"><slot /></text>
+    <text wx:if="icon && iconPosition === 'right'" class="btn-icon">{{icon}}</text>
+  </template>
+  <view class="btn-glow" />
+</view>

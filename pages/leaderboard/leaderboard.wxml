@@ -1,0 +1,74 @@
+<view class="container particle-bg">
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'open' ? 'active' : ''}}" bindtap="switchTab" data-tab="open">
+      <text>开盒榜</text>
+    </view>
+    <view class="tab-item {{activeTab === 'rider' ? 'active' : ''}}" bindtap="switchTab" data-tab="rider">
+      <text>骑手榜</text>
+    </view>
+    <view class="tab-item {{activeTab === 'social' ? 'active' : ''}}" bindtap="switchTab" data-tab="social">
+      <text>活跃榜</text>
+    </view>
+  </view>
+
+  <!-- 前三名领奖台 -->
+  <view class="podium glass-card-v2">
+    <view class="podium-item second" wx:if="{{rankData.length >= 2}}">
+      <view class="podium-avatar-wrap">
+        <image class="podium-avatar" src="{{rankData[1].avatar}}" />
+        <view class="podium-rank silver">2</view>
+      </view>
+      <text class="podium-name">{{rankData[1].name}}</text>
+      <text class="podium-value">{{rankData[1].value}}</text>
+      <view class="podium-bar second"></view>
+    </view>
+    <view class="podium-item first" wx:if="{{rankData.length >= 1}}">
+      <view class="podium-crown">👑</view>
+      <view class="podium-avatar-wrap">
+        <image class="podium-avatar" src="{{rankData[0].avatar}}" />
+        <view class="podium-rank gold">1</view>
+      </view>
+      <text class="podium-name">{{rankData[0].name}}</text>
+      <text class="podium-value">{{rankData[0].value}}</text>
+      <view class="podium-bar first"></view>
+    </view>
+    <view class="podium-item third" wx:if="{{rankData.length >= 3}}">
+      <view class="podium-avatar-wrap">
+        <image class="podium-avatar" src="{{rankData[2].avatar}}" />
+        <view class="podium-rank bronze">3</view>
+      </view>
+      <text class="podium-name">{{rankData[2].name}}</text>
+      <text class="podium-value">{{rankData[2].value}}</text>
+      <view class="podium-bar third"></view>
+    </view>
+  </view>
+
+  <!-- 排名列表 -->
+  <view class="rank-list">
+    <view class="rank-item glass-card-v2 {{index < 3 ? 'top' : ''}}" wx:for="{{rankData}}" wx:key="name">
+      <view class="rank-num-wrap">
+        <text class="rank-num {{index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : ''}}">{{index + 1}}</text>
+      </view>
+      <image class="rank-avatar" src="{{item.avatar}}" />
+      <view class="rank-info">
+        <text class="rank-name">{{item.name}}</text>
+        <text class="rank-campus" wx:if="{{item.campus}}">{{item.campus}}</text>
+      </view>
+      <view class="rank-value-wrap">
+        <text class="rank-value">{{item.value}}</text>
+        <text class="rank-unit">{{item.unit}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我自己的排名 -->
+  <view class="my-rank glass-card-v2">
+    <view class="my-rank-left">
+      <text class="my-rank-num">{{myRank.rank}}</text>
+      <image class="my-rank-avatar" src="{{myRank.avatar}}" />
+      <text class="my-rank-name">{{myRank.name}}</text>
+    </view>
+    <view class="my-rank-value">{{myRank.value}}</view>
+  </view>
+</view>

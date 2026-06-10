@@ -311,9 +311,9 @@ Page({
         break;
       case 'navigateToOrder':
         wx.navigateTo({
-          url: '../order-list/order-list',
+          url: '../order/order',
           fail: () => {
-            wx.switchTab({ url: '../order-list/order-list' });
+            wx.switchTab({ url: '../order/order' });
           }
         });
         break;
@@ -327,9 +327,9 @@ Page({
         break;
       case 'navigateToMarket':
         wx.switchTab({
-          url: '../market/market',
+          url: '/pages/love/love',
           fail: () => {
-            wx.navigateTo({ url: '../market/market' });
+            wx.navigateTo({ url: '/pages/love/love' });
           }
         });
         break;
@@ -351,9 +351,9 @@ Page({
         break;
       case 'navigateToCommunity':
         wx.switchTab({
-          url: '../community/community',
+          url: '/pages/love/love',
           fail: () => {
-            wx.navigateTo({ url: '../community/community' });
+            wx.navigateTo({ url: '/pages/love/love' });
           }
         });
         break;

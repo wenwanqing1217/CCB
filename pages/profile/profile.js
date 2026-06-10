@@ -1,4 +1,4 @@
-﻿const config = require('../../utils/config.js');
+const config = require('../../utils/config.js');
 const { ALL_DORMS, COLLEGES } = require('../../utils/campusData.js');
 
 Page({
@@ -40,6 +40,8 @@ Page({
     colleges: COLLEGES,
     dorms: ALL_DORMS,
     isLoggingIn: false, // 添加登录状态锁
+    recentAchievements: [],
+    achieveProgress: 0,
     blindBoxCoins: 0, // 盲盒积分
     hasSignedIn: false, // 是否已签到
     isSigningIn: false // 签到状态锁
@@ -47,12 +49,14 @@ Page({
 
   onLoad() {
     this.checkLogin();
+    this.loadAchievements();
   },
 
   onShow() {
     // 避免重复检查登录状态
     if (!this.data.isLoggedIn) {
       this.checkLogin();
+    this.loadAchievements();
     }
     // 设置自定义 tabBar 选中状态
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -394,14 +398,14 @@ Page({
   },
 
   editProfile() {
-    wx.navigateTo({ url: '../certification/certification' });
+    wx.navigateTo({ url: '../profile/profile' });
   },
 
   navigateToMyPublish() {
     if (!this.checkLoginStatus()) {
       return;
     }
-    wx.navigateTo({ url: '../myPublish/myPublish' });
+    wx.showToast({ title: '我的发布已整合到个人中心', icon: 'none' });
   },
 
   navigateToOrder() {
@@ -436,7 +440,7 @@ Page({
     if (!this.checkLoginStatus()) {
       return;
     }
-    wx.navigateTo({ url: '../certification/certification' });
+    wx.showToast({ title: '认证功能已整合到个人中心', icon: 'none' });
   },
 
   navigateToRider() {
@@ -478,7 +482,11 @@ Page({
   },
 
   showAbout() {
-    wx.navigateTo({ url: '../about/about' });
+    wx.showModal({
+      title: '关于',
+      content: '校园盲盒即时配送平台 v2.0\n基于微信小程序 + 云开发全栈架构',
+      showCancel: false
+    });
   },
 
   // 签到功能
@@ -561,7 +569,38 @@ Page({
     wx.switchTab({ url: '../love/love' });
   },
 
+  loadAchievements() {
+    this.setData({
+      recentAchievements: [
+        { id: 1, icon: '🎁', name: '初次开盒', rarity: 'common' },
+        { id: 2, icon: '💬', name: '社交新星', rarity: 'common' },
+        { id: 3, icon: '🎯', name: '完美开盒', rarity: 'epic' }
+      ],
+      achieveProgress: 39
+    });
+  },
+
   navigateToCoinLog() {
-    wx.navigateTo({ url: '../coinLog/coinLog' });
+    wx.navigateTo({ url: '../wallet/wallet' });
+  }
+
+  navigateToAchievement() {
+    wx.navigateTo({ url: '../achievement/achievement' });
+  },
+
+  navigateToCheckin() {
+    wx.navigateTo({ url: '../checkin/checkin' });
+  },
+
+  navigateToLeaderboard() {
+    wx.navigateTo({ url: '../leaderboard/leaderboard' });
+  },
+
+  navigateToActivity() {
+    wx.navigateTo({ url: '../activity/activity' });
   }
 });
+
+
+
+

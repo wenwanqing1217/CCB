@@ -1,135 +1,9 @@
 // 抖音风格商品详情页 - 支持上下滑动切换商品
 
 // 模拟商品数据列表
-const mockProductList = [
-  {
-    _id: '2',
-    title: '精美文具套装盲盒',
-    price: 14.9,
-    images: [
-      'https://picsum.photos/600/600?random=11',
-      'https://picsum.photos/600/600?random=12'
-    ],
-    type: 'original',
-    mode: 'light',
-    campus: '苏园居',
-    building: '3层',
-    desc: '笔、本子、尺子、橡皮等文具一应俱全，学习必备良品！',
-    likes: 86,
-    comments: 18,
-    favorites: 42,
-    liked: false,
-    favorited: false,
-    isFollowing: false,
-    commentList: [
-      { _id: '1', user: '小王', avatar: 'https://picsum.photos/100/100?random=20', content: '文具质量很好，本子超好看', time: '3小时前' },
-      { _id: '2', user: '小张', avatar: 'https://picsum.photos/100/100?random=21', content: '送给朋友的，她很喜欢', time: '2小时前' }
-    ],
-    publisher: {
-      name: '李四',
-      avatar: 'https://picsum.photos/100/100?random=22',
-      rating: 4.9
-    },
-    fromDorm: '苏园居',
-    sales: 189
-  },
-  {
-    _id: '3',
-    title: '时尚服饰盲盒',
-    price: 19.9,
-    images: [
-      'https://picsum.photos/600/600?random=13',
-      'https://picsum.photos/600/600?random=14'
-    ],
-    type: 'secondhand',
-    mode: 'dark',
-    campus: '中南公寓',
-    building: '2层',
-    desc: 'T恤、袜子、帽子等时尚单品，潮流穿搭从这里开始！',
-    likes: 215,
-    comments: 45,
-    favorites: 89,
-    liked: false,
-    favorited: false,
-    isFollowing: false,
-    commentList: [
-      { _id: '1', user: '小陈', avatar: 'https://picsum.photos/100/100?random=23', content: '衣服质量超好，款式也很潮', time: '5小时前' },
-      { _id: '2', user: '小刘', avatar: 'https://picsum.photos/100/100?random=24', content: '帽子太喜欢了，正好是我想要的款式', time: '4小时前' },
-      { _id: '3', user: '小赵', avatar: 'https://picsum.photos/100/100?random=25', content: '性价比无敌，已经推荐给室友了', time: '3小时前' }
-    ],
-    publisher: {
-      name: '王五',
-      avatar: 'https://picsum.photos/100/100?random=26',
-      rating: 4.7
-    },
-    fromDorm: '中南公寓',
-    sales: 312
-  },
-  {
-    _id: '4',
-    title: '图书盲盒',
-    price: 12.9,
-    images: [
-      'https://picsum.photos/600/600?random=15',
-      'https://picsum.photos/600/600?random=16'
-    ],
-    type: 'original',
-    mode: 'light',
-    campus: '中园公寓',
-    building: '1层',
-    desc: '小说、教材、课外书等，知识的海洋等着你探索！',
-    likes: 42,
-    comments: 12,
-    favorites: 28,
-    liked: false,
-    favorited: false,
-    isFollowing: false,
-    commentList: [
-      { _id: '1', user: '小孙', avatar: 'https://picsum.photos/100/100?random=27', content: '图书质量很好，内容丰富', time: '7小时前' },
-      { _id: '2', user: '小周', avatar: 'https://picsum.photos/100/100?random=28', content: '正好需要，性价比很高', time: '6小时前' }
-    ],
-    publisher: {
-      name: '钱七',
-      avatar: 'https://picsum.photos/100/100?random=29',
-      rating: 4.8
-    },
-    fromDorm: '中园公寓',
-    sales: 128
-  },
-  {
-    _id: '5',
-    title: '零食大礼包盲盒',
-    price: 29.9,
-    images: [
-      'https://picsum.photos/600/600?random=17',
-      'https://picsum.photos/600/600?random=18'
-    ],
-    type: 'original',
-    mode: 'light',
-    campus: '新柏居',
-    building: '5层',
-    desc: '各种网红零食、进口美食，满足你的味蕾！',
-    likes: 342,
-    comments: 78,
-    favorites: 156,
-    liked: false,
-    favorited: false,
-    isFollowing: false,
-    commentList: [
-      { _id: '1', user: '小林', avatar: 'https://picsum.photos/100/100?random=30', content: '零食种类超多，每一个都很好吃', time: '4小时前' },
-      { _id: '2', user: '小黄', avatar: 'https://picsum.photos/100/100?random=31', content: '性价比超级高，宿舍必备！', time: '3小时前' },
-      { _id: '3', user: '小朱', avatar: 'https://picsum.photos/100/100?random=32', content: '都是很火的零食，强烈推荐！', time: '2小时前' },
-      { _id: '4', user: '小何', avatar: 'https://picsum.photos/100/100?random=33', content: '已经回购第三次了！', time: '1小时前' }
-    ],
-    publisher: {
-      name: '孙八',
-      avatar: 'https://picsum.photos/100/100?random=34',
-      rating: 5.0
-    },
-    fromDorm: '新柏居',
-    sales: 478
-  }
-];
+// 使用共享数据层，替代原有的硬编码 mockProductList
+const { boxes, getBoxById } = require('../../data/mock-data.js');
+const mockProductList = boxes;;
 
 Page({
   data: {
@@ -168,6 +42,10 @@ Page({
       const index = mockProductList.findIndex(p => p._id === productId);
       if (index !== -1) {
         this.setData({ currentIndex: index });
+      } else {
+        // ID 不在列表中时显示第一个
+        console.warn('未找到商品:', productId, '显示默认商品');
+        this.setData({ currentIndex: 0 });
       }
     }
 
@@ -256,9 +134,14 @@ Page({
 
   buyNow() {
     wx.showModal({
-      title: '购买提示',
-      content: '功能开发中，敬请期待~',
-      showCancel: false
+      title: '确认购买',
+      content: '确认购买此盲盒？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showToast({ title: '支付成功！', icon: 'success' });
+          setTimeout(() => wx.navigateBack(), 1500);
+        }
+      }
     });
   },
 
@@ -285,7 +168,7 @@ Page({
     const newComment = {
       _id: Date.now().toString(),
       user: '我',
-      avatar: 'https://picsum.photos/100/100?random=35',
+      avatar: '/images/blindbox/life_2_2.jpg',
       content: input,
       time: '刚刚'
     };
@@ -300,9 +183,14 @@ Page({
 
   buyBox() {
     wx.showModal({
-      title: '购买提示',
-      content: '功能开发中，敬请期待~',
-      showCancel: false
+      title: '确认购买',
+      content: '确认购买此盲盒？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showToast({ title: '支付成功！', icon: 'success' });
+          setTimeout(() => wx.navigateBack(), 1500);
+        }
+      }
     });
   }
 });

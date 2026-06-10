@@ -46,7 +46,7 @@ Page({
     orderInfo: {
       id: '123456',
       itemName: '精美文具套装盲盒',
-      itemImage: 'https://picsum.photos/400/400?random=10',
+      itemImage: '/images/blindbox/electronics_0_0.jpg',
       price: '29.9',
       seller: '张三',
       buyer: '我',

@@ -473,3 +473,85 @@
   color: #fff;
   box-shadow: 0 4rpx 20rpx rgba(147, 112, 219, 0.4);
 }
+/* 钱包页面增强 */
+.wallet-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.wallet-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(147,112,219,0.1), transparent 60%);
+  animation: walletShimmer 4s ease-in-out infinite;
+}
+
+@keyframes walletShimmer {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(5%, 5%); }
+}
+
+.wallet-balance {
+  font-variant-numeric: tabular-nums;
+  transition: all 0.3s;
+}
+
+/* 统计行 */
+.stats-row .stat-item {
+  transition: all 0.3s ease;
+}
+
+.stats-row .stat-item:active {
+  transform: translateY(-4rpx);
+}
+
+.stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 赚币入口 */
+.earn-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.earn-item:active {
+  transform: translateY(-6rpx) scale(0.97);
+}
+
+.earn-icon-wrap {
+  transition: all 0.3s ease;
+}
+
+.earn-item:active .earn-icon-wrap {
+  box-shadow: 0 0 30rpx currentColor;
+}
+
+/* 交易记录 */
+.record-item {
+  transition: all 0.3s ease;
+}
+
+.record-item:active {
+  transform: translateX(8rpx);
+  background: rgba(147,112,219,0.03);
+}
+
+/* 游戏弹窗 */
+.game-content {
+  animation: modalSlideUp 0.4s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(100rpx); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 提现弹窗 */
+.modal-content {
+  animation: modalSlideUp 0.3s ease-out;
+}

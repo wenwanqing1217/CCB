@@ -13,7 +13,7 @@ Page({
     const targetUser = {
       id: options.userId || '1',
       name: options.userName || '用户',
-      avatar: options.userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop'
+      avatar: options.userAvatar || '/images/blindbox/electronics_0_0.jpg'
     };
     this.setData({ targetUser });
     
@@ -57,7 +57,7 @@ Page({
         type: 'send',
         content: '谢谢关注，请问有什么想了解的吗？',
         time: '10:32',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
+        avatar: '/images/blindbox/fashion_0_0.jpg'
       }
     ];
     
@@ -121,7 +121,7 @@ Page({
       type: 'send',
       content: content,
       time: this.formatTime(new Date()),
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
+      avatar: '/images/blindbox/fashion_1_1.jpg'
     };
     
     const messages = this.data.messages.concat(newMessage);
@@ -214,7 +214,7 @@ Page({
             break;
           case 2:
             wx.showToast({
-              title: '举报功能开发中',
+              title: '举报已提交，我们会尽快处理',
               icon: 'none'
             });
             break;

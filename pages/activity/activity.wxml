@@ -1,0 +1,52 @@
+<view class="container particle-bg">
+  <!-- 进行中活动 -->
+  <view class="section-title">
+    <text class="title-text">🔥 进行中</text>
+  </view>
+
+  <view class="activity-card active glass-card-v2" wx:for="{{activeActivities}}" wx:key="id" bindtap="showDetail" data-id="{{item.id}}">
+    <view class="act-banner {{item.color}}">
+      <image class="act-image" src="{{item.image}}" mode="aspectFill" />
+      <view class="act-countdown">
+        <text class="countdown-label">剩余</text>
+        <text class="countdown-time">{{item.remaining}}</text>
+      </view>
+    </view>
+    <view class="act-body">
+      <text class="act-title">{{item.title}}</text>
+      <text class="act-desc">{{item.description}}</text>
+      <view class="act-meta">
+        <view class="act-participants">
+          <text class="participant-icon">👥</text>
+          <text class="participant-count">{{item.participants}}人参与</text>
+        </view>
+        <view class="act-tag {{item.tagType}}">{{item.tag}}</view>
+      </view>
+      <view class="act-progress" wx:if="{{item.progress !== undefined}}">
+        <view class="act-progress-bar">
+          <view class="act-progress-fill" style="width: {{item.progress}}%;"></view>
+        </view>
+        <text class="act-progress-text">{{item.progressText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已结束活动 -->
+  <view class="section-title">
+    <text class="title-text">📋 已结束</text>
+  </view>
+
+  <view class="activity-card ended glass-card-v2" wx:for="{{endedActivities}}" wx:key="id">
+    <view class="act-banner ended">
+      <image class="act-image" src="{{item.image}}" mode="aspectFill" />
+      <view class="act-ended-badge">已结束</view>
+    </view>
+    <view class="act-body">
+      <text class="act-title">{{item.title}}</text>
+      <text class="act-desc">{{item.description}}</text>
+      <view class="act-result">
+        <text class="result-text">{{item.result}}</text>
+      </view>
+    </view>
+  </view>
+</view>

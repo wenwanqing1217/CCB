@@ -1,6 +1,6 @@
-<view class="chat-container">
+<view class="chat-container particle-bg">
   <!-- 顶部标题栏 -->
-  <view class="chat-header">
+  <view class="chat-header glass-effect">
     <view class="header-back" bindtap="goBack">
       <text class="back-icon">‹</text>
     </view>

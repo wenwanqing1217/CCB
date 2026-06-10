@@ -1,0 +1,260 @@
+/* 图表组件样式 */
+.charts-container {
+  width: 100%;
+  position: relative;
+}
+
+.chart-wrap {
+  width: 100%;
+}
+
+/* === 环形图 === */
+.ring-container {
+  position: relative;
+  margin: 0 auto;
+}
+
+.ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ring-total {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 20rpx rgba(147,112,219,0.5);
+}
+
+.ring-label {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4rpx;
+}
+
+.ring-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.legend-label {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.7);
+}
+
+.legend-value {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+}
+
+/* === 柱状图 === */
+.bar-container {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding-left: 60rpx;
+}
+
+.bar-y-axis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50rpx;
+}
+
+.y-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.4);
+  text-align: right;
+  line-height: 1;
+}
+
+.bar-scroll {
+  flex: 1;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8rpx;
+  height: 100%;
+  padding-top: 20rpx;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 40rpx;
+}
+
+.bar-col {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.bar-fill {
+  width: 80%;
+  max-width: 60rpx;
+  border-radius: 8rpx 8rpx 0 0;
+  position: relative;
+  min-height: 4rpx;
+  box-shadow: 0 0 15rpx currentColor;
+  transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bar-fill.animated {
+  animation: barGrow 0.6s ease-out forwards;
+}
+
+.bar-value {
+  position: absolute;
+  top: -32rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bar-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.5);
+  margin-top: 8rpx;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80rpx;
+}
+
+@keyframes barGrow {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to { transform: scaleY(1); transform-origin: bottom; }
+}
+
+/* === 折线图 === */
+.line-container {
+  position: relative;
+  padding-bottom: 40rpx;
+}
+
+.line-container svg {
+  display: block;
+}
+
+.line-draw {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: lineDraw 1.5s ease-out forwards;
+}
+
+@keyframes lineDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.line-x-labels {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30rpx;
+}
+
+.x-label {
+  position: absolute;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.5);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* === 热力图 === */
+.heatmap-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  padding: 10rpx;
+}
+
+.heatmap-row {
+  display: flex;
+  gap: 6rpx;
+}
+
+.heatmap-cell {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s;
+}
+
+.heatmap-cell:active {
+  transform: scale(1.2);
+}
+
+.heatmap-legend {
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.heat-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.heat-legend-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 4rpx;
+}
+
+.heat-legend-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+/* === 空状态 === */
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200rpx;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.3);
+}

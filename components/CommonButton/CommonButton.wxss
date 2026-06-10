@@ -1,0 +1,166 @@
+.common-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 16rpx;
+  font-weight: 500;
+}
+
+/* 按钮类型 */
+.btn-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #9370db 30%, #ba55d3 70%, #c8a2ff 100%);
+  border: 2rpx solid rgba(147, 112, 219, 0.5);
+  box-shadow: 0 8rpx 32rpx rgba(147, 112, 219, 0.4),
+              0 16rpx 64rpx rgba(186, 85, 211, 0.2);
+}
+
+.btn-primary:not(.btn-disabled):active,
+.btn-primary.btn-pressed {
+  transform: scale(0.96);
+  box-shadow: 0 4rpx 16rpx rgba(147, 112, 219, 0.6),
+              0 8rpx 32rpx rgba(186, 85, 211, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, rgba(12, 12, 28, 0.98) 0%, rgba(5, 5, 15, 0.99) 50%, rgba(12, 12, 28, 0.98) 100%);
+  border: 2rpx solid rgba(147, 112, 219, 0.3);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary:not(.btn-disabled):active,
+.btn-secondary.btn-pressed {
+  transform: scale(0.96);
+  border-color: rgba(147, 112, 219, 0.6);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: 2rpx solid rgba(34, 197, 94, 0.5);
+  box-shadow: 0 8rpx 32rpx rgba(34, 197, 94, 0.4);
+}
+
+.btn-success:not(.btn-disabled):active,
+.btn-success.btn-pressed {
+  transform: scale(0.96);
+  box-shadow: 0 4rpx 16rpx rgba(34, 197, 94, 0.6);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: 2rpx solid rgba(239, 68, 68, 0.5);
+  box-shadow: 0 8rpx 32rpx rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:not(.btn-disabled):active,
+.btn-danger.btn-pressed {
+  transform: scale(0.96);
+  box-shadow: 0 4rpx 16rpx rgba(239, 68, 68, 0.6);
+}
+
+/* 按钮尺寸 */
+.btn-small {
+  padding: 12rpx 24rpx;
+  font-size: 24rpx;
+}
+
+.btn-normal {
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+.btn-large {
+  padding: 28rpx 56rpx;
+  font-size: 32rpx;
+}
+
+/* 特殊样式 */
+.btn-round {
+  border-radius: 100rpx;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-disabled .btn-text {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 按钮内容 */
+.btn-text {
+  color: #ffffff;
+  text-shadow: 0 0 10rpx rgba(147, 112, 219, 0.5);
+  position: relative;
+  z-index: 1;
+}
+
+.btn-icon {
+  font-size: 28rpx;
+  margin: 0 8rpx;
+  position: relative;
+  z-index: 1;
+}
+
+/* 加载状态 */
+.btn-loading {
+  pointer-events: none;
+}
+
+.btn-loading-icon {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.loading-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 3rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #ffffff;
+  font-size: 26rpx;
+}
+
+/* 发光效果 */
+.btn-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0% { left: -50%; }
+  50%, 100% { left: 150%; }
+}
+
+.btn-disabled .btn-glow {
+  display: none;
+}
+
+.btn-loading .btn-glow {
+  display: none;
+}

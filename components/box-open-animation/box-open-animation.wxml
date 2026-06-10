@@ -1,0 +1,74 @@
+<view class="box-open-mask {{show ? 'visible' : ''}}" catchtouchmove="noop">
+  <view class="box-open-container" wx:if="{{show}}">
+    
+    <!-- Phase 1 & 2: Idle/Shaking Box -->
+    <view class="box-stage {{phase === 'idle' || phase === 'shaking' ? 'active' : ''}}">
+      <!-- 光晕背景 -->
+      <view class="glow-ring {{rarity}}"></view>
+      <view class="glow-ring glow-ring-outer {{rarity}}"></view>
+      
+      <!-- 盒子 -->
+      <view class="box-wrapper {{phase === 'shaking' ? 'shaking' : ''}} {{phase === 'gathering' ? 'gathering' : ''}}">
+        <view class="box-body {{rarity}}">
+          <view class="box-lid {{phase === 'gathering' ? 'lid-opening' : ''}}">
+            <view class="box-ribbon {{rarity}}"></view>
+            <view class="box-bow {{rarity}}"></view>
+          </view>
+          <view class="box-base">
+            <text class="box-question">?</text>
+          </view>
+        </view>
+        <!-- 盒子发光边框 -->
+        <view class="box-glow {{rarity}}"></view>
+      </view>
+      
+      <text class="box-hint {{phase === 'shaking' ? 'hidden' : ''}}">点击开启盲盒</text>
+      <text class="box-hint shake-hint {{phase === 'shaking' ? 'visible' : ''}}">正在开启...</text>
+    </view>
+    
+    <!-- Phase 3: Light Gathering -->
+    <view class="light-stage {{phase === 'gathering' ? 'active' : ''}}">
+      <view class="light-ray" wx:for="{{lightRays}}" wx:key="index" 
+            style="transform: rotate({{item.angle}}deg); animation-delay: {{item.delay}}ms;">
+        <view class="ray-inner {{rarity}}"></view>
+      </view>
+      <view class="light-core {{rarity}}"></view>
+    </view>
+    
+    <!-- Phase 4: Explosion Particles -->
+    <view class="explosion-stage {{phase === 'exploding' ? 'active' : ''}}">
+      <view class="particle {{rarity}}" wx:for="{{particles}}" wx:key="index"
+            style="--tx: {{item.x}}rpx; --ty: {{item.y}}rpx; --size: {{item.size}}rpx; 
+                   --color: {{item.color}}; --delay: {{item.delay}}ms; --duration: {{item.duration}}ms;
+                   opacity: {{item.opacity}};">
+      </view>
+      <view class="flash-overlay {{rarity}}"></view>
+    </view>
+    
+    <!-- Phase 5: Reveal -->
+    <view class="reveal-stage {{phase === 'reveal' || phase === 'completed' ? 'active' : ''}}">
+      <view class="reveal-glow {{rarity}}"></view>
+      <view class="reveal-card {{rarity}}">
+        <view class="reveal-badge {{rarity}}">
+          <text class="badge-text">{{rarityLabel}}</text>
+        </view>
+        <view class="reveal-image-wrap">
+          <image class="reveal-image" src="{{itemImage || defaultImage}}" mode="aspectFill" />
+          <view class="image-glow {{rarity}}"></view>
+        </view>
+        <text class="reveal-title">{{itemName || '神秘物品'}}</text>
+        <view class="reveal-actions" wx:if="{{phase === 'completed'}}">
+          <view class="btn-glow small" bindtap="onClose">收取</view>
+          <view class="btn-glow small secondary" bindtap="openAgain">再开一个</view>
+        </view>
+      </view>
+      <!-- 背景金色/紫色雨 (legendary only) -->
+      <view class="legendary-rain" wx:if="{{rarity === 'legendary' && (phase === 'reveal' || phase === 'completed')}}">
+        <view class="rain-particle gold" wx:for="30" wx:key="index" 
+              style="left: {{item}}%; animation-delay: {{index * 0.2}}s; animation-duration: {{1.5 + index % 3 * 0.5}}s;">
+        </view>
+      </view>
+    </view>
+    
+  </view>
+</view>

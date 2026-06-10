@@ -13,6 +13,8 @@ const logger = require('../../utils/logger.js');
 // 导入统一配置管理
 const config = require('../../utils/config.js');
 const { getDemoDormHeat, getDemoOrders } = require('../../utils/campusData.js');
+// 共享数据层
+const { dormHeat, grabOrders, getHotBoxes } = require('../../data/mock-data.js');
 
 // 生产环境数据结构定义
 const defaultEmptyData = {
@@ -59,6 +61,9 @@ Page({
     // 开始页面加载监控
     performanceMonitor.startPageLoad('index');
     this.checkUserInfo();
+    // 先渲染缓存数据，实现秒开
+    this.renderCachedData();
+    // 再异步刷新云函数数据
     this.loadHomeData();
   },
 
@@ -208,8 +213,11 @@ Page({
         }
       });
     } else {
-      // 兼容处理，直接加载
-      this.loadImage(index, arrayName, propertyName);
+      // 兼容处理：延迟分批加载，避免集中setData导致卡顿
+      const delay = index * 150;
+      setTimeout(() => {
+        this.loadImage(index, arrayName, propertyName);
+      }, Math.min(delay, 3000));
     }
   },
 
@@ -264,11 +272,53 @@ Page({
     return '近30天交易活跃度';
   },
 
+  // 从store缓存中恢复数据，实现首屏秒开
+  renderCachedData() {
+    const cachedHotBoxes = store.getCache('hotBoxes');
+    const cachedCommunityFeed = store.getCache('communityFeed');
+    const cachedGrabOrders = store.getCache('grabOrders');
+    const cachedDormHeat = store.getCache('dormHeat');
+    
+    if (cachedHotBoxes || cachedCommunityFeed || cachedGrabOrders || cachedDormHeat) {
+      const newData = {};
+      if (cachedHotBoxes) {
+        newData.hotBoxes = cachedHotBoxes.map(box => ({ ...box, lazyLoaded: false }));
+      }
+      if (cachedCommunityFeed) {
+        newData.communityFeed = cachedCommunityFeed.map(feed => ({
+          ...feed,
+          avatarLoaded: false,
+          imageLoaded: false
+        }));
+      }
+      if (cachedGrabOrders) {
+        newData.grabOrders = cachedGrabOrders;
+        newData.pendingOrders = cachedGrabOrders.length;
+      }
+      if (cachedDormHeat) {
+        newData.dormHeat = cachedDormHeat;
+      }
+      this.setData(newData, () => {
+        // 缓存数据渲染完成即视为页面加载完成
+        this._cacheRendered = true;
+        performanceMonitor.endPageLoad('index');
+        this.initLazyLoad();
+      });
+    }
+  },
+
   loadHomeData(options = {}) {
     const { forceRefresh = false } = options;
     const cacheConfig = config.getCacheConfig();
     
-    this.setData({ isLoading: true });
+    // 强制刷新时重置缓存标记
+    if (forceRefresh) {
+      this._cacheRendered = false;
+    }
+    
+    // 有缓存数据时不再显示全屏loading，让用户先看到内容
+    const hasCachedData = store.getCache('hotBoxes') || store.getCache('communityFeed');
+    this.setData({ isLoading: !hasCachedData });
     performanceMonitor.startApiCall('loadHomeData');
     
     const cloudUtils = require('../../utils/cloud.js');
@@ -367,14 +417,18 @@ Page({
       
         this.setData(newData, () => {
           logger.info('首页数据加载完成');
+          this.initLazyLoad();
+          this.preloadImages();
+          performanceMonitor.endApiCall('loadHomeData', true);
+          // 使用本地标记判断是否已从缓存渲染，避免重复调用
+          if (!this._cacheRendered) {
+            performanceMonitor.endPageLoad('index');
+          }
+          // 数据加载完成后再更新缓存（放在endPageLoad之后）
           store.updateCache('hotBoxes', hotBoxes);
           store.updateCache('communityFeed', communityFeed);
           store.updateCache('grabOrders', grabOrders);
           store.updateCache('dormHeat', dormHeat);
-          this.initLazyLoad();
-          this.preloadImages();
-          performanceMonitor.endApiCall('loadHomeData', true);
-          performanceMonitor.endPageLoad('index');
         });
       })
       .catch(err => {
@@ -395,26 +449,38 @@ Page({
           isLoading: false
         });
         performanceMonitor.endApiCall('loadHomeData', false);
-        performanceMonitor.endPageLoad('index');
+        if (!this._cacheRendered) {
+          performanceMonitor.endPageLoad('index');
+        }
       });
   },
 
   // 预加载图片
   preloadImages() {
-    // 使用配置管理获取图片配置
+    // 仅预加载首屏可见图片，减少网络IO开销
     const imageConfig = config.getImageConfig();
     
-    // 预加载热门盲盒图片
-    const boxImages = this.data.hotBoxes.map(box => box.images[0]);
-    imageProcessor.preloadImages(boxImages, imageConfig.maxConcurrentPreload);
+    // 只预加载前3个热门盲盒图片（首屏可见范围）
+    const boxImages = this.data.hotBoxes.slice(0, 3).map(box => box.images[0]);
+    if (boxImages.length > 0) {
+      imageProcessor.preloadImages(boxImages, 2);
+    }
     
-    // 预加载社区动态图片
-    const feedImages = this.data.communityFeed.map(feed => feed.image);
-    imageProcessor.preloadImages(feedImages, imageConfig.maxConcurrentPreload);
+    // 只预加载前2个社区动态图片
+    const feedImages = this.data.communityFeed.slice(0, 2).map(feed => feed.image);
+    if (feedImages.length > 0) {
+      setTimeout(() => {
+        imageProcessor.preloadImages(feedImages, 2);
+      }, 500);
+    }
     
-    // 预加载社区用户头像
-    const avatarImages = this.data.communityFeed.map(feed => feed.userAvatar);
-    imageProcessor.preloadImages(avatarImages, imageConfig.maxConcurrentPreload);
+    // 延迟预加载用户头像
+    const avatarImages = this.data.communityFeed.slice(0, 4).map(feed => feed.userAvatar).filter(Boolean);
+    if (avatarImages.length > 0) {
+      setTimeout(() => {
+        imageProcessor.preloadImages(avatarImages, 2);
+      }, 1000);
+    }
     
     logger.info('图片预加载完成', { 
       boxImages: boxImages.length, 
@@ -447,7 +513,7 @@ Page({
     this.setData({ isSearching: true });
     setTimeout(() => {
       wx.navigateTo({
-        url: `../box-list/box-list?keyword=${encodeURIComponent(keyword)}`,
+        url: `../search/search?keyword=${encodeURIComponent(keyword)}`,
         success: () => {
           this.setData({ isSearching: false });
         },
@@ -492,8 +558,8 @@ Page({
 
   navigateToCommunity: debounce(function () {
     wx.vibrateShort({ type: 'light' });
-    wx.navigateTo({ 
-      url: '../community/community',
+    wx.switchTab({ 
+      url: '/pages/love/love',
       success: () => {
         wx.showToast({ title: '前往社区动态', icon: 'success', duration: 800 });
       }
@@ -593,14 +659,14 @@ Page({
     wx.vibrateShort({ type: 'light' });
     if (type === 'donation') {
       wx.navigateTo({ 
-        url: '../donationDetail/donationDetail?id=' + id,
+        url: '../box-detail/box-detail?id=' + id,
         success: () => {
           wx.showToast({ title: '查看捐赠详情', icon: 'success', duration: 800 });
         }
       });
     } else if (type === 'exchange') {
       wx.navigateTo({ 
-        url: '../exchangeDetail/exchangeDetail?id=' + id,
+        url: '../box-detail/box-detail?id=' + id,
         success: () => {
           wx.showToast({ title: '查看交换详情', icon: 'success', duration: 800 });
         }

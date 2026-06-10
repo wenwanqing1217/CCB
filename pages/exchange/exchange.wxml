@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <!-- 顶部搜索和标签 -->
   <view class="top-section">
     <view class="search-bar">

@@ -36,7 +36,7 @@ Page({
         orderId: '123456',
         orderInfo: {
           name: '精美文具套装盲盒',
-          image: 'https://picsum.photos/400/400?random=10',
+          image: '/images/blindbox/electronics_0_0.jpg',
           price: '29.9'
         },
         action: {
@@ -56,7 +56,7 @@ Page({
         orderId: '123456',
         orderInfo: {
           name: '精美文具套装盲盒',
-          image: 'https://picsum.photos/400/400?random=10',
+          image: '/images/blindbox/fashion_0_0.jpg',
           price: '29.9'
         },
         action: {
@@ -76,7 +76,7 @@ Page({
         orderId: '123456',
         orderInfo: {
           name: '精美文具套装盲盒',
-          image: 'https://picsum.photos/400/400?random=10',
+          image: '/images/blindbox/fashion_1_1.jpg',
           price: '29.9'
         },
         action: {
@@ -96,7 +96,7 @@ Page({
         orderId: '123455',
         orderInfo: {
           name: '零食大礼包',
-          image: 'https://picsum.photos/400/400?random=11',
+          image: '/images/blindbox/study_0_0.jpg',
           price: '19.9'
         }
       },
@@ -111,7 +111,7 @@ Page({
         orderId: '123450',
         orderInfo: {
           name: '数码配件盲盒',
-          image: 'https://picsum.photos/400/400?random=12',
+          image: '/images/blindbox/study_1_1.jpg',
           price: '39.9'
         },
         action: {
@@ -131,7 +131,7 @@ Page({
         orderId: '123445',
         orderInfo: {
           name: '生活用品盲盒',
-          image: 'https://picsum.photos/400/400?random=13',
+          image: '/images/blindbox/sports_0_0.jpg',
           price: '19.9'
         }
       }
@@ -236,7 +236,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '订单消息 - CBB校园盲盒',
-      path: '/pages/order-message/order-message'
+      path: '/pages/message/message'
     };
   }
 });

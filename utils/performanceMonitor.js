@@ -24,7 +24,7 @@ class PerformanceMonitor {
     this.config = {
       sampleRate: 0.1,           // 采样率
       slowApiThreshold: 500,     // 慢API阈值(ms)
-      slowPageThreshold: 2000,   // 慢页面阈值(ms)
+      slowPageThreshold: 1000,   // 慢页面阈值(ms)
       fpsWarningThreshold: 30,   // FPS警告阈值
       memoryWarningThreshold: 500, // 内存警告阈值(MB)
       maxErrorsPerSession: 10,   // 每会话最大错误数
@@ -165,10 +165,8 @@ class PerformanceMonitor {
       const performanceLevel = this.analyzePerformanceLevel(duration);
       this.performanceData.pageLoad[pageName].performanceLevel = performanceLevel;
       
-      // 只在慢页面时打印日志
-      if (duration > this.config.slowPageThreshold) {
-        console.log(`页面 ${pageName} 加载时间: ${duration}ms, 性能等级: ${performanceLevel}`);
-      }
+      // 打印页面加载时间（不论快慢）
+      console.log(`页面 ${pageName} 加载时间: ${duration}ms, 性能等级: ${performanceLevel}`);
       
       // 如果是慢页面，立即上报
       if (duration > this.config.slowPageThreshold) {
@@ -301,19 +299,18 @@ class PerformanceMonitor {
       const deviceInfo = wx.getDeviceInfo ? wx.getDeviceInfo() : {};
       const windowInfo = wx.getWindowInfo ? wx.getWindowInfo() : {};
       const appBaseInfo = wx.getAppBaseInfo ? wx.getAppBaseInfo() : {};
-      const systemInfo = wx.getSystemInfoSync ? wx.getSystemInfoSync() : (wx.getDeviceInfo ? wx.getDeviceInfo() : {});
       
       const memoryData = {
         timestamp: new Date().toISOString(),
-        memory: systemInfo.memory || deviceInfo.memory || 0,
-        platform: deviceInfo.platform || systemInfo.platform || '',
-        version: deviceInfo.version || systemInfo.version || '',
-        screenWidth: windowInfo.screenWidth || systemInfo.screenWidth || 0,
-        screenHeight: windowInfo.screenHeight || systemInfo.screenHeight || 0,
-        devicePixelRatio: windowInfo.devicePixelRatio || systemInfo.devicePixelRatio || 2,
-        brand: deviceInfo.brand || systemInfo.brand || '',
-        model: deviceInfo.model || systemInfo.model || '',
-        SDKVersion: appBaseInfo.SDKVersion || systemInfo.SDKVersion || ''
+        memory: deviceInfo.memory || 0,
+        platform: deviceInfo.platform || '',
+        version: deviceInfo.version || '',
+        screenWidth: windowInfo.screenWidth || 0,
+        screenHeight: windowInfo.screenHeight || 0,
+        devicePixelRatio: windowInfo.devicePixelRatio || 2,
+        brand: deviceInfo.brand || '',
+        model: deviceInfo.model || '',
+        SDKVersion: appBaseInfo.SDKVersion || ''
       };
       
       this.performanceData.memory.push(memoryData);
@@ -339,7 +336,7 @@ class PerformanceMonitor {
   startMemoryCollection() {
     setInterval(() => {
       this.collectMemoryInfo();
-    }, 30000);
+    }, 60000);  // 改为60秒采集一次，减少开销
     
     // 立即采集一次
     this.collectMemoryInfo();
@@ -357,8 +354,9 @@ class PerformanceMonitor {
     this.fpsMonitor = setInterval(() => {
       frameCount++;
       const currentTime = Date.now();
-      if (currentTime - lastTime >= 5000) {  // 改为 5 秒采集一次
-        const fps = Math.round(frameCount / 5);  // 5 秒内的平均 FPS
+      const elapsed = currentTime - lastTime;
+      if (elapsed >= 5000) {  // 5 秒采集一次
+        const fps = Math.round(frameCount * 1000 / elapsed);  // 事件循环响应频率（近似FPS）
         const fpsData = {
           timestamp: new Date().toISOString(),
           fps

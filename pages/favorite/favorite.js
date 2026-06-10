@@ -41,7 +41,7 @@ Page({
         const mockFavorites = [
           {
             _id: '1',
-            images: ['https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400'],
+            images: ['/images/blindbox/electronics_0_0.jpg'],
             title: '精美文具套装盲盒',
             price: 14.9,
             originalPrice: 29.9,
@@ -72,7 +72,7 @@ Page({
           },
           {
             _id: '3',
-            images: ['https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400'],
+            images: ['/images/blindbox/fashion_0_0.jpg'],
             title: '时尚服饰盲盒',
             price: 39.9,
             originalPrice: 79.9,
@@ -106,7 +106,7 @@ Page({
     const recommendations = [
       {
         _id: 'r1',
-        images: ['https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400'],
+        images: ['/images/blindbox/fashion_1_1.jpg'],
         title: '零食大礼包',
         price: 25.0,
         type: 'snack',
@@ -122,7 +122,7 @@ Page({
       },
       {
         _id: 'r3',
-        images: ['https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'],
+        images: ['/images/blindbox/study_0_0.jpg'],
         title: '原创手作盲盒',
         price: 49.9,
         type: 'original',

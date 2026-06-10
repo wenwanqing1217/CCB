@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <view class="header" wx:if="{{!isRider}}">
     <text class="title">成为校园骑手</text>
     <text class="subtitle">赚取配送费，服务同学</text>

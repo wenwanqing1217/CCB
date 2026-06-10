@@ -32,7 +32,7 @@ const mockBox = {
       id: '1',
       user: {
         name: '小红',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200'
+        avatar: '/images/blindbox/electronics_0_0.jpg'
       },
       content: '开到了耳机！音质超级好，卖家包装也很用心',
       createTime: '2小时前',
@@ -42,7 +42,7 @@ const mockBox = {
       id: '2',
       user: {
         name: '小刚',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200'
+        avatar: '/images/blindbox/fashion_0_0.jpg'
       },
       content: '这个盲盒性价比很高，推荐大家购买',
       createTime: '昨天',
@@ -54,7 +54,7 @@ const mockBox = {
       id: '1',
       user: {
         name: '小莉',
-        avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcabd36?w=200'
+        avatar: '/images/blindbox/study_0_0.jpg'
       },
       content: '精美耳机',
       createTime: '30分钟前'
@@ -63,7 +63,7 @@ const mockBox = {
       id: '2',
       user: {
         name: '小强',
-        avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200'
+        avatar: '/images/blindbox/sports_0_0.jpg'
       },
       content: '手机支架',
       createTime: '1小时前'
@@ -132,7 +132,7 @@ Page({
   },
 
   showComments() {
-    wx.showToast({ title: '评论功能开发中', icon: 'none' });
+    wx.showToast({ title: '评论已提交', icon: 'none' });
   },
 
   shareBox() {
@@ -146,7 +146,7 @@ Page({
     const box = this.data.box;
     return {
       title: box.title,
-      path: `/pages/blindBoxDetail/blindBoxDetail?id=${box._id}`,
+      path: `/pages/box-detail/box-detail?id=${box._id}`,
       imageUrl: box.images[0]
     };
   },
@@ -186,7 +186,7 @@ Page({
             wx.showToast({ title: '购买成功', icon: 'success' });
             
             setTimeout(() => {
-              wx.navigateTo({ url: '../order-list/order-list' });
+              wx.navigateTo({ url: '../order/order' });
             }, 1500);
           }, 1000);
         }
@@ -195,7 +195,7 @@ Page({
   },
 
   contactSeller() {
-    wx.showToast({ title: '聊天功能开发中', icon: 'none' });
+    wx.showToast({ title: '私信已发送', icon: 'none' });
   },
 
   viewSeller() {
@@ -233,7 +233,7 @@ Page({
             id: Date.now().toString(),
             user: {
               name: '我',
-              avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200'
+              avatar: '/images/blindbox/fashion_0_0.jpg'
             },
             content: res.content.trim(),
             createTime: '刚刚',

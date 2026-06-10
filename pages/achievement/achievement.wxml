@@ -1,0 +1,99 @@
+<view class="container particle-bg">
+  <!-- 统计概览 -->
+  <view class="stats-overview">
+    <view class="stat-card glass-card-v2">
+      <text class="stat-num" id="totalAchievements">{{stats.total}}</text>
+      <text class="stat-label">总成就</text>
+    </view>
+    <view class="stat-card glass-card-v2">
+      <text class="stat-num accent">{{stats.unlocked}}</text>
+      <text class="stat-label">已解锁</text>
+    </view>
+    <view class="stat-card glass-card-v2">
+      <text class="stat-num gold">{{stats.rareCount}}</text>
+      <text class="stat-label">稀有成就</text>
+    </view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-section glass-card-v2">
+    <view class="progress-header">
+      <text class="progress-title">探索进度</text>
+      <text class="progress-percent">{{progressPercent}}%</text>
+    </view>
+    <view class="progress-bar-wrap">
+      <view class="progress-bar-fill" style="width: {{progressPercent}}%;"></view>
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view class="category-scroll" scroll-x>
+    <view class="category-list">
+      <view class="category-item {{activeCategory === 'all' ? 'active' : ''}}" bindtap="switchCategory" data-cat="all">
+        <text>全部</text>
+      </view>
+      <view class="category-item {{activeCategory === 'box' ? 'active' : ''}}" bindtap="switchCategory" data-cat="box">
+        <text>🎁 开盒</text>
+      </view>
+      <view class="category-item {{activeCategory === 'social' ? 'active' : ''}}" bindtap="switchCategory" data-cat="social">
+        <text>💬 社交</text>
+      </view>
+      <view class="category-item {{activeCategory === 'rider' ? 'active' : ''}}" bindtap="switchCategory" data-cat="rider">
+        <text>🛵 配送</text>
+      </view>
+      <view class="category-item {{activeCategory === 'special' ? 'active' : ''}}" bindtap="switchCategory" data-cat="special">
+        <text>🌟 特殊</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 成就网格 -->
+  <view class="achievement-grid">
+    <view class="achievement-card glass-card-v2 {{item.unlocked ? 'unlocked' : 'locked'}} {{activeCategory !== 'all' && item.category !== activeCategory ? 'hidden' : ''}}"
+          wx:for="{{achievements}}" wx:key="id" bindtap="showDetail" data-id="{{item.id}}">
+      <view class="ach-icon-wrap {{item.rarity}}">
+        <text class="ach-icon">{{item.unlocked ? item.icon : '🔒'}}</text>
+        <view class="ach-rarity-dot" wx:if="{{item.unlocked}}"></view>
+      </view>
+      <text class="ach-name">{{item.name}}</text>
+      <text class="ach-desc">{{item.unlocked ? item.desc : '???'}}</text>
+      <view class="ach-progress" wx:if="{{!item.unlocked && item.maxProgress > 0}}">
+        <view class="ach-progress-bar">
+          <view class="ach-progress-fill" style="width: {{item.progress / item.maxProgress * 100}}%;"></view>
+        </view>
+        <text class="ach-progress-text">{{item.progress}}/{{item.maxProgress}}</text>
+      </view>
+      <view class="ach-status">
+        <text wx:if="{{item.unlocked}}" class="status-unlocked">✓ 已达成</text>
+        <view wx:elif="{{item.maxProgress > 0}}" class="status-locked">进行中</view>
+        <view wx:else class="status-locked">未解锁</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成就详情弹窗 -->
+  <view class="detail-modal {{showDetailModal ? 'visible' : ''}}">
+    <view class="modal-mask" bindtap="closeDetail"></view>
+    <view class="modal-card glass-card-v2">
+      <view class="modal-close" bindtap="closeDetail">✕</view>
+      <view class="modal-icon-wrap {{detailItem.rarity}}">
+        <text class="modal-icon">{{detailItem.icon}}</text>
+        <view class="modal-icon-glow"></view>
+      </view>
+      <text class="modal-name">{{detailItem.name}}</text>
+      <text class="modal-desc">{{detailItem.desc}}</text>
+      <text class="modal-condition" wx:if="{{!detailItem.unlocked}}">达成条件：{{detailItem.conditionText}}</text>
+      <view class="modal-progress" wx:if="{{!detailItem.unlocked && detailItem.maxProgress > 0}}">
+        <view class="progress-bar-wrap">
+          <view class="progress-bar-fill" style="width: {{detailItem.progress / detailItem.maxProgress * 100}}%;"></view>
+        </view>
+        <text class="progress-text">{{detailItem.progress}}/{{detailItem.maxProgress}}</text>
+      </view>
+      <view class="modal-badge {{detailItem.rarity}}">
+        <text>{{detailItem.rarityLabel}}</text>
+      </view>
+      <text class="modal-reward" wx:if="{{detailItem.reward}}">奖励：{{detailItem.reward}}</text>
+      <text class="modal-time" wx:if="{{detailItem.unlockedTime}}">达成于 {{detailItem.unlockedTime}}</text>
+    </view>
+  </view>
+</view>

@@ -86,30 +86,98 @@ function calculateSVD(matrix, k = 10) {
 function performSVD(matrix, k) {
   const m = matrix.length;
   const n = matrix[0]?.length || 0;
-  if (m === 0 || n === 0) return { U: [], S: [], V: [] };
+  if (m === 0 || n === 0) {
+    return { U: [], S: [], V: [] };
+  }
 
   const actualK = Math.min(k, Math.min(m, n));
-  let U = [];
-  let S = [];
-  let V = [];
+  const U = [];
+  const S = [];
+  const V = [];
 
-  const transposed = matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+  // 幂迭代法（Power Iteration）截断SVD
+  // 每次迭代提取一个奇异值/奇异向量对
+  let residual = matrix.map(row => [...row]);
 
-  const ATA = multiplyMatrix(transposed, matrix);
-  const AAT = multiplyMatrix(matrix, transposed);
+  for (let i = 0; i < actualK; i++) {
+    const { singularValue, u, v } = powerIterationSVD(residual, 50);
+    if (singularValue < 1e-10) break;
 
-  const eigenResult = eigenDecompositionSymmetric(AAT);
-  U = eigenResult.eigenvectors;
-  S = eigenResult.eigenvalues.map(v => Math.sqrt(Math.max(0, v)));
+    S.push(singularValue);
+    U.push(u);
+    V.push(v);
 
-  const eigenResultV = eigenDecompositionSymmetric(ATA);
-  V = eigenResultV.eigenvectors;
+    // 减去已提取的奇异分量（收缩）
+    for (let r = 0; r < m; r++) {
+      for (let c = 0; c < n; c++) {
+        residual[r][c] -= singularValue * u[r] * v[c];
+      }
+    }
+  }
 
-  U = U.map(vec => vec.slice(0, actualK));
-  V = V.map(vec => vec.slice(0, actualK));
-  S = S.slice(0, actualK);
+  return {
+    U: U.length > 0 ? transposeMatrix([U, U[0].length > 0 ? U : []]) : [],
+    S,
+    V: V.length > 0 ? transposeMatrix([V, V[0].length > 0 ? V : []]) : []
+  };
+}
 
-  return { U, S, V };
+function powerIterationSVD(matrix, maxIter) {
+  const m = matrix.length;
+  const n = matrix[0]?.length || 0;
+
+  // 随机初始化右奇异向量
+  let v = Array.from({ length: n }, () => Math.random() * 2 - 1);
+  let u = Array.from({ length: m }, () => 0);
+  let prevV = v.map(() => 0);
+  let iter = 0;
+
+  while (iter < maxIter) {
+    prevV = [...v];
+
+    // u = A * v (左奇异向量)
+    for (let i = 0; i < m; i++) {
+      u[i] = matrix[i].reduce((sum, val, j) => sum + val * v[j], 0);
+    }
+
+    // 归一化 u
+    const uNorm = Math.sqrt(u.reduce((sum, val) => sum + val * val, 0));
+    if (uNorm < 1e-15) break;
+    for (let i = 0; i < m; i++) u[i] /= uNorm;
+
+    // v = A^T * u (右奇异向量)
+    for (let j = 0; j < n; j++) {
+      v[j] = u.reduce((sum, val, i) => sum + val * matrix[i][j], 0);
+    }
+
+    // 归一化 v
+    const vNorm = Math.sqrt(v.reduce((sum, val) => sum + val * val, 0));
+    if (vNorm < 1e-15) break;
+    for (let j = 0; j < n; j++) v[j] /= vNorm;
+
+    // 检查收敛
+    const diff = v.reduce((sum, val, idx) => sum + Math.abs(val - prevV[idx]), 0);
+    if (diff < 1e-10) break;
+    iter++;
+  }
+
+  // 计算奇异值: sigma = u^T * A * v
+  let singularValue = 0;
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      singularValue += u[i] * matrix[i][j] * v[j];
+    }
+  }
+
+  return { singularValue: Math.abs(singularValue), u, v };
+}
+
+function transposeMatrix(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0]?.length || 0;
+  return Array.from({ length: cols }, (_, j) =>
+    Array.from({ length: rows }, (_, i) => matrix[i][j])
+  );
 }
 
 function multiplyMatrix(A, B) {
@@ -131,16 +199,6 @@ function multiplyMatrix(A, B) {
   return result;
 }
 
-function eigenDecompositionSymmetric(matrix) {
-  const n = matrix.length;
-  const eigenvalues = new Array(n).fill(1).map((_, i) => matrix[i]?.[i] || 1);
-  const eigenvectors = matrix.map((row, i) =>
-    new Array(n).fill(0).map((_, j) => (i === j ? 1 : 0))
-  );
-
-  return { eigenvalues, eigenvectors };
-}
-
 module.exports = {
   cosineSimilarity,
   dotProduct,
@@ -149,5 +207,7 @@ module.exports = {
   fuseRecommendations,
   calculateSVD,
   performSVD,
-  multiplyMatrix
+  multiplyMatrix,
+  transposeMatrix,
+  powerIterationSVD
 };

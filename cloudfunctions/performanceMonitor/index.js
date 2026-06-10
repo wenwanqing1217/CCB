@@ -29,7 +29,7 @@ exports.main = async (event, context) => {
       case 'getAlerts':
         return await getAlerts(days || 1);
       case 'getSlowQueries':
-        return await getSlowQueries(hours || 24);
+        return await getSlowQueries(days || 1);
       default:
         return { success: false, error: '未知的操作类型' };
     }

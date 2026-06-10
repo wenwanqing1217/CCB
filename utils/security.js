@@ -388,7 +388,7 @@ export const inputValidator = {
    * @returns {boolean} - 是否包含特殊字符
    */
   containsSpecialChars(input) {
-    return /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?~]/.test(input);
+    return /[!@#$%^&*()_+\-=[]{}|;:,.<>?~]/.test(input);
   },
 
   /**

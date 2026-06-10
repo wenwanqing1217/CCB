@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <view class="tab-bar">
     <view class="tab-item {{activeTab === 'all' ? 'active' : ''}}" bindtap="setTab" data-tab="all">全部</view>
     <view class="tab-item {{activeTab === 'pending' ? 'active' : ''}}" bindtap="setTab" data-tab="pending">待配送</view>

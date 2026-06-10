@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <!-- 消息分类入口 -->
   <view class="category-section">
     <view class="category-grid">

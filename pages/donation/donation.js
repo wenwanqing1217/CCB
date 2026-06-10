@@ -141,7 +141,7 @@ Page({
 
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `../donationDetail/donationDetail?id=${id}` });
+    wx.navigateTo({ url: `../box-detail/box-detail?id=${id}` });
   },
 
   navigateToPublish() {

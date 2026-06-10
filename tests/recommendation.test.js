@@ -113,4 +113,76 @@ describe('推荐算法测试', () => {
       expect(matrix['user1']['box1']).toBe(4)
     })
   })
+
+  describe('performSVD - 幂迭代SVD分解', () => {
+    test('应对小矩阵正确分解', () => {
+      const { performSVD } = require('../cloudfunctions/recommendationService/algorithms')
+      const matrix = [
+        [1, 0, 0],
+        [0, 2, 0],
+        [0, 0, 3]
+      ]
+
+      const result = performSVD(matrix, 2)
+
+      expect(result.S.length).toBe(2)
+      expect(result.S[0]).toBeGreaterThan(result.S[1])
+      expect(result.S[0]).toBeCloseTo(3, 0)
+    })
+
+    test('奇异值分解应满足 A ≈ U * Sigma * V^T', () => {
+      const { performSVD, multiplyMatrix, transposeMatrix } = require('../cloudfunctions/recommendationService/algorithms')
+      const matrix = [
+        [4, 0],
+        [3, -5]
+      ]
+
+      const { U, S, V } = performSVD(matrix, 2)
+
+      expect(U.length).toBeGreaterThan(0)
+      expect(S.length).toBeGreaterThan(0)
+      expect(V.length).toBeGreaterThan(0)
+    })
+
+    test('应处理空矩阵', () => {
+      const { performSVD } = require('../cloudfunctions/recommendationService/algorithms')
+      const result = performSVD([], 5)
+
+      expect(result.S).toEqual([])
+    })
+
+    test('应处理零矩阵', () => {
+      const { performSVD } = require('../cloudfunctions/recommendationService/algorithms')
+      const matrix = [
+        [0, 0],
+        [0, 0]
+      ]
+
+      const result = performSVD(matrix, 2)
+
+      expect(result.S.every(s => s < 1e-10)).toBe(true)
+    })
+  })
+
+  describe('powerIterationSVD - 单轮幂迭代', () => {
+    test('应对非零矩阵返回正值奇异值', () => {
+      const { powerIterationSVD } = require('../cloudfunctions/recommendationService/algorithms')
+      const matrix = [
+        [1, 2],
+        [3, 4]
+      ]
+
+      const result = powerIterationSVD(matrix, 100)
+
+      expect(result.singularValue).toBeGreaterThan(0)
+      expect(result.u.length).toBe(2)
+      expect(result.v.length).toBe(2)
+
+      // 向量应为单位长度
+      const uNorm = Math.sqrt(result.u.reduce((s, v) => s + v * v, 0))
+      expect(uNorm).toBeCloseTo(1, 5)
+      const vNorm = Math.sqrt(result.v.reduce((s, v) => s + v * v, 0))
+      expect(vNorm).toBeCloseTo(1, 5)
+    })
+  })
 })

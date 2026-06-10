@@ -10,7 +10,7 @@ const mockBoxes = [
     campus: '中园公寓',
     building: '3层',
     createdAt: Date.now() - 5 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/electronics_0_0.jpg'],
     sales: 86,
     likes: 32,
     comments: 8
@@ -25,7 +25,7 @@ const mockBoxes = [
     campus: '中南公寓',
     building: '2层',
     createdAt: Date.now() - 10 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/fashion_0_0.jpg'],
     sales: 56,
     likes: 28,
     comments: 5
@@ -40,7 +40,7 @@ const mockBoxes = [
     campus: '新柏居',
     building: '5层',
     createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/fashion_1_1.jpg'],
     sales: 42,
     likes: 18,
     comments: 3
@@ -55,7 +55,7 @@ const mockBoxes = [
     campus: '清水居',
     building: '4层',
     createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/study_0_0.jpg'],
     sales: 156,
     likes: 68,
     comments: 22
@@ -70,7 +70,7 @@ const mockBoxes = [
     campus: '三友园',
     building: '3层',
     createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/study_1_1.jpg'],
     sales: 78,
     likes: 41,
     comments: 15
@@ -85,7 +85,7 @@ const mockBoxes = [
     campus: '四季园',
     building: '1层',
     createdAt: Date.now() - 4 * 24 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/sports_0_0.jpg'],
     sales: 52,
     likes: 23,
     comments: 7
@@ -100,7 +100,7 @@ const mockBoxes = [
     campus: '松柏居',
     building: '2层',
     createdAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
-    images: ['https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop'],
+    images: ['/images/blindbox/sports_1_1.jpg'],
     sales: 35,
     likes: 48,
     comments: 12

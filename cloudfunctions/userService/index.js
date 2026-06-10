@@ -46,11 +46,12 @@ exports.main = async (event, context) => {
 
   try {
     switch (action) {
-      case 'login':
+      case 'login': {
         console.log('执行用户登录操作');
         const loginResult = await handleLogin(data);
         console.log('登录操作完成:', loginResult);
         return loginResult;
+      }
       case 'updateCampusInfo':
         console.log('执行更新校园信息操作');
         return await handleUpdateCampusInfo(data);

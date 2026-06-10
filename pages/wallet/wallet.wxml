@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <view class="wallet-card">
     <view class="wallet-header">
       <text class="wallet-label">账户余额</text>

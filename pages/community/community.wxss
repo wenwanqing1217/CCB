@@ -1,4 +1,4 @@
-/* 校园社区页面 - 全新设计 紫色霓虹灯风�?*/
+/* 校园社区页面 - 全新设计 紫色霓虹灯风格 */
 
 page {
   background-color: #020208;
@@ -1150,3 +1150,71 @@ page {
 
 
 
+/* 社区页面增强 */
+.feature-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:active {
+  transform: translateY(-6rpx);
+  box-shadow: 0 0 30rpx rgba(147,112,219,0.3);
+}
+
+.card-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40rpx;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.05), transparent);
+  animation: waveMove 3s ease-in-out infinite;
+}
+
+@keyframes waveMove {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(20rpx); }
+}
+
+/* 捐赠/交换卡片 */
+.donation-item, .exchange-item {
+  transition: all 0.3s ease;
+}
+
+.donation-item:active, .exchange-item:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 0 25rpx rgba(147,112,219,0.2);
+}
+
+.item-badge {
+  animation: badgeGlow 2s ease-in-out infinite;
+}
+
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 0 10rpx rgba(255,107,107,0.4); }
+  50% { box-shadow: 0 0 20rpx rgba(255,107,107,0.7); }
+}
+
+/* 分类标题 */
+.section-header {
+  margin-bottom: 16rpx;
+}
+
+.title-dot {
+  animation: dotBreath 2s ease-in-out infinite;
+}
+
+@keyframes dotBreath {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* 查看更多链接 */
+.view-more-link {
+  transition: all 0.3s ease;
+}
+
+.view-more-link:active {
+  transform: translateX(4rpx);
+}

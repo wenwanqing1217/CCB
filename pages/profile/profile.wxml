@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container particle-bg">
   <view class="profile-header">
     <view class="header-bg"></view>
     <view class="user-info" wx:if="{{isLoggedIn}}">
@@ -247,6 +247,54 @@
         <text class="menu-text">关于CBB</text>
         <text class="menu-arrow">›</text>
       </view>
+    </view>
+  </view>
+
+  <!-- 成就预览 -->
+  <view class="achievement-preview glass-card-v2" bindtap="navigateToAchievement">
+    <view class="preview-header">
+      <text class="preview-title">🏆 成就</text>
+      <text class="preview-more">全部 ›</text>
+    </view>
+    <view class="preview-badges">
+      <view class="preview-badge" wx:for="{{recentAchievements}}" wx:key="id">
+        <view class="badge-icon {{item.rarity}}">{{item.icon}}</view>
+        <text class="badge-name">{{item.name}}</text>
+      </view>
+    </view>
+    <view class="preview-progress">
+      <text class="progress-label">探索进度 {{achieveProgress}}%</text>
+      <view class="mini-progress-bar">
+        <view class="mini-progress-fill" style="width: {{achieveProgress}}%;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新功能入口 -->
+  <view class="menu-group">
+    <view class="menu-item" bindtap="navigateToCheckin">
+      <view class="menu-icon checkin">
+        <text>📅</text>
+      </view>
+      <text class="menu-text">每日签到</text>
+      <text class="menu-arrow">›</text>
+      <text class="menu-tag new">签到</text>
+    </view>
+    <view class="menu-item" bindtap="navigateToLeaderboard">
+      <view class="menu-icon leaderboard">
+        <text>🏅</text>
+      </view>
+      <text class="menu-text">排行榜</text>
+      <text class="menu-arrow">›</text>
+      <text class="menu-tag new">PK</text>
+    </view>
+    <view class="menu-item" bindtap="navigateToActivity">
+      <view class="menu-icon activity">
+        <text>🎪</text>
+      </view>
+      <text class="menu-text">活动中心</text>
+      <text class="menu-arrow">›</text>
+      <text class="menu-tag hot">热门</text>
     </view>
   </view>
 

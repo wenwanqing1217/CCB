@@ -184,7 +184,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '系统通知 - CBB校园盲盒',
-      path: '/pages/system-message/system-message'
+      path: '/pages/message/message'
     };
   }
 });
